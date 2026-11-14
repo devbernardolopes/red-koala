@@ -15,9 +15,15 @@ run/main_scene="uid://cknfyomnqipkc"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://r8fc8q2r20et"
+
 [autoload]
 
 GameManager="*uid://fmh1yqm4ohc8"
+MusicPlayer="*uid://bo0j55y6gx1u8"
+AudioManager="*uid://ch1je27gt2ghb"
 
 [display]
 
@@ -27,10 +33,12 @@ window/stretch/aspect="expand"
 [file_customization]
 
 folder_colors={
+"res://assets/": "yellow",
 "res://autoloaders/": "blue",
 "res://resources/": "orange",
 "res://scenes/": "red",
-"res://scripts/": "green"
+"res://scripts/": "green",
+"res://shaders/": "pink"
 }
 
 [global_group]

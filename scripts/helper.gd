@@ -8,6 +8,7 @@ const MARGIN_1: int = 2
 @warning_ignore("integer_division")
 const MARGIN_2: int = LENGTH / 4
 const RADIAL_LIGHT = preload("res://resources/lights/radial_light.tres")
+const FORCE_FIELD_001 = preload("res://assets/sounds/forceField_001.ogg")
 
 
 static func has_property(target: Node, property: String) -> bool:

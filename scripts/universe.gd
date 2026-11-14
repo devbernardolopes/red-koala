@@ -29,9 +29,9 @@ func _ready() -> void:
 	if not walls_node:
 		walls_node = find_child("Walls")
 	#_clear_universe()
-	_load_level(2)
+	#_load_level(2)
 	_load_elements()
-
+	AudioManager.set_listener_target(hero)
 
 func _input(event: InputEvent) -> void:
 	if event.is_echo():

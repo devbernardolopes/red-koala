@@ -5,6 +5,16 @@
 [ext_resource type="PackedScene" uid="uid://dv7m0vn1ffgeq" path="res://scenes/goal.tscn" id="1_xq63u"]
 [ext_resource type="PackedScene" uid="uid://bwjgakp7xo0j0" path="res://scenes/hero.tscn" id="2_pol6k"]
 [ext_resource type="PackedScene" uid="uid://mmghofrx4gy1" path="res://scenes/crate.tscn" id="2_uc3kj"]
+[ext_resource type="Shader" uid="uid://cpebok8t5oej6" path="res://shaders/lightweight_crt.gdshader" id="6_jegdv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m7uww"]
+shader = ExtResource("6_jegdv")
+shader_parameter/resolution = Vector2(320, 180)
+shader_parameter/scan_line_amount = 0.5
+shader_parameter/warp_amount = 0.05
+shader_parameter/vignette_amount = 0.5
+shader_parameter/grille_amount = 0.05
+shader_parameter/brightness_boost = 1.2
 
 [node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("hero")]
 script = ExtResource("1_uc3kj")
@@ -13,52 +23,194 @@ hero = NodePath("Hero")
 [node name="Goals" type="Node2D" parent="." unique_id=2000791855]
 
 [node name="Goal" parent="Goals" unique_id=2082852312 instance=ExtResource("1_xq63u")]
-position = Vector2(672, 224)
+position = Vector2(288, 288)
+collision_layer = 8
+
+[node name="Goal2" parent="Goals" unique_id=406683321 instance=ExtResource("1_xq63u")]
+position = Vector2(160, 288)
 collision_layer = 8
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 
-[node name="Crate" parent="Crates" unique_id=729296737 instance=ExtResource("2_uc3kj")]
-position = Vector2(608, 224)
-collision_mask = 15
-
 [node name="Crate2" parent="Crates" unique_id=1247783212 instance=ExtResource("2_uc3kj")]
-position = Vector2(544, 96)
-collision_mask = 15
-
-[node name="Crate3" parent="Crates" unique_id=492005956 instance=ExtResource("2_uc3kj")]
-position = Vector2(672, 160)
+position = Vector2(288, 224)
 collision_mask = 15
 
 [node name="Crate4" parent="Crates" unique_id=795778630 instance=ExtResource("2_uc3kj")]
-position = Vector2(608, 160)
+position = Vector2(224, 160)
 collision_mask = 15
 
 [node name="Hero" parent="." unique_id=365190293 instance=ExtResource("2_pol6k")]
-position = Vector2(480, 224)
+position = Vector2(96, 160)
+
+[node name="AudioListener2D" type="AudioListener2D" parent="Hero" unique_id=1001574819]
+current = true
+metadata/_edit_lock_ = true
 
 [node name="Walls" type="Node2D" parent="." unique_id=738794417]
 
 [node name="Wall" parent="Walls" unique_id=343229517 instance=ExtResource("1_h4s8v")]
 position = Vector2(32, 32)
 
-[node name="Wall2" parent="Walls" unique_id=195069740 instance=ExtResource("1_h4s8v")]
+[node name="Wall2" parent="Walls" unique_id=299863742 instance=ExtResource("1_h4s8v")]
 position = Vector2(96, 32)
+metadata/_scene_painted = true
 
-[node name="Wall3" parent="Walls" unique_id=566916627 instance=ExtResource("1_h4s8v")]
+[node name="Wall3" parent="Walls" unique_id=278121841 instance=ExtResource("1_h4s8v")]
 position = Vector2(160, 32)
+metadata/_scene_painted = true
 
-[node name="Wall4" parent="Walls" unique_id=349402553 instance=ExtResource("1_h4s8v")]
+[node name="Wall4" parent="Walls" unique_id=1745507181 instance=ExtResource("1_h4s8v")]
 position = Vector2(224, 32)
+metadata/_scene_painted = true
 
-[node name="Wall5" parent="Walls" unique_id=1137224143 instance=ExtResource("1_h4s8v")]
-position = Vector2(32, 96)
+[node name="Wall5" parent="Walls" unique_id=1064673630 instance=ExtResource("1_h4s8v")]
+position = Vector2(288, 32)
+metadata/_scene_painted = true
 
-[node name="Wall6" parent="Walls" unique_id=1703048640 instance=ExtResource("1_h4s8v")]
-position = Vector2(544, 32)
+[node name="Wall6" parent="Walls" unique_id=876400940 instance=ExtResource("1_h4s8v")]
+position = Vector2(352, 32)
+metadata/_scene_painted = true
 
-[node name="Wall7" parent="Walls" unique_id=1236208836 instance=ExtResource("1_h4s8v")]
+[node name="Wall7" parent="Walls" unique_id=532370791 instance=ExtResource("1_h4s8v")]
+position = Vector2(416, 32)
+metadata/_scene_painted = true
+
+[node name="Wall8" parent="Walls" unique_id=759036060 instance=ExtResource("1_h4s8v")]
 position = Vector2(480, 32)
+metadata/_scene_painted = true
+
+[node name="Wall9" parent="Walls" unique_id=1880029284 instance=ExtResource("1_h4s8v")]
+position = Vector2(544, 32)
+metadata/_scene_painted = true
+
+[node name="Wall10" parent="Walls" unique_id=1620062858 instance=ExtResource("1_h4s8v")]
+position = Vector2(608, 32)
+metadata/_scene_painted = true
+
+[node name="Wall11" parent="Walls" unique_id=1400131675 instance=ExtResource("1_h4s8v")]
+position = Vector2(672, 32)
+metadata/_scene_painted = true
+
+[node name="Wall12" parent="Walls" unique_id=771900913 instance=ExtResource("1_h4s8v")]
+position = Vector2(736, 32)
+metadata/_scene_painted = true
+
+[node name="Wall13" parent="Walls" unique_id=364325024 instance=ExtResource("1_h4s8v")]
+position = Vector2(800, 32)
+metadata/_scene_painted = true
+
+[node name="Wall14" parent="Walls" unique_id=2114735683 instance=ExtResource("1_h4s8v")]
+position = Vector2(864, 32)
+metadata/_scene_painted = true
+
+[node name="Wall15" parent="Walls" unique_id=2041932826 instance=ExtResource("1_h4s8v")]
+position = Vector2(928, 32)
+metadata/_scene_painted = true
+
+[node name="Wall16" parent="Walls" unique_id=119221276 instance=ExtResource("1_h4s8v")]
+position = Vector2(992, 32)
+metadata/_scene_painted = true
+
+[node name="Wall17" parent="Walls" unique_id=306565699 instance=ExtResource("1_h4s8v")]
+position = Vector2(1056, 32)
+metadata/_scene_painted = true
+
+[node name="Wall18" parent="Walls" unique_id=1876435853 instance=ExtResource("1_h4s8v")]
+position = Vector2(1120, 32)
+metadata/_scene_painted = true
+
+[node name="Wall19" parent="Walls" unique_id=222418452 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 96)
+metadata/_scene_painted = true
+
+[node name="Wall20" parent="Walls" unique_id=717391854 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 160)
+metadata/_scene_painted = true
+
+[node name="Wall21" parent="Walls" unique_id=3481119 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 224)
+metadata/_scene_painted = true
+
+[node name="Wall22" parent="Walls" unique_id=138190607 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 288)
+metadata/_scene_painted = true
+
+[node name="Wall23" parent="Walls" unique_id=490206627 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 352)
+metadata/_scene_painted = true
+
+[node name="Wall24" parent="Walls" unique_id=829668350 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 416)
+metadata/_scene_painted = true
+
+[node name="Wall25" parent="Walls" unique_id=2034884234 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 480)
+metadata/_scene_painted = true
+
+[node name="Wall26" parent="Walls" unique_id=1393230148 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 544)
+metadata/_scene_painted = true
+
+[node name="Wall27" parent="Walls" unique_id=769433015 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 608)
+metadata/_scene_painted = true
+
+[node name="Wall28" parent="Walls" unique_id=477756278 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 672)
+metadata/_scene_painted = true
+
+[node name="Wall29" parent="Walls" unique_id=1490149743 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 736)
+metadata/_scene_painted = true
+
+[node name="Wall30" parent="Walls" unique_id=302374403 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 800)
+metadata/_scene_painted = true
+
+[node name="Wall31" parent="Walls" unique_id=768831217 instance=ExtResource("1_h4s8v")]
+position = Vector2(96, 352)
+metadata/_scene_painted = true
+
+[node name="Wall32" parent="Walls" unique_id=737890451 instance=ExtResource("1_h4s8v")]
+position = Vector2(160, 352)
+metadata/_scene_painted = true
+
+[node name="Wall33" parent="Walls" unique_id=1349755383 instance=ExtResource("1_h4s8v")]
+position = Vector2(224, 352)
+metadata/_scene_painted = true
+
+[node name="Wall34" parent="Walls" unique_id=1714695347 instance=ExtResource("1_h4s8v")]
+position = Vector2(288, 352)
+metadata/_scene_painted = true
+
+[node name="Wall35" parent="Walls" unique_id=588845577 instance=ExtResource("1_h4s8v")]
+position = Vector2(352, 352)
+metadata/_scene_painted = true
+
+[node name="Wall41" parent="Walls" unique_id=1291009409 instance=ExtResource("1_h4s8v")]
+position = Vector2(416, 352)
+metadata/_scene_painted = true
+
+[node name="Wall36" parent="Walls" unique_id=1536757654 instance=ExtResource("1_h4s8v")]
+position = Vector2(480, 352)
+metadata/_scene_painted = true
+
+[node name="Wall37" parent="Walls" unique_id=1641675478 instance=ExtResource("1_h4s8v")]
+position = Vector2(480, 288)
+metadata/_scene_painted = true
+
+[node name="Wall38" parent="Walls" unique_id=1651647148 instance=ExtResource("1_h4s8v")]
+position = Vector2(480, 224)
+metadata/_scene_painted = true
+
+[node name="Wall39" parent="Walls" unique_id=823670540 instance=ExtResource("1_h4s8v")]
+position = Vector2(480, 160)
+metadata/_scene_painted = true
+
+[node name="Wall40" parent="Walls" unique_id=1507287506 instance=ExtResource("1_h4s8v")]
+position = Vector2(480, 96)
+metadata/_scene_painted = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
 color = Color(0.27387273, 0.27387273, 0.27387273, 1)
@@ -66,3 +218,12 @@ color = Color(0.27387273, 0.27387273, 0.27387273, 1)
 [node name="Hud" type="CanvasLayer" parent="." unique_id=1702739954]
 
 [node name="Filters" type="CanvasLayer" parent="." unique_id=1238041824]
+
+[node name="LightweightCrt" type="ColorRect" parent="Filters" unique_id=416664451]
+visible = false
+material = SubResource("ShaderMaterial_m7uww")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
