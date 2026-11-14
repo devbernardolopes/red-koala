@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://d12xchcrktinl"]
+
+[ext_resource type="Script" uid="uid://drxw7g2rf63jd" path="res://scripts/door.gd" id="1_hpvv5"]
+[ext_resource type="PackedScene" uid="uid://cbbvyuv2beagl" path="res://scenes/wall.tscn" id="2_uvdjg"]
+
+[node name="Door" type="Area2D" unique_id=176489279]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_hpvv5")
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon" type="Polygon2D" parent="." unique_id=147171866]
+color = Color(0.7411765, 0.7176471, 0.41960785, 1)
+polygon = PackedVector2Array(-32, 32, -32, -8, -16, -32, 16, -32, 32, -8, 32, 32)
+
+[node name="Wall" parent="." unique_id=2082852312 instance=ExtResource("2_uvdjg")]

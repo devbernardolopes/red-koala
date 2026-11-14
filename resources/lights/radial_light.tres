@@ -5,4 +5,6 @@
 [resource]
 gradient = SubResource("Gradient_7awer")
 fill = 1
+fill_from = Vector2(1, 0)
+fill_to = Vector2(0.5, 0.5)
 metadata/_snap_enabled = true

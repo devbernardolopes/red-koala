@@ -1,22 +1,18 @@
 extends Node2D
 
-enum ELEMENT_TYPE {
-	GOAL = 1,
-	CRATE = 2,
-	WALL = 3,
-	HERO = 4,
-}
-
 const LEVELS_DIR: String = "res://resources/levels/"
 const WALL_SCENE = preload("res://scenes/wall.tscn")
-
 
 @export var hero: Hero = null
 
 var goals_node: Node2D = null
 var crates_node: Node2D = null
-var walls_node: Node2D = null
-var elements: Array[Node2D] = []
+var walls_node: TileMapLayer = null
+var elements: Array[Node] = []
+
+@onready var canvas_modulate: CanvasModulate = $CanvasModulate
+@onready var fog_of_war: Node2D = $FogOfWar
+@onready var lightweight_crt: ColorRect = $Filters/LightweightCrt
 
 
 func _ready() -> void:
@@ -32,6 +28,14 @@ func _ready() -> void:
 	#_load_level(2)
 	_load_elements()
 	AudioManager.set_listener_target(hero)
+	if canvas_modulate:
+		canvas_modulate.visible = true
+	if fog_of_war:
+		fog_of_war.visible = true
+	if lightweight_crt:
+		lightweight_crt.visible = true
+	#_dispel_fog_of_war()
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_echo():
@@ -61,7 +65,10 @@ func _input(event: InputEvent) -> void:
 		_:
 			return
 	tiles_at = _probe_tile(move_to)
-	if not tiles_at or tiles_at.is_empty() or (tiles_at.size() == 1 and tiles_at[0] is Goal):
+	if (not tiles_at 
+			or tiles_at.is_empty() 
+			or (tiles_at.size() == 1 and (tiles_at[0] is Goal or (tiles_at[0] is Door and not (tiles_at[0] as Door).wall.visible)))
+			):
 		_move(hero, direction)
 	else:
 		var c: Crate = null
@@ -71,9 +78,26 @@ func _input(event: InputEvent) -> void:
 				break
 		if c:
 			var crate_tiles_at: Array[Node2D] = _probe_tile(move_to + direction)
-			if not crate_tiles_at or crate_tiles_at.is_empty() or (crate_tiles_at.size() == 1 and crate_tiles_at[0] is Goal):
+			if not crate_tiles_at or crate_tiles_at.is_empty() or (crate_tiles_at.size() == 1 and (crate_tiles_at[0] is Goal or crate_tiles_at[0] is Door)):
 				_move(hero, direction)
 				_move(c, direction)
+
+
+#func _dispel_fog_of_war() -> void:
+	#if not fog_of_war:
+		#return
+	#if not hero:
+		#return
+	#if not elements or elements.is_empty():
+		#return
+	#var walls: Array[Wall] = []
+	#for element in elements:
+		#if element is Wall:
+			#var w: Wall = element
+			#walls.append(w)
+			##print(_get_tile(w))
+	##print(walls)
+	#fog_of_war.set_cell(_get_tile(hero))
 
 
 func _load_elements() -> void:
@@ -81,34 +105,39 @@ func _load_elements() -> void:
 	if children and not children.is_empty():
 		for child in children:
 			if child.is_queued_for_deletion():
-				#print(child, " is queued for deletion.")
+				print(child, " is queued for deletion.")
 				continue
 			if child.is_in_group(&"Elements"):
 				elements.append(child)
-				#print(child)
-			#else:
-				#print(child, " NOT in group Elements.")
+	if walls_node:
+		for x in range(walls_node.get_used_rect().size.x):
+			for y in range(walls_node.get_used_rect().size.y):
+				if not walls_node.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1):
+					var w: Wall = Wall.new()
+					_position_element(w, Vector2(x, y))
+					elements.append(w)
 	#print(elements.size())
 
 
-func _create_element_at(type: ELEMENT_TYPE, pos: Vector2i) -> void:
+func _create_element_at(type: Helper.ELEMENT_TYPE, pos: Vector2i) -> void:
 	match type:
-		ELEMENT_TYPE.WALL:
-			var w: Wall = Wall.new()
-			walls_node.add_child(w)
-			_position_element(w, pos)
-			elements.append(w)
-		ELEMENT_TYPE.GOAL:
+		# TODO: Refactor this because now walls live in a TileMapLayer
+		#ELEMENT_TYPE.WALL:
+			#var w: Wall = Wall.new()
+			#walls_node.add_child(w)
+			#_position_element(w, pos)
+			#elements.append(w)
+		Helper.ELEMENT_TYPE.GOAL:
 			var g: Goal = Goal.new()
 			goals_node.add_child(g)
 			_position_element(g, pos)
 			elements.append(g)
-		ELEMENT_TYPE.CRATE:
+		Helper.ELEMENT_TYPE.CRATE:
 			var c: Crate = Crate.new()
 			crates_node.add_child(c)
 			_position_element(c, pos)
 			elements.append(c)
-		ELEMENT_TYPE.HERO:
+		Helper.ELEMENT_TYPE.HERO:
 			var h: Hero = Hero.new()
 			add_child(h)
 			_position_element(h, pos)
@@ -138,29 +167,29 @@ func _load_level(num: int = 0) -> void:
 				for c in line:
 					match c:
 						"#":
-							_create_element_at(ELEMENT_TYPE.WALL, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.WALL, Vector2(col, row))
 						"p":
-							_create_element_at(ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
 						"@":
-							_create_element_at(ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
 						"P":
-							_create_element_at(ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
 						"+":
-							_create_element_at(ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
 						"b":
-							_create_element_at(ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
 						"$":
-							_create_element_at(ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
 						"B":
-							_create_element_at(ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
 						"*":
-							_create_element_at(ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
 						".":
-							_create_element_at(ELEMENT_TYPE.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
 					col += 1
 				row += 1
 			return
@@ -181,6 +210,7 @@ func _move(element: Node2D, dir: Vector2 = Vector2.ZERO) -> void:
 	if not dir:
 		return
 	element.position += dir * Helper.LENGTH
+	#_dispel_fog_of_war()
 
 
 func _get_tile(element: Node2D) -> Vector2:

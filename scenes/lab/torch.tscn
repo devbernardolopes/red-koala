@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://tcihe7kj34wp"]
+
+[ext_resource type="Shader" uid="uid://b03sxjiayunv0" path="res://shaders/torch_fire.gdshader" id="1_8mlg6"]
+[ext_resource type="Texture2D" uid="uid://ctlwhiiok0tnq" path="res://resources/lights/radial_light.tres" id="2_rm4n1"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rm4n1"]
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m7uww"]
+shader = ExtResource("1_8mlg6")
+shader_parameter/inner_color = Color(5.47, 4.813, 0, 1)
+shader_parameter/outer_color = Color(0.84313726, 0.29803923, 0.14901961, 1)
+shader_parameter/inner_threshold = 0.36
+shader_parameter/outer_threshold = 0.1
+shader_parameter/soft_edge = 0.0
+shader_parameter/fire_radius = 0.2
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_rm4n1")
+shader_parameter/multiplier = 1.0
+shader_parameter/stretch = Vector2(0.1, 0.1)
+shader_parameter/center = Vector2(0, 0.1)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5j3g4"]
+
+[node name="Torch2" type="Node2D" unique_id=911196971]
+
+[node name="Light" type="PointLight2D" parent="." unique_id=1990649286]
+texture = ExtResource("2_rm4n1")
+texture_scale = 5.0
+
+[node name="Flame" type="Polygon2D" parent="." unique_id=1374488465]
+material = SubResource("ShaderMaterial_m7uww")
+texture = SubResource("NoiseTexture2D_5j3g4")
+polygon = PackedVector2Array(-16, 8, -8, -8, 0, -16, 8, -8, 16, 8)
+
+[node name="Handle" type="Polygon2D" parent="." unique_id=140324389]
+color = Color(0.56078434, 0.32941177, 0, 1)
+polygon = PackedVector2Array(-0.41810608, 16.252342, -2.3238182, 7.7323527, 1.2875767, 8.370911, 0.9346771, 15.134826)

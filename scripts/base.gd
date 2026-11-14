@@ -21,8 +21,6 @@ func _ready() -> void:
 		var collision_shape: RectangleShape2D = RectangleShape2D.new()
 		collision_shape.size = (Vector2.ONE * Helper.LENGTH) - (Vector2.ONE * Helper.MARGIN_1)
 		collision.shape = collision_shape
-		collision_layer = PhysicsLayer.CRATES
-		collision_mask = PhysicsLayer.WALLS | PhysicsLayer.CRATES | PhysicsLayer.HERO | PhysicsLayer.GOALS
 		add_child(collision)
 	polygon = Helper.find_control(self, "Polygon2D")
 	if not polygon:
@@ -31,8 +29,8 @@ func _ready() -> void:
 				(Vector2.UP + Vector2.RIGHT) * Helper.HALF_LENGTH, 
 				(Vector2.DOWN + Vector2.RIGHT) * Helper.HALF_LENGTH, 
 				(Vector2.DOWN + Vector2.LEFT) * Helper.HALF_LENGTH] 
+		polygon.color = color
 		add_child(polygon)
-	polygon.color = color
 	light = Helper.find_control(self, "PointLight2D")
 	if not light:
 		light = PointLight2D.new()

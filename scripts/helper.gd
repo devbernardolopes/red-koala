@@ -1,6 +1,13 @@
 class_name Helper
 extends Node
 
+enum ELEMENT_TYPE {
+	GOAL = 1,
+	CRATE = 2,
+	WALL = 3,
+	HERO = 4,
+}
+
 const LENGTH: int = 64
 @warning_ignore("integer_division")
 const HALF_LENGTH: int = LENGTH / 2
@@ -9,6 +16,7 @@ const MARGIN_1: int = 2
 const MARGIN_2: int = LENGTH / 4
 const RADIAL_LIGHT = preload("res://resources/lights/radial_light.tres")
 const FORCE_FIELD_001 = preload("res://assets/sounds/forceField_001.ogg")
+const TORCH = preload("res://scenes/lab/torch.tscn")
 
 
 static func has_property(target: Node, property: String) -> bool:

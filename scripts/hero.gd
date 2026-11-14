@@ -1,30 +1,23 @@
 @tool
 class_name Hero
-extends Area2D
+extends Base
 
-@export var color: Color = Color.CYAN:
-	set(v):
-		color = v
-		if polygon:
-			polygon.color = color
-
-var collision: CollisionShape2D = null
-var polygon: Polygon2D = null
+var visible_notifier: VisibleOnScreenNotifier2D = null
 
 
 func _ready() -> void:
-	add_to_group(&"Elements")
-	collision = CollisionShape2D.new()
-	var collision_shape: RectangleShape2D = RectangleShape2D.new()
-	collision_shape.size = (Vector2.ONE * Helper.LENGTH) - (Vector2.ONE * Helper.MARGIN_1)
-	collision.shape = collision_shape
+	super._ready()
 	collision_layer = PhysicsLayer.HERO
 	collision_mask = PhysicsLayer.WALLS | PhysicsLayer.CRATES | PhysicsLayer.HERO
-	add_child(collision)
-	polygon = Polygon2D.new()
-	polygon.polygon = [(Vector2.UP + Vector2.LEFT) * Helper.HALF_LENGTH, 
-			(Vector2.UP + Vector2.RIGHT) * Helper.HALF_LENGTH, 
-			(Vector2.DOWN + Vector2.RIGHT) * Helper.HALF_LENGTH, 
-			(Vector2.DOWN + Vector2.LEFT) * Helper.HALF_LENGTH] 
-	polygon.color = color
-	add_child(polygon)
+	visible_notifier = Helper.find_control(self, "VisibleOnScreenNotifier2D")
+	if not visible_notifier:
+		push_warning("No visible_notifier!")
+	equip()
+
+
+func equip() -> void:
+	var torch = Helper.TORCH.instantiate()
+	torch.scale = Vector2.ONE * 1.25
+	add_child(torch)
+	#get_parent().add_child.call_deferred(torch)
+	#torch.position = position
