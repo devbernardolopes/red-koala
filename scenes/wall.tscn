@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cbbvyuv2beagl"]
+
+[ext_resource type="Script" uid="uid://dbm3vgj412o7v" path="res://scripts/wall.gd" id="1_wykyb"]
+
+[node name="Wall" type="Area2D" unique_id=2082852312]
+collision_mask = 7
+script = ExtResource("1_wykyb")

@@ -1,0 +1,8 @@
+[gd_resource type="GradientTexture2D" format=3 uid="uid://ctlwhiiok0tnq"]
+
+[sub_resource type="Gradient" id="Gradient_7awer"]
+
+[resource]
+gradient = SubResource("Gradient_7awer")
+fill = 1
+metadata/_snap_enabled = true

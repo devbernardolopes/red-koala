@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://cknfyomnqipkc"]
+
+[ext_resource type="PackedScene" uid="uid://cbbvyuv2beagl" path="res://scenes/wall.tscn" id="1_h4s8v"]
+[ext_resource type="Script" uid="uid://4yl6uf22wpu4" path="res://scripts/universe.gd" id="1_uc3kj"]
+[ext_resource type="PackedScene" uid="uid://dv7m0vn1ffgeq" path="res://scenes/goal.tscn" id="1_xq63u"]
+[ext_resource type="PackedScene" uid="uid://bwjgakp7xo0j0" path="res://scenes/hero.tscn" id="2_pol6k"]
+[ext_resource type="PackedScene" uid="uid://mmghofrx4gy1" path="res://scenes/crate.tscn" id="2_uc3kj"]
+
+[node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("hero")]
+script = ExtResource("1_uc3kj")
+hero = NodePath("Hero")
+
+[node name="Goals" type="Node2D" parent="." unique_id=2000791855]
+
+[node name="Goal" parent="Goals" unique_id=2082852312 instance=ExtResource("1_xq63u")]
+position = Vector2(672, 224)
+collision_layer = 8
+
+[node name="Crates" type="Node2D" parent="." unique_id=270435340]
+
+[node name="Crate" parent="Crates" unique_id=729296737 instance=ExtResource("2_uc3kj")]
+position = Vector2(608, 224)
+collision_mask = 15
+
+[node name="Crate2" parent="Crates" unique_id=1247783212 instance=ExtResource("2_uc3kj")]
+position = Vector2(544, 96)
+collision_mask = 15
+
+[node name="Crate3" parent="Crates" unique_id=492005956 instance=ExtResource("2_uc3kj")]
+position = Vector2(672, 160)
+collision_mask = 15
+
+[node name="Crate4" parent="Crates" unique_id=795778630 instance=ExtResource("2_uc3kj")]
+position = Vector2(608, 160)
+collision_mask = 15
+
+[node name="Hero" parent="." unique_id=365190293 instance=ExtResource("2_pol6k")]
+position = Vector2(480, 224)
+
+[node name="Walls" type="Node2D" parent="." unique_id=738794417]
+
+[node name="Wall" parent="Walls" unique_id=343229517 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 32)
+
+[node name="Wall2" parent="Walls" unique_id=195069740 instance=ExtResource("1_h4s8v")]
+position = Vector2(96, 32)
+
+[node name="Wall3" parent="Walls" unique_id=566916627 instance=ExtResource("1_h4s8v")]
+position = Vector2(160, 32)
+
+[node name="Wall4" parent="Walls" unique_id=349402553 instance=ExtResource("1_h4s8v")]
+position = Vector2(224, 32)
+
+[node name="Wall5" parent="Walls" unique_id=1137224143 instance=ExtResource("1_h4s8v")]
+position = Vector2(32, 96)
+
+[node name="Wall6" parent="Walls" unique_id=1703048640 instance=ExtResource("1_h4s8v")]
+position = Vector2(544, 32)
+
+[node name="Wall7" parent="Walls" unique_id=1236208836 instance=ExtResource("1_h4s8v")]
+position = Vector2(480, 32)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
+color = Color(0.27387273, 0.27387273, 0.27387273, 1)
+
+[node name="Hud" type="CanvasLayer" parent="." unique_id=1702739954]
+
+[node name="Filters" type="CanvasLayer" parent="." unique_id=1238041824]
