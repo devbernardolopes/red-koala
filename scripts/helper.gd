@@ -23,6 +23,10 @@ const FORCE_FIELD_001 = preload("uid://bjav7rlibej4q")
 const IMPACT_BELL_HEAVY_001 = preload("uid://233in7fel5ws")
 #endregion
 
+#region MUSICS
+const FOREBODING_THEME = preload("uid://bvidkrp2c22ub")
+#endregion
+
 #region ITEMS
 const TORCH = preload("uid://tcihe7kj34wp")
 const SWORD = preload("uid://fgb6up4u4dbg")
@@ -50,20 +54,22 @@ static func find_control(_parent: Node, _class_name: String, _name: StringName =
 	if not _class_name:
 		print("not _class_name")
 		return null
-	for child: Node in _parent.get_children():
+	for child: Node in _parent.find_children("*"):
 		# Try to match by the built-in class name first, then by the 
 		# user-authored class_name.
 		# TODO: I don't know if this is bug-prone! Must review in the future.
 		if child.get_class() == _class_name:
-			return child
+			if _name:
+				if child.name == _name:
+					return child
+			else:
+				return child
 		var _script = child.get_script()
 		if _script:
 			var _global_name = _script.get_global_name()
 			if _global_name:
 				if _global_name == _class_name:
 					if _name:
-						print(_name)
-						
 						if child.name == _name:
 							return child
 					else:

@@ -86,41 +86,26 @@ collision_mask = 7
 
 [node name="Sword" parent="Items" unique_id=1728671388 instance=ExtResource("4_7viwd")]
 position = Vector2(1504, -96)
-walkable = true
-in_board = null
-color = true
 
 [node name="Torch" parent="Items" unique_id=1543020104 instance=ExtResource("5_yanup")]
 position = Vector2(96, 224)
-in_board = null
-color = true
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 
 [node name="Crate2" parent="Crates" unique_id=1247783212 instance=ExtResource("2_uc3kj")]
 position = Vector2(288, 224)
-in_board = null
-color = true
 
 [node name="Crate4" parent="Crates" unique_id=795778630 instance=ExtResource("2_uc3kj")]
 position = Vector2(224, 160)
-in_board = null
-color = true
 
 [node name="Crate5" parent="Crates" unique_id=1404125523 instance=ExtResource("2_uc3kj")]
 position = Vector2(544, 224)
-in_board = null
-color = true
 
 [node name="Crate6" parent="Crates" unique_id=648191606 instance=ExtResource("2_uc3kj")]
 position = Vector2(2080, -96)
-in_board = null
-color = true
 
 [node name="Crate7" parent="Crates" unique_id=1763172522 instance=ExtResource("2_uc3kj")]
 position = Vector2(672, 224)
-in_board = null
-color = true
 
 [node name="Doors" type="Node2D" parent="." unique_id=195168544]
 
@@ -194,18 +179,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="Hud/Control" unique_id=381265648]
+[node name="VBoxContainer" type="VBoxContainer" parent="Hud/Control" unique_id=1805363482]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Label" type="Label" parent="Hud/Control/CenterContainer" unique_id=1210341252]
+[node name="CenterContainer" type="CenterContainer" parent="Hud/Control/VBoxContainer" unique_id=381265648]
+layout_mode = 2
+
+[node name="Journal" type="Label" parent="Hud/Control/VBoxContainer/CenterContainer" unique_id=1210341252]
 layout_mode = 2
 text = "JOURNAL"
 
-[node name="GridContainer" type="GridContainer" parent="Hud/Control/CenterContainer" unique_id=1551381281]
+[node name="CenterContainer2" type="CenterContainer" parent="Hud/Control/VBoxContainer" unique_id=1810850475]
 layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Hud/Control/VBoxContainer/CenterContainer2" unique_id=1794819094]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Hud/Control/VBoxContainer/CenterContainer2/HBoxContainer" unique_id=1024484271]
+layout_mode = 2
+
+[node name="Control3" type="Control" parent="Hud/Control/VBoxContainer/CenterContainer2/HBoxContainer" unique_id=819572102]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="Hud/Control/VBoxContainer/CenterContainer2/HBoxContainer" unique_id=1107672658]
+layout_mode = 2
+
+[node name="Ground" type="Label" parent="Hud/Control/VBoxContainer/CenterContainer2/HBoxContainer/Control2" unique_id=77566014]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "GROUND"
 
 [node name="FollowCamera" type="Camera2D" parent="." unique_id=523783693 node_paths=PackedStringArray("target")]
 script = ExtResource("9_5fwve")

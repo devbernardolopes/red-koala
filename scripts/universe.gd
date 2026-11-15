@@ -9,6 +9,8 @@ var goals_node: Node2D = null
 var crates_node: Node2D = null
 var walls_node: TileMapLayer = null
 var elements: Array[Node] = []
+var journal_label: Label = null
+var ground_label: Label = null
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
@@ -24,6 +26,8 @@ func _ready() -> void:
 		crates_node = find_child("Crates")
 	if not walls_node:
 		walls_node = find_child("Walls")
+	journal_label = Helper.find_control(self, "Label", &"Journal")
+	ground_label = Helper.find_control(self, "Label", &"Ground")
 	#_clear_universe()
 	#_load_level(2)
 	_load_elements()
@@ -35,6 +39,7 @@ func _ready() -> void:
 	if lightweight_crt:
 		lightweight_crt.visible = true
 	#_dispel_fog_of_war()
+	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -59,6 +64,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
+func _update_ground_label() -> void:
+	if not ground_label:
+		return
+	ground_label.text = ""
+	var tiles_at: Array[Node2D] = _probe_tile(_get_tile(hero))
+	for t in tiles_at:
+		if not t is Item:
+			continue
+		var item: Item = t
+		if item.data is ItemData:
+			ground_label.text = item.data.name + ", "
+	ground_label.text = ground_label.text.trim_suffix(", ")
+
+
 func _take_item() -> void:
 	var tiles_at: Array[Node2D] = _probe_tile(_get_tile(hero))
 	for t in tiles_at:
@@ -67,6 +86,7 @@ func _take_item() -> void:
 		var item: Item = t
 		if item.data is ItemData and hero.take(item):
 			elements.erase(item)
+			_update_ground_label()
 		return
 
 
@@ -243,6 +263,7 @@ func _move(element: Node2D, dir: Vector2 = Vector2.ZERO) -> void:
 	if not dir:
 		return
 	element.position += dir * Helper.LENGTH
+	_update_ground_label()
 	#_dispel_fog_of_war()
 
 
