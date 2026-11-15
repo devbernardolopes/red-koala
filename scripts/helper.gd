@@ -15,8 +15,18 @@ const MARGIN_1: int = 2
 @warning_ignore("integer_division")
 const MARGIN_2: int = LENGTH / 4
 const RADIAL_LIGHT = preload("res://resources/lights/radial_light.tres")
-const FORCE_FIELD_001 = preload("res://assets/sounds/forceField_001.ogg")
-const TORCH = preload("res://scenes/lab/torch.tscn")
+
+#region SOUNDS
+## Crate on goal.
+const FORCE_FIELD_001 = preload("uid://bjav7rlibej4q")
+## Door revealed.
+const IMPACT_BELL_HEAVY_001 = preload("uid://233in7fel5ws")
+#endregion
+
+#region ITEMS
+const TORCH = preload("uid://tcihe7kj34wp")
+const SWORD = preload("uid://fgb6up4u4dbg")
+#endregion
 
 
 static func has_property(target: Node, property: String) -> bool:

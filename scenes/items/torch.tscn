@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://tcihe7kj34wp"]
 
 [ext_resource type="Shader" uid="uid://b03sxjiayunv0" path="res://shaders/torch_fire.gdshader" id="1_8mlg6"]
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_cj2qm"]
+[ext_resource type="Resource" uid="uid://bk7isbrv1sn3n" path="res://resources/items/torch.tres" id="2_pi8nv"]
 [ext_resource type="Texture2D" uid="uid://ctlwhiiok0tnq" path="res://resources/lights/radial_light.tres" id="2_rm4n1"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rm4n1"]
@@ -21,9 +23,15 @@ shader_parameter/center = Vector2(0, 0.1)
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5j3g4"]
 
-[node name="Torch2" type="Node2D" unique_id=911196971]
+[node name="Torch" type="Area2D" unique_id=1543020104]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_cj2qm")
+data = ExtResource("2_pi8nv")
+metadata/_custom_type_script = "uid://14tv4s742ots"
 
 [node name="Light" type="PointLight2D" parent="." unique_id=1990649286]
+enabled = false
 texture = ExtResource("2_rm4n1")
 texture_scale = 5.0
 

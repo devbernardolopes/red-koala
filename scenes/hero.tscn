@@ -2,11 +2,13 @@
 
 [ext_resource type="Script" uid="uid://plobxhw4oh4f" path="res://scripts/hero.gd" id="1_3uyx6"]
 
-[node name="Hero" type="Area2D" unique_id=2082852312]
+[node name="Hero" type="Area2D" unique_id=2053302838]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_3uyx6")
+flying = true
 color = Color(0, 1, 1, 1)
+metadata/_custom_type_script = "uid://tdfdon0mic37"
 
 [node name="Polygon" type="Polygon2D" parent="." unique_id=442535499]
 color = Color(0, 1, 1, 1)

@@ -7,6 +7,7 @@
 collision_layer = 2
 collision_mask = 15
 script = ExtResource("1_b66cd")
+walkable = false
 
 [node name="Light" type="PointLight2D" parent="." unique_id=1077701961]
 enabled = false

@@ -2,6 +2,10 @@
 class_name Base
 extends Area2D
 
+@export var data: BaseData:
+	set(v):
+		data = v
+@export var walkable: bool = true
 @export var color: Color = Color.DARK_KHAKI:
 	set(v):
 		color = v

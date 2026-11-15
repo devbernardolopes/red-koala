@@ -40,19 +40,30 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
-	# TODO: Is this called two times? Like, on pressed down and on release?
-	if event.is_action("reset"):
-		_clear_universe()
-		_load_elements()
-		return
+	#if event.is_action_pressed("reset") and not event.is_echo():
+		#_clear_universe()
+		#_load_elements()
+		#return
 	if not hero:
 		return
+	var tiles_at: Array[Node2D] = []
+	if event.is_action_pressed("take") and not event.is_echo():
+		var current_tile: Vector2 = _get_tile(hero)
+		tiles_at = _probe_tile(current_tile)
+		if not tiles_at or tiles_at.is_empty():
+			return
+		for item in tiles_at:
+			if Helper.has_property(item, "data"):
+				if item.data is ItemData:
+					hero.take(item)
+					elements.erase(item)
+						#print(elements.find(item))
+					return
 	var direction: Vector2 = Input.get_vector("left", "right", "up", "down")
 	if not direction:
 		return
 	direction = direction.normalized()
 	var move_to: Vector2 = Vector2.ZERO
-	var tiles_at: Array[Node2D] = []
 	match direction:
 		Vector2.UP:
 			move_to = _get_tile(hero) + Vector2.UP
@@ -65,10 +76,15 @@ func _input(event: InputEvent) -> void:
 		_:
 			return
 	tiles_at = _probe_tile(move_to)
-	if (not tiles_at 
-			or tiles_at.is_empty() 
-			or (tiles_at.size() == 1 and (tiles_at[0] is Goal or (tiles_at[0] is Door and not (tiles_at[0] as Door).wall.visible)))
-			):
+	
+	var can_move: bool = true
+	for t in tiles_at:
+		if Helper.has_property(t, "walkable"):
+			if not t.walkable:
+				can_move = false
+				break
+	
+	if can_move:
 		_move(hero, direction)
 	else:
 		var c: Crate = null
@@ -109,11 +125,18 @@ func _load_elements() -> void:
 				continue
 			if child.is_in_group(&"Elements"):
 				elements.append(child)
+				if child is Door:
+					if not child.requires or child.requires.is_empty():
+						push_warning(child.name, " has no requirements!")
+				if Helper.has_property(child, "data") and child is Item:
+					if not child.data:
+						push_warning(child.name, " has no data!")
 	if walls_node:
-		for x in range(walls_node.get_used_rect().size.x):
-			for y in range(walls_node.get_used_rect().size.y):
+		for x in range(walls_node.get_used_rect().position.x, walls_node.get_used_rect().size.x):
+			for y in range(walls_node.get_used_rect().position.y, walls_node.get_used_rect().size.y):
 				if not walls_node.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1):
 					var w: Wall = Wall.new()
+					w.walkable = false
 					_position_element(w, Vector2(x, y))
 					elements.append(w)
 	#print(elements.size())
@@ -222,8 +245,8 @@ func _get_tile(element: Node2D) -> Vector2:
 
 func _probe_tile(tile: Vector2) -> Array[Node2D]:
 	var result: Array[Node2D] = []
-	if not tile:
-		return result
+	#if not tile:
+		#return result
 	if not elements:
 		return result
 	if elements.is_empty():
