@@ -87,26 +87,40 @@ collision_mask = 7
 [node name="Sword" parent="Items" unique_id=1728671388 instance=ExtResource("4_7viwd")]
 position = Vector2(1504, -96)
 walkable = true
+in_board = null
+color = true
 
 [node name="Torch" parent="Items" unique_id=1543020104 instance=ExtResource("5_yanup")]
 position = Vector2(96, 224)
+in_board = null
+color = true
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 
 [node name="Crate2" parent="Crates" unique_id=1247783212 instance=ExtResource("2_uc3kj")]
 position = Vector2(288, 224)
+in_board = null
+color = true
 
 [node name="Crate4" parent="Crates" unique_id=795778630 instance=ExtResource("2_uc3kj")]
 position = Vector2(224, 160)
+in_board = null
+color = true
 
 [node name="Crate5" parent="Crates" unique_id=1404125523 instance=ExtResource("2_uc3kj")]
 position = Vector2(544, 224)
+in_board = null
+color = true
 
 [node name="Crate6" parent="Crates" unique_id=648191606 instance=ExtResource("2_uc3kj")]
 position = Vector2(2080, -96)
+in_board = null
+color = true
 
 [node name="Crate7" parent="Crates" unique_id=1763172522 instance=ExtResource("2_uc3kj")]
 position = Vector2(672, 224)
+in_board = null
+color = true
 
 [node name="Doors" type="Node2D" parent="." unique_id=195168544]
 
@@ -157,7 +171,6 @@ tile_map_data = PackedByteArray("AADt/+n/AAAAAAAAAADt/+r/AAAAAAAAAADu/+v/AAAAAAA
 tile_set = SubResource("TileSet_m7uww")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
-visible = false
 color = Color(0.27387273, 0.27387273, 0.27387273, 1)
 
 [node name="Filters" type="CanvasLayer" parent="." unique_id=1238041824]
