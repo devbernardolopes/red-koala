@@ -37,66 +37,77 @@ func _ready() -> void:
 	#_dispel_fog_of_war()
 
 
-func _input(event: InputEvent) -> void:
-	if event.is_echo():
-		return
-	#if event.is_action_pressed("reset") and not event.is_echo():
-		#_clear_universe()
-		#_load_elements()
-		#return
+func _unhandled_input(event: InputEvent) -> void:
 	if not hero:
 		return
-	var tiles_at: Array[Node2D] = []
-	if event.is_action_pressed("take") and not event.is_echo():
-		var current_tile: Vector2 = _get_tile(hero)
-		tiles_at = _probe_tile(current_tile)
-		if not tiles_at or tiles_at.is_empty():
-			return
-		for item in tiles_at:
-			if Helper.has_property(item, "data"):
-				if item.data is ItemData:
-					hero.take(item)
-					elements.erase(item)
-						#print(elements.find(item))
-					return
-	var direction: Vector2 = Input.get_vector("left", "right", "up", "down")
-	if not direction:
+	if event.is_action_pressed("take"):
+		_take_item()
+		get_viewport().set_input_as_handled()
 		return
-	direction = direction.normalized()
-	var move_to: Vector2 = Vector2.ZERO
-	match direction:
-		Vector2.UP:
-			move_to = _get_tile(hero) + Vector2.UP
-		Vector2.RIGHT:
-			move_to = _get_tile(hero) + Vector2.RIGHT
-		Vector2.DOWN:
-			move_to = _get_tile(hero) + Vector2.DOWN
-		Vector2.LEFT:
-			move_to = _get_tile(hero) + Vector2.LEFT
-		_:
-			return
-	tiles_at = _probe_tile(move_to)
-	
-	var can_move: bool = true
+	var direction: Vector2 = Vector2.ZERO
+	if event.is_action_pressed("up"):
+		direction = Vector2.UP
+	elif event.is_action_pressed("down"):
+		direction = Vector2.DOWN
+	elif event.is_action_pressed("left"):
+		direction = Vector2.LEFT
+	elif event.is_action_pressed("right"):
+		direction = Vector2.RIGHT
+	if direction == Vector2.ZERO:
+		return
+	_try_move(direction)
+	get_viewport().set_input_as_handled()
+
+
+func _take_item() -> void:
+	var tiles_at: Array[Node2D] = _probe_tile(_get_tile(hero))
 	for t in tiles_at:
-		if Helper.has_property(t, "walkable"):
-			if not t.walkable:
-				can_move = false
-				break
-	
-	if can_move:
-		_move(hero, direction)
-	else:
-		var c: Crate = null
-		for t in tiles_at:
-			if t is Crate:
-				c = t
-				break
-		if c:
-			var crate_tiles_at: Array[Node2D] = _probe_tile(move_to + direction)
-			if not crate_tiles_at or crate_tiles_at.is_empty() or (crate_tiles_at.size() == 1 and (crate_tiles_at[0] is Goal or crate_tiles_at[0] is Door)):
-				_move(hero, direction)
-				_move(c, direction)
+		if not t is Item:
+			continue
+		var item: Item = t
+		if item.data is ItemData and hero.take(item):
+			elements.erase(item)
+		return
+
+
+func _try_move(direction: Vector2) -> void:
+	var move_to: Vector2 = _get_tile(hero) + direction
+	var tiles_at: Array[Node2D] = _probe_tile(move_to)
+	for t in tiles_at:
+		if t is Base and not (t as Base).walkable:
+			_try_push(tiles_at, move_to, direction)
+			return
+	_move(hero, direction)
+
+
+func _try_push(tiles_at: Array[Node2D], move_to: Vector2, direction: Vector2) -> void:
+	var crate: Crate = null
+	for t in tiles_at:
+		if t is Crate:
+			crate = t as Crate
+			break
+	if not crate:
+		return
+	# The hero takes the crate's former tile, so it must be free for everything
+	# else on it (e.g. a closed door under the crate).
+	for t in tiles_at:
+		if t != crate and t is Base and not (t as Base).walkable:
+			return
+	if not _can_push_crate_to(_probe_tile(move_to + direction)):
+		return
+	_move(hero, direction)
+	_move(crate, direction)
+
+
+func _can_push_crate_to(tiles_at: Array[Node2D]) -> bool:
+	if tiles_at.is_empty():
+		return true
+	if tiles_at.size() != 1:
+		return false
+	var target: Node2D = tiles_at[0]
+	if target is Goal:
+		return true
+	return target is Door and (target as Door).walkable
 
 
 #func _dispel_fog_of_war() -> void:
@@ -121,7 +132,6 @@ func _load_elements() -> void:
 	if children and not children.is_empty():
 		for child in children:
 			if child.is_queued_for_deletion():
-				print(child, " is queued for deletion.")
 				continue
 			if child.is_in_group(&"Elements"):
 				elements.append(child)

@@ -8,7 +8,7 @@ collision_layer = 16
 collision_mask = 0
 script = ExtResource("1_i5ed0")
 data = ExtResource("2_i5ed0")
-walkable = null
+walkable = true
 metadata/_custom_type_script = "uid://14tv4s742ots"
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1401478495]

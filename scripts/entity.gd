@@ -39,7 +39,6 @@ func _ready() -> void:
 
 
 func equip(item: Node2D) -> void:
-	flying = true
 	if not item:
 		return
 	if not inventory.has(item):

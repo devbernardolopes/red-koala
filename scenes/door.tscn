@@ -15,3 +15,4 @@ color = Color(0.7411765, 0.7176471, 0.41960785, 1)
 polygon = PackedVector2Array(-32, 32, -32, -8, -16, -32, 16, -32, 32, -8, 32, 32)
 
 [node name="Wall" parent="." unique_id=2082852312 instance=ExtResource("2_uvdjg")]
+in_board = false

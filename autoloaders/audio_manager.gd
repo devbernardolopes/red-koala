@@ -1,10 +1,11 @@
 extends Node
-## Spatial audio manager: sets listener at player, pools AudioStreamPlayer2D nodes,
-## and plays events near the listener only. Uses Godot's 2D spatialization (position,
-## distance attenuation, left/right panning) automatically.
+## Audio manager. Non-positional sounds use [method play]; [method play_at] plays
+## a one-shot at a world position so Godot handles 2D distance attenuation and
+## left/right panning relative to the listener.
 
 const MAX_POOL_SIZE: int = 32
-const RANGE_M: float = 60.0
+## [method play_at] skips sounds farther than this from the listener, in pixels.
+const RANGE_PX: float = 1024.0
 
 var _pool: Array[AudioStreamPlayer2D] = []
 var _pool_reg: Array[AudioStreamPlayer] = []
@@ -34,12 +35,6 @@ func set_listener_target(node: Node2D) -> void:
 func play(stream: AudioStream) -> AudioStreamPlayer:
 	if stream == null:
 		return null
-	if _listener_target == null:
-		var listener_nodes := get_tree().get_nodes_in_group("audio_listener")
-		if not listener_nodes.is_empty():
-			_listener_target = listener_nodes[0] as Node2D
-	if _listener_target == null:
-		return null
 	var p := _find_available_reg()
 	if p == null:
 		return null
@@ -48,28 +43,22 @@ func play(stream: AudioStream) -> AudioStreamPlayer:
 	return p
 
 
-func play_at(world_m: Vector2, stream: AudioStream) -> AudioStreamPlayer2D:
+func play_at(world_px: Vector2, stream: AudioStream) -> AudioStreamPlayer2D:
 	if stream == null:
 		return null
 	if _listener_target == null:
 		var listener_nodes := get_tree().get_nodes_in_group("audio_listener")
 		if not listener_nodes.is_empty():
 			_listener_target = listener_nodes[0] as Node2D
-	if _listener_target == null:
+	if not is_instance_valid(_listener_target):
 		return null
-	var listener_m := Vector2.ZERO
-	#if _listener_target != null:
-		#listener_m = Vector2(_listener_target.global_position.x / Units.PX_PER_METER, _listener_target.global_position.y / Units.PX_PER_METER)
-	var dist_m: float = world_m.distance_to(listener_m)
-	if dist_m > RANGE_M:
+	if world_px.distance_to(_listener_target.global_position) > RANGE_PX:
 		return null
 	var p := _find_available()
 	if p == null:
 		return null
-	#p.global_position = Vector2(world_m.x * Units.PX_PER_METER, world_m.y * Units.PX_PER_METER)
+	p.global_position = world_px
 	p.stream = stream
-	#p.stream.get_property_list().has("name", "loop")
-	#(p as AudioStreamPlayer2D).stream.set set_l loop = loop
 	p.play()
 	return p
 
@@ -84,9 +73,9 @@ func _find_available() -> AudioStreamPlayer2D:
 	for p: AudioStreamPlayer2D in _pool:
 		if not p.playing:
 			return p
-	# Fallback: steal oldest playing one-shot; loop nodes stay.
+	# Fallback: steal a playing one-shot; looping streams are left alone.
 	for p: AudioStreamPlayer2D in _pool:
-		if not p.loop and p.playing:
+		if p.playing and not _stream_loops(p.stream):
 			p.stop()
 			return p
 	return null
@@ -97,7 +86,20 @@ func _find_available_reg() -> AudioStreamPlayer:
 		if not p.playing:
 			return p
 	for p: AudioStreamPlayer in _pool_reg:
-		if not p.loop and p.playing:
+		if p.playing and not _stream_loops(p.stream):
 			p.stop()
 			return p
 	return null
+
+
+## Looping is a property of the stream, not of the player.
+static func _stream_loops(stream: AudioStream) -> bool:
+	if stream == null:
+		return false
+	if stream is AudioStreamWAV:
+		return (stream as AudioStreamWAV).loop_mode != AudioStreamWAV.LOOP_DISABLED
+	if stream is AudioStreamOggVorbis:
+		return (stream as AudioStreamOggVorbis).loop
+	if stream is AudioStreamMP3:
+		return (stream as AudioStreamMP3).loop
+	return false

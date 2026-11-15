@@ -6,6 +6,9 @@ extends Area2D
 	set(v):
 		data = v
 @export var walkable: bool = true
+## Whether this node takes part in the board logic (the "Elements" group).
+## Purely visual children of other elements should opt out.
+@export var in_board: bool = true
 @export var color: Color = Color.DARK_KHAKI:
 	set(v):
 		color = v
@@ -18,7 +21,8 @@ var light: PointLight2D = null
 
 
 func _ready() -> void:
-	add_to_group(&"Elements")
+	if in_board:
+		add_to_group(&"Elements")
 	collision = Helper.find_control(self, "CollisionShape2D")
 	if not collision:
 		collision = CollisionShape2D.new()
