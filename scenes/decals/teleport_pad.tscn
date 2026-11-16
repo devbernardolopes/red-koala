@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://s141b0fe5fug"]
+
+[ext_resource type="Script" uid="uid://yb235q3st348" path="res://scripts/decals/teleport_pad.gd" id="1_8vb0p"]
+[ext_resource type="Texture2D" uid="uid://ctlwhiiok0tnq" path="res://resources/lights/radial_light.tres" id="2_kquvk"]
+
+[node name="TeleportPad" type="Area2D" unique_id=32353222]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_8vb0p")
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1976806353]
+color = Color(0.4745098, 0.23921569, 1, 1)
+polygon = PackedVector2Array(-24, -16, -16, -24, 16, -24, 24, -16, 24, 16, 16, 24, -16, 24, -24, 16)
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=531282851]
+texture = ExtResource("2_kquvk")

@@ -5,41 +5,100 @@ const WALL_SCENE = preload("res://scenes/wall.tscn")
 
 @export var hero: Hero = null
 
+var decals_node: Node2D = null
 var goals_node: Node2D = null
 var crates_node: Node2D = null
 var walls_node: TileMapLayer = null
 var elements: Array[Node] = []
 var journal_label: Label = null
 var ground_label: Label = null
+var inventory: VBoxContainer = null
+
+var current_filter: Control = null
+var filter_list: Array[Control] = []
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
-@onready var lightweight_crt: ColorRect = $Filters/LightweightCrt
+@onready var filters: CanvasLayer = $Filters
 
 
 func _ready() -> void:
-	if not hero:
-		push_warning("No Hero!")
+	if not decals_node:
+		decals_node = find_child("Decals")
 	if not goals_node:
 		goals_node = find_child("Goals")
 	if not crates_node:
 		crates_node = find_child("Crates")
+	if not hero:
+		push_warning("No Hero!")
 	if not walls_node:
 		walls_node = find_child("Walls")
 	journal_label = Helper.find_control(self, "Label", &"Journal")
 	ground_label = Helper.find_control(self, "Label", &"Ground")
-	#_clear_universe()
-	#_load_level(2)
+	inventory = Helper.find_control(self, "VBoxContainer", &"Inventory")
 	_load_elements()
+	hero.inventory_changed.connect(_update_inventory)
 	AudioManager.set_listener_target(hero)
-	if canvas_modulate:
-		canvas_modulate.visible = true
 	if fog_of_war:
 		fog_of_war.visible = true
-	if lightweight_crt:
-		lightweight_crt.visible = true
-	#_dispel_fog_of_war()
+	if canvas_modulate:
+		canvas_modulate.visible = true
+	if filters:
+		filters.visible = true
+		for filter in filters.get_children():
+			filter_list.append(filter)
+			if filter.visible:
+				current_filter = filter
+		filter_list.append(null)
+	_update_inventory()
+	_update_ground_label()
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
+
+
+func _update_inventory() -> void:
+	if not inventory:
+		return
+	if not hero:
+		return
+	if not hero.inventory:
+		return
+	for child in inventory.get_children():
+		child.queue_free()
+	for item in hero.inventory:
+		if not item:
+			continue
+		var l: Label = Label.new()
+		l.text = item.name
+		if Helper.has_property(item, "data"):
+			if not item.data:
+				push_warning(item, " has no data!")
+			else:
+				l.text = item.data.name
+		inventory.add_child(l)
+	#print(inventory.get_children())
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_toggle_canvas_modulate"):
+		if not canvas_modulate:
+			return
+		canvas_modulate.visible = !canvas_modulate.visible
+	if event.is_action_pressed("debug_cycle_filters"):
+		if not filters:
+			return
+		if not filter_list:
+			return
+		#print(filter_list)
+		if current_filter is Control:
+			current_filter.visible = false
+		var filter_index: int = filter_list.find(current_filter)
+		if filter_index < filter_list.size() - 1:
+			current_filter = filter_list.get(filter_index + 1)
+		else:
+			current_filter = filter_list.front()
+		if current_filter:
+			current_filter.visible = true
+
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -158,9 +217,21 @@ func _load_elements() -> void:
 				if child is Door:
 					if not child.requires or child.requires.is_empty():
 						push_warning(child.name, " has no requirements!")
+				if child is TeleportPad:
+					if not child.destination:
+						push_warning(child.name, " has no destination!")
 				if Helper.has_property(child, "data") and child is Item:
 					if not child.data:
 						push_warning(child.name, " has no data!")
+	# Now we deal with the tile maps.
+	#if decals_node:
+		#for x in range(decals_node.get_used_rect().position.x, decals_node.get_used_rect().size.x):
+			#for y in range(decals_node.get_used_rect().position.y, decals_node.get_used_rect().size.y):
+				#if not decals_node.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1):
+					#var w: Wall = Wall.new()
+					#w.walkable = false
+					#_position_element(w, Vector2(x, y))
+					#elements.append(w)
 	if walls_node:
 		for x in range(walls_node.get_used_rect().position.x, walls_node.get_used_rect().size.x):
 			for y in range(walls_node.get_used_rect().position.y, walls_node.get_used_rect().size.y):
@@ -169,9 +240,9 @@ func _load_elements() -> void:
 					w.walkable = false
 					_position_element(w, Vector2(x, y))
 					elements.append(w)
-	#print(elements.size())
 
-
+## @deprecated It is being used when loading levels from file but there will be
+## no more file loading in the future.
 func _create_element_at(type: Helper.ELEMENT_TYPE, pos: Vector2i) -> void:
 	match type:
 		# TODO: Refactor this because now walls live in a TileMapLayer
@@ -197,7 +268,7 @@ func _create_element_at(type: Helper.ELEMENT_TYPE, pos: Vector2i) -> void:
 			elements.append(h)
 			hero = h
 
-
+## @deprecated: There will be no more level loading from files in the future.
 func _load_level(num: int = 0) -> void:
 	var dir: DirAccess = DirAccess.open(LEVELS_DIR)
 	if not dir:
@@ -264,6 +335,14 @@ func _move(element: Node2D, dir: Vector2 = Vector2.ZERO) -> void:
 		return
 	element.position += dir * Helper.LENGTH
 	_update_ground_label()
+	for e in _probe_tile(_get_tile(hero)):
+		if e is TeleportPad:
+			## @TODO: Should I check if destination is active too as condition
+			## to teleport? Also, if destination tile has non-walkable element
+			## what should I do?
+			e.teleport(hero)
+			#if (e as TeleportPad).destination and (e as TeleportPad).active:
+				#element.position = (e as TeleportPad).destination.position
 	#_dispel_fog_of_war()
 
 
@@ -276,8 +355,6 @@ func _get_tile(element: Node2D) -> Vector2:
 
 func _probe_tile(tile: Vector2) -> Array[Node2D]:
 	var result: Array[Node2D] = []
-	#if not tile:
-		#return result
 	if not elements:
 		return result
 	if elements.is_empty():

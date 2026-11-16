@@ -5,7 +5,6 @@ extends Base
 @export var hit_points: int = 1
 @export var max_hit_points: int = 1
 @export var inventory: Array[Node2D] = []
-
 @export var flying: bool = false:
 	set(v):
 		flying = v
@@ -27,6 +26,8 @@ extends Base
 
 var flying_tween: Tween = null
 var visible_notifier: VisibleOnScreenNotifier2D = null
+
+signal inventory_changed
 
 
 func _ready() -> void:
@@ -57,4 +58,5 @@ func take(item: Node2D) -> bool:
 		return false
 	item.get_parent().remove_child(item)
 	inventory.append(item)
+	inventory_changed.emit()
 	return true
