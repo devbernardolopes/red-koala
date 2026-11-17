@@ -351,25 +351,25 @@ func _load_elements() -> void:
 
 ## @deprecated It is being used when loading levels from file but there will be
 ## no more file loading in the future.
-func _create_element_at(type: Helper.ELEMENT_TYPE, pos: Vector2i) -> void:
+func _create_element_at(type: Helper.ElementType, pos: Vector2i) -> void:
 	match type:
 		# TODO: Refactor this because now walls live in a TileMapLayer
-		#ELEMENT_TYPE.WALL:
+		#ElementType.WALL:
 			#var w: Wall = Wall.new()
 			#walls_node.add_child(w)
 			#_position_element(w, pos)
 			#elements.append(w)
-		Helper.ELEMENT_TYPE.GOAL:
+		Helper.ElementType.GOAL:
 			var g: Goal = Goal.new()
 			goals_node.add_child(g)
 			_position_element(g, pos)
 			elements.append(g)
-		Helper.ELEMENT_TYPE.CRATE:
+		Helper.ElementType.CRATE:
 			var c: Crate = Crate.new()
 			crates_node.add_child(c)
 			_position_element(c, pos)
 			elements.append(c)
-		Helper.ELEMENT_TYPE.HERO:
+		Helper.ElementType.HERO:
 			var h: Hero = Hero.new()
 			add_child(h)
 			_position_element(h, pos)
@@ -399,29 +399,29 @@ func _load_level(num: int = 0) -> void:
 				for c in line:
 					match c:
 						"#":
-							_create_element_at(Helper.ELEMENT_TYPE.WALL, Vector2(col, row))
+							_create_element_at(Helper.ElementType.WALL, Vector2(col, row))
 						"p":
-							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
 						"@":
-							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
 						"P":
-							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
 						"+":
-							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ELEMENT_TYPE.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
 						"b":
-							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
 						"$":
-							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
 						"B":
-							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
 						"*":
-							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ELEMENT_TYPE.CRATE, Vector2(col, row))
+							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
 						".":
-							_create_element_at(Helper.ELEMENT_TYPE.GOAL, Vector2(col, row))
+							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
 					col += 1
 				row += 1
 			return

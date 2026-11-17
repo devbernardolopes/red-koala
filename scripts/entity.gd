@@ -32,6 +32,11 @@ extends Base
 		is_flying = v
 		_toggle_flying(v)
 @export var can_see_invisible: bool = false
+@export_category("Mechanics")
+## This should be relative to the turn-based mechanic. Albeit I am not sure if
+## it should be called `energy` instead.
+@export var speed: float = 10.0
+@export var team: Helper.EntityTeam = Helper.EntityTeam.NEUTRAL
 
 var phasing_tween: Tween = null
 var flying_tween: Tween = null

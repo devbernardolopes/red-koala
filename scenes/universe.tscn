@@ -204,7 +204,7 @@ tile_set = SubResource("TileSet_m7uww")
 [node name="Hero" parent="Entities" unique_id=365190293 instance=ExtResource("2_pol6k")]
 modulate = Color(1, 1, 1, 0.128)
 position = Vector2(224, 96)
-can_see_invisible = null
+speed = null
 walkable = false
 
 [node name="AudioListener2D" type="AudioListener2D" parent="Entities/Hero" unique_id=1001574819]
@@ -215,7 +215,7 @@ metadata/_edit_lock_ = true
 
 [node name="Dragon" parent="Entities" unique_id=148953585 instance=ExtResource("12_fbuf2")]
 position = Vector2(128, -64)
-can_see_invisible = null
+speed = null
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
 color = Color(0.50140655, 0.5014065, 0.5014065, 1)

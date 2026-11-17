@@ -1,11 +1,17 @@
 class_name Helper
 extends Node
 
-enum ELEMENT_TYPE {
+enum ElementType {
 	GOAL = 1,
 	CRATE = 2,
 	WALL = 3,
 	HERO = 4,
+}
+
+enum EntityTeam {
+	NEUTRAL = 1,
+	FRIEND = 2,
+	FOE = 3,
 }
 
 const LENGTH: int = 64
