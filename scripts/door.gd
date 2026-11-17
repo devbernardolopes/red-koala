@@ -71,3 +71,4 @@ func _set_wall_visible(_visible: bool) -> void:
 	wall.set_deferred("monitorable", _visible)
 	wall.set_deferred("monitoring", _visible)
 	walkable = not _visible
+	blocks_sight = _visible

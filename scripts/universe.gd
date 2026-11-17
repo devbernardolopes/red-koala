@@ -11,7 +11,8 @@ var items_node: Node2D = null
 var crates_node: Node2D = null
 var entities_node: Node2D = null
 var walls_node: TileMapLayer = null
-var elements: Array[Node] = []
+## Walls synthesised from [member walls_node]; they are not scene-tree nodes.
+var wall_proxies: Array[Wall] = []
 var journal_label: Label = null
 var ground_label: Label = null
 var inventory_control: Control = null
@@ -26,6 +27,8 @@ var inventory_toggled: bool = false
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
 @onready var filters: CanvasLayer = $Filters
+@onready var board: Board = $Board
+@onready var board_debug_overlay: Node2D = $Board/BoardDebugOverlay
 
 
 func _ready() -> void:
@@ -35,8 +38,6 @@ func _ready() -> void:
 		goals_node = find_child("Goals")
 	if not items_node:
 		items_node = find_child("Items")
-	if not crates_node:
-		crates_node = find_child("Crates")
 	if not crates_node:
 		crates_node = find_child("Crates")
 	if not walls_node:
@@ -89,6 +90,12 @@ func _input(event: InputEvent) -> void:
 			current_filter = filter_list.front()
 		if current_filter:
 			current_filter.visible = true
+	if event.is_action_pressed("debug_toggle_board"):
+		if not board_debug_overlay:
+			return
+		board_debug_overlay.visible = not board_debug_overlay.visible
+		if board_debug_overlay.visible:
+			board_debug_overlay.queue_redraw()
 
 
 func _process(_delta: float) -> void:
@@ -104,10 +111,11 @@ func _drop(item: Item) -> void:
 		return
 	hero.drop(current_inventory_item)
 	items_node.add_child(item)
-	elements.append(item)
-	for tile in _probe_tile(_get_tile(item)):
-		if tile is TeleportPad:
-			(tile as TeleportPad).teleport(item)
+	board.register(item)
+	for e: Base in board.get_elements_at(board.get_origin(item)):
+		if e is TeleportPad:
+			(e as TeleportPad).teleport(item)
+	board.sync_from_position(item)
 	_update_ground_label()
 
 
@@ -203,8 +211,8 @@ func _update_ground_label() -> void:
 	if not ground_label:
 		return
 	ground_label.text = ""
-	var tiles_at: Array[Node2D] = _probe_tile(_get_tile(hero))
-	for t in tiles_at:
+	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(hero))
+	for t: Base in tiles_at:
 		if not t is Item:
 			continue
 		var item: Item = t
@@ -221,9 +229,9 @@ func _dispel_fog_of_war() -> void:
 	var fog_layer: TileMapLayer = Helper.find_control(fog_of_war, "TileMapLayer", &"FogFull")
 	if not fog_layer:
 		return
-	var center_pos: Vector2 = _get_tile(hero)
-	for i in range(center_pos.x - hero.fov, center_pos.x + hero.fov):
-		for j in range(center_pos.y - hero.fov, center_pos.y + hero.fov):
+	var center_pos: Vector2i = board.get_origin(hero)
+	for i in range(center_pos.x - hero.fov, center_pos.x + hero.fov + 1):
+		for j in range(center_pos.y - hero.fov, center_pos.y + hero.fov + 1):
 			fog_layer.set_cell(Vector2i(i, j))
 	#var fl_x: int = fog_layer.get_used_rect().size.x
 	#var fl_y: int = fog_layer.get_used_rect().size.y
@@ -231,37 +239,42 @@ func _dispel_fog_of_war() -> void:
 	
 
 func _take_item() -> void:
-	var tiles_at: Array[Node2D] = _probe_tile(_get_tile(hero))
-	for t in tiles_at:
+	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(hero))
+	for t: Base in tiles_at:
 		if not t is Item:
 			continue
 		var item: Item = t
 		if item.data is ItemData and hero.take(item):
-			elements.erase(item)
+			board.unregister(item)
 			_update_ground_label()
 		return
 
 
 func _try_move(direction: Vector2) -> void:
-	var move_to: Vector2 = _get_tile(hero) + direction
-	var tiles_at: Array[Node2D] = _probe_tile(move_to)
-	for t in tiles_at:
-		if t is Base:
-			if not (t as Base).walkable:
-				if (t as Base).pushable:
-					_try_push(tiles_at, move_to, direction)
-					return
-				elif hero.is_phasing:
-					_move(hero, direction)
-					return
-				return
-	_move(hero, direction)
+	var dir: Vector2i = Vector2i(direction)
+	if dir == Vector2i.ZERO:
+		return
+	var mode: Helper.MoveMode = hero.get_move_mode()
+	var move_to: Vector2i = board.get_origin(hero) + dir
+	var tiles_at: Array[Base] = board.get_elements_at(move_to)
+	for t: Base in tiles_at:
+		if t.walkable:
+			continue
+		if t.pushable:
+			_try_push(tiles_at, move_to, dir)
+			return
+		if mode != Helper.MoveMode.PHASE:
+			return
+		break
+	if not board.can_occupy(hero, move_to, mode):
+		return
+	_move(hero, dir)
 
 
-func _try_push(tiles_at: Array[Node2D], move_to: Vector2, direction: Vector2) -> void:
+func _try_push(tiles_at: Array[Base], move_to: Vector2i, direction: Vector2i) -> void:
 	# TODO: Refactor this because not everything that is pushable is a Crate.
 	var crate: Crate = null
-	for t in tiles_at:
+	for t: Base in tiles_at:
 		if t.pushable:
 			crate = t as Crate
 			break
@@ -269,20 +282,20 @@ func _try_push(tiles_at: Array[Node2D], move_to: Vector2, direction: Vector2) ->
 		return
 	# The hero takes the crate's former tile, so it must be free for everything
 	# else on it (e.g. a closed door under the crate).
-	for t in tiles_at:
-		if t != crate and t is Base and not (t as Base).walkable:
+	for t: Base in tiles_at:
+		if t != crate and not t.walkable:
 			return
-	if not _can_push_crate_to(_probe_tile(move_to + direction)):
+	if not _can_push_crate_to(board.get_elements_at(move_to + direction)):
 		return
 	_move(hero, direction)
 	## TODO: Add a sound for crate moving?
 	_move(crate, direction)
 
 
-func _can_push_crate_to(tiles_at: Array[Node2D]) -> bool:
+func _can_push_crate_to(tiles_at: Array[Base]) -> bool:
 	if tiles_at.is_empty():
 		return true
-	for tile in tiles_at:
+	for tile: Base in tiles_at:
 		if not tile.walkable:
 			return false
 	return true
@@ -294,31 +307,15 @@ func _can_push_crate_to(tiles_at: Array[Node2D]) -> bool:
 	#return target is Door and (target as Door).walkable
 
 
-#func _dispel_fog_of_war() -> void:
-	#if not fog_of_war:
-		#return
-	#if not hero:
-		#return
-	#if not elements or elements.is_empty():
-		#return
-	#var walls: Array[Wall] = []
-	#for element in elements:
-		#if element is Wall:
-			#var w: Wall = element
-			#walls.append(w)
-			##print(_get_tile(w))
-	##print(walls)
-	#fog_of_war.set_cell(_get_tile(hero))
-
-
 func _load_elements() -> void:
 	var children: Array[Node] = find_children("*")
 	if children and not children.is_empty():
-		for child in children:
+		for child: Node in children:
 			if child.is_queued_for_deletion():
 				continue
 			if child.is_in_group(&"Elements"):
-				elements.append(child)
+				if child is Base:
+					board.register(child as Base)
 				if child is Goal:
 					if not child.walkable:
 						push_warning(child.name, " isn't walkable!")
@@ -331,49 +328,31 @@ func _load_elements() -> void:
 				if Helper.has_property(child, "data") and child is Item:
 					if not child.data:
 						push_warning(child.name, " has no data!")
-	# Now we deal with the tile maps.
-	#if decals_node:
-		#for x in range(decals_node.get_used_rect().position.x, decals_node.get_used_rect().size.x):
-			#for y in range(decals_node.get_used_rect().position.y, decals_node.get_used_rect().size.y):
-				#if not decals_node.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1):
-					#var w: Wall = Wall.new()
-					#w.walkable = false
-					#_position_element(w, Vector2(x, y))
-					#elements.append(w)
+	# Walls live in a TileMapLayer, so they are not scene-tree elements.
 	if walls_node:
-		for x in range(walls_node.get_used_rect().position.x, walls_node.get_used_rect().size.x):
-			for y in range(walls_node.get_used_rect().position.y, walls_node.get_used_rect().size.y):
-				if not walls_node.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1):
-					var w: Wall = Wall.new()
-					w.walkable = false
-					_position_element(w, Vector2(x, y))
-					elements.append(w)
+		for cell: Vector2i in walls_node.get_used_cells():
+			var w: Wall = Wall.new()
+			w.walkable = false
+			w.blocks_sight = true
+			board.place(w, cell)
+			wall_proxies.append(w)
 
 ## @deprecated It is being used when loading levels from file but there will be
 ## no more file loading in the future.
 func _create_element_at(type: Helper.ElementType, pos: Vector2i) -> void:
 	match type:
-		# TODO: Refactor this because now walls live in a TileMapLayer
-		#ElementType.WALL:
-			#var w: Wall = Wall.new()
-			#walls_node.add_child(w)
-			#_position_element(w, pos)
-			#elements.append(w)
 		Helper.ElementType.GOAL:
 			var g: Goal = Goal.new()
 			goals_node.add_child(g)
-			_position_element(g, pos)
-			elements.append(g)
+			board.place(g, pos)
 		Helper.ElementType.CRATE:
 			var c: Crate = Crate.new()
 			crates_node.add_child(c)
-			_position_element(c, pos)
-			elements.append(c)
+			board.place(c, pos)
 		Helper.ElementType.HERO:
 			var h: Hero = Hero.new()
 			add_child(h)
-			_position_element(h, pos)
-			elements.append(h)
+			board.place(h, pos)
 			hero = h
 
 ## @deprecated: There will be no more level loading from files in the future.
@@ -430,49 +409,30 @@ func _load_level(num: int = 0) -> void:
 func _clear_universe() -> void:
 	var children: Array[Node] = find_children("*")
 	if children and not children.is_empty():
-		for child in children:
+		for child: Node in children:
 			if child.is_in_group(&"Elements"):
+				if child is Base:
+					board.unregister(child as Base)
 				child.queue_free()
-	elements.clear()
+	for w: Wall in wall_proxies:
+		board.unregister(w)
+		w.free()
+	wall_proxies.clear()
 
 
-func _move(element: Node2D, dir: Vector2 = Vector2.ZERO) -> void:
+func _move(element: Base, dir: Vector2i = Vector2i.ZERO) -> void:
 	if not element:
 		return
-	if not dir:
+	if dir == Vector2i.ZERO:
 		return
-	element.position += dir * Helper.LENGTH
+	board.move_element(element, board.get_origin(element) + dir)
 	_update_ground_label()
-	for e in _probe_tile(_get_tile(element)):
+	for e: Base in board.get_elements_at(board.get_origin(element)):
 		if e is TeleportPad:
 			## @TODO: Should I check if destination is active too as condition
 			## to teleport? Also, if destination tile has non-walkable element
 			## what should I do?
-			e.teleport(element)
+			(e as TeleportPad).teleport(element)
+	# Teleporting sets position directly, so the index must catch up.
+	board.sync_from_position(element)
 	_dispel_fog_of_war()
-
-
-func _get_tile(element: Node2D) -> Vector2:
-	if not element:
-		return Vector2.ZERO
-	return Vector2((element.position.x - Helper.HALF_LENGTH) / Helper.LENGTH, 
-			(element.position.y - Helper.HALF_LENGTH) / Helper.LENGTH)
-
-
-func _probe_tile(tile: Vector2) -> Array[Node2D]:
-	var result: Array[Node2D] = []
-	if not elements:
-		return result
-	if elements.is_empty():
-		return result
-	for element in elements:
-		if tile == _get_tile(element):
-			result.append(element)
-	return result
-
-
-func _position_element(element: Node2D, at: Vector2) -> void:
-	if not element:
-		return
-	element.position.x = (at.x * Helper.LENGTH) + Helper.HALF_LENGTH
-	element.position.y = (at.y * Helper.LENGTH) + Helper.HALF_LENGTH

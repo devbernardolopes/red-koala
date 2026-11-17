@@ -2,11 +2,25 @@
 class_name Base
 extends Area2D
 
+signal walkability_changed
+signal blocks_sight_changed
+
 @export var data: BaseData:
 	set(v):
 		data = v
 @export var tile_size: int = 1
-@export var walkable: bool = true
+@export var walkable: bool = true:
+	set(v):
+		if v == walkable:
+			return
+		walkable = v
+		walkability_changed.emit()
+@export var blocks_sight: bool = false:
+	set(v):
+		if v == blocks_sight:
+			return
+		blocks_sight = v
+		blocks_sight_changed.emit()
 @export var pushable: bool = false
 ## Whether this node takes part in the board logic (the "Elements" group).
 ## Purely visual children of other elements should opt out.

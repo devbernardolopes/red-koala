@@ -13,6 +13,7 @@ charisma = 8
 wisdom = 15
 intelligence = 15
 data = ExtResource("2_lbay5")
+tile_size = 2
 walkable = false
 color = Color(0.7411765, 0.09019608, 0.41960785, 1)
 metadata/_custom_type_script = "uid://tdfdon0mic37"

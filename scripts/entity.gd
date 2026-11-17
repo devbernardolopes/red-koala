@@ -26,7 +26,7 @@ extends Base
 @export var is_phasing: bool = false:
 	set(v):
 		is_phasing = v
-		_toggle_invisible(v)
+		_toggle_phasing(v)
 @export var is_flying: bool = false:
 	set(v):
 		is_flying = v
@@ -55,8 +55,14 @@ func _ready() -> void:
 	_toggle_invisible(is_invisible)
 	_toggle_phasing(is_phasing)
 	_toggle_flying(is_flying)
-	polygon.get_world_2d()
-	print(polygon.get_viewport_rect())
+
+
+func get_move_mode() -> Helper.MoveMode:
+	if is_phasing:
+		return Helper.MoveMode.PHASE
+	if is_flying:
+		return Helper.MoveMode.FLY
+	return Helper.MoveMode.WALK
 
 
 func _toggle_invisible(toggle: bool) -> void:

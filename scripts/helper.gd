@@ -14,6 +14,12 @@ enum EntityTeam {
 	FOE = 3,
 }
 
+enum MoveMode {
+	WALK = 1,
+	FLY = 2,
+	PHASE = 3,
+}
+
 const LENGTH: int = 64
 @warning_ignore("integer_division")
 const HALF_LENGTH: int = LENGTH / 2
