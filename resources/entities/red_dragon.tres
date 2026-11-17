@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EntityData" format=3 uid="uid://o11lt2sgcc4i"]
+
+[ext_resource type="Script" uid="uid://b3qjjrx38oqgu" path="res://resources/entity_data.gd" id="1_s57hb"]
+
+[resource]
+script = ExtResource("1_s57hb")
+base_hit_points = 100
+base_mana_points = 100
+id = &"red_dragon"
+name = "Red Dragon"
+metadata/_custom_type_script = "uid://b3qjjrx38oqgu"

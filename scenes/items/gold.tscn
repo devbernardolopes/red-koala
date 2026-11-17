@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://ciij5gesrk4xp"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_4ahxd"]
+[ext_resource type="Shader" uid="uid://lhhe0vpnmjkj" path="res://shaders/shine_sweep.gdshader" id="2_0usjv"]
+[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/gold.tres" id="2_mxqjo"]
+[ext_resource type="Texture2D" uid="uid://ct5io32p8p2b1" path="res://resources/textures/shine_gradient_texture_2d.tres" id="3_mxqjo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o54n4"]
+shader = ExtResource("2_0usjv")
+shader_parameter/shine_color = Color(1, 1, 1, 1)
+shader_parameter/progress = 0.55
+shader_parameter/width = 0.16
+shader_parameter/angle = 0.6
+shader_parameter/intensity = 1.1
+shader_parameter/bands = 1.0
+shader_parameter/band_gap = 0.12
+shader_parameter/band_falloff = 0.45
+shader_parameter/hardness = 0.0
+shader_parameter/tail_color = Color(1, 1, 1, 1)
+shader_parameter/auto_speed = 2.000000095
+shader_parameter/auto_pause = 1.0
+
+[node name="Gold" type="Area2D" unique_id=481641018]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_4ahxd")
+data = ExtResource("2_mxqjo")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=249218210]
+material = SubResource("ShaderMaterial_o54n4")
+color = Color(1, 1, 0.06666667, 1)
+texture = ExtResource("3_mxqjo")
+texture_offset = Vector2(32, 32)
+polygon = PackedVector2Array(-8, 8, -8, -8, 8, -8, 8, 8)

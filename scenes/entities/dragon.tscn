@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dunrntu6tlcxj"]
+
+[ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_0jk36"]
+[ext_resource type="Resource" uid="uid://o11lt2sgcc4i" path="res://resources/entities/red_dragon.tres" id="2_lbay5"]
+
+[node name="Dragon" type="Area2D" unique_id=148953585]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_0jk36")
+stength = 14
+constitution = 15
+charisma = 8
+wisdom = 15
+intelligence = 15
+data = ExtResource("2_lbay5")
+walkable = false
+color = Color(0.7411765, 0.09019608, 0.41960785, 1)
+metadata/_custom_type_script = "uid://tdfdon0mic37"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=220565274]
+color = Color(1, 0.13725491, 0.16862746, 1)
+polygon = PackedVector2Array(-48, 40, -40, 32, -40, 24, -56, 24, -64, 8, -56, 8, -24, -16, -64, 0, -40, -40, -16, -48, 8, -48, 48, -64, 48, -48, 56, -32, 56, -16, 16, 0, 48, 16, 56, 16, 64, 24, 40, 24, 32, 40, 40, 48, 40, 56, 16, 56, 8, 40, 8, 24, -16, 24, -24, 48, -16, 56, -48, 56)

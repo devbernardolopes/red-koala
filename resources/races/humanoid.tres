@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="RaceData" format=3 uid="uid://dot46qba5gf2j"]
+
+[ext_resource type="Script" uid="uid://c86idpjgqck1t" path="res://resources/race_data.gd" id="1_52x2r"]
+
+[resource]
+script = ExtResource("1_52x2r")
+id = &"humanoid"
+metadata/_custom_type_script = "uid://c86idpjgqck1t"
