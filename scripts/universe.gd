@@ -7,15 +7,21 @@ const WALL_SCENE = preload("res://scenes/wall.tscn")
 
 var decals_node: Node2D = null
 var goals_node: Node2D = null
+var items_node: Node2D = null
 var crates_node: Node2D = null
+var entities_node: Node2D = null
 var walls_node: TileMapLayer = null
 var elements: Array[Node] = []
 var journal_label: Label = null
 var ground_label: Label = null
-var inventory: VBoxContainer = null
+var inventory_control: Control = null
 
 var current_filter: Control = null
 var filter_list: Array[Control] = []
+
+var current_inventory_item: Node2D = null
+
+var inventory_toggled: bool = false
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
@@ -27,15 +33,21 @@ func _ready() -> void:
 		decals_node = find_child("Decals")
 	if not goals_node:
 		goals_node = find_child("Goals")
+	if not items_node:
+		items_node = find_child("Items")
 	if not crates_node:
 		crates_node = find_child("Crates")
-	if not hero:
-		push_warning("No Hero!")
+	if not crates_node:
+		crates_node = find_child("Crates")
 	if not walls_node:
 		walls_node = find_child("Walls")
+	if not entities_node:
+		entities_node = find_child("Entities")
+	if not hero:
+		push_warning("No Hero!")
 	journal_label = Helper.find_control(self, "Label", &"Journal")
 	ground_label = Helper.find_control(self, "Label", &"Ground")
-	inventory = Helper.find_control(self, "VBoxContainer", &"Inventory")
+	inventory_control = Helper.find_control(self, "VBoxContainer", &"InventoryContainer")
 	_load_elements()
 	hero.inventory_changed.connect(_update_inventory)
 	AudioManager.set_listener_target(hero)
@@ -50,32 +62,11 @@ func _ready() -> void:
 			if filter.visible:
 				current_filter = filter
 		filter_list.append(null)
+	_update_journal()
 	_update_inventory()
 	_update_ground_label()
+	_dispel_fog_of_war()
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
-
-
-func _update_inventory() -> void:
-	if not inventory:
-		return
-	if not hero:
-		return
-	if not hero.inventory:
-		return
-	for child in inventory.get_children():
-		child.queue_free()
-	for item in hero.inventory:
-		if not item:
-			continue
-		var l: Label = Label.new()
-		l.text = item.name
-		if Helper.has_property(item, "data"):
-			if not item.data:
-				push_warning(item, " has no data!")
-			else:
-				l.text = item.data.name
-		inventory.add_child(l)
-	#print(inventory.get_children())
 
 
 func _input(event: InputEvent) -> void:
@@ -100,6 +91,25 @@ func _input(event: InputEvent) -> void:
 			current_filter.visible = true
 
 
+func _process(_delta: float) -> void:
+	inventory_toggled = false
+	if Input.is_action_pressed("inventory_modifier"):
+		inventory_toggled = true
+
+
+func _drop(item: Item) -> void:
+	if not item:
+		return
+	if not items_node:
+		return
+	hero.drop(current_inventory_item)
+	items_node.add_child(item)
+	elements.append(item)
+	for tile in _probe_tile(_get_tile(item)):
+		if tile is TeleportPad:
+			(tile as TeleportPad).teleport(item)
+	_update_ground_label()
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not hero:
@@ -107,6 +117,33 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("take"):
 		_take_item()
 		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("drop"):
+		_drop(current_inventory_item)
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("equip"):
+		if not current_inventory_item:
+			return
+		hero.equip(current_inventory_item)
+		get_viewport().set_input_as_handled()
+		return
+	if inventory_toggled:
+		if not current_inventory_item:
+			return
+		var index: int = hero.inventory.find(current_inventory_item)
+		if event.is_action_pressed("up"):
+			if index - 1 < 0:
+				current_inventory_item = hero.inventory.back()
+			else:
+				current_inventory_item = hero.inventory[index - 1]
+			_update_inventory()
+		elif event.is_action_pressed("down"):
+			if index + 1 > hero.inventory.size() - 1:
+				current_inventory_item = hero.inventory.front()
+			else:
+				current_inventory_item = hero.inventory[index + 1]
+			_update_inventory()
 		return
 	var direction: Vector2 = Vector2.ZERO
 	if event.is_action_pressed("up"):
@@ -123,6 +160,45 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
+func _update_journal() -> void:
+	if not journal_label:
+		return
+	if not hero:
+		return
+	journal_label.text = ""
+
+
+func _update_inventory() -> void:
+	if not inventory_control:
+		return
+	if not hero:
+		return
+	for child in inventory_control.get_children():
+		child.queue_free()
+	if not hero.inventory:
+		current_inventory_item = null
+		return
+	for item in hero.inventory:
+		if not item:
+			continue
+		if not current_inventory_item or not hero.inventory.has(current_inventory_item):
+			current_inventory_item = item
+		var l: Label = Label.new()
+		l.text = item.name
+		if Helper.has_property(item, "data"):
+			if not item.data:
+				push_warning(item, " has no data!")
+			else:
+				l.text = item.data.name
+		if item.is_equipped:
+			l.text = "(e) " + l.text
+		if current_inventory_item == item:
+			#l.text = "-> " + l.text
+			l.add_theme_color_override("font_outline_color", Color.RED)
+			l.add_theme_constant_override("outline_size", 2)
+		inventory_control.add_child(l)
+
+
 func _update_ground_label() -> void:
 	if not ground_label:
 		return
@@ -133,9 +209,26 @@ func _update_ground_label() -> void:
 			continue
 		var item: Item = t
 		if item.data is ItemData:
-			ground_label.text = item.data.name + ", "
+			ground_label.text += item.data.name + ", "
 	ground_label.text = ground_label.text.trim_suffix(", ")
 
+
+func _dispel_fog_of_war() -> void:
+	if not hero:
+		return
+	if not fog_of_war:
+		return
+	var fog_layer: TileMapLayer = Helper.find_control(fog_of_war, "TileMapLayer", &"FogFull")
+	if not fog_layer:
+		return
+	var center_pos: Vector2 = _get_tile(hero)
+	for i in range(center_pos.x - hero.fov, center_pos.x + hero.fov):
+		for j in range(center_pos.y - hero.fov, center_pos.y + hero.fov):
+			fog_layer.set_cell(Vector2i(i, j))
+	#var fl_x: int = fog_layer.get_used_rect().size.x
+	#var fl_y: int = fog_layer.get_used_rect().size.y
+	#print(fog_layer.get_used_rect().position.x)
+	
 
 func _take_item() -> void:
 	var tiles_at: Array[Node2D] = _probe_tile(_get_tile(hero))
@@ -153,16 +246,23 @@ func _try_move(direction: Vector2) -> void:
 	var move_to: Vector2 = _get_tile(hero) + direction
 	var tiles_at: Array[Node2D] = _probe_tile(move_to)
 	for t in tiles_at:
-		if t is Base and not (t as Base).walkable:
-			_try_push(tiles_at, move_to, direction)
-			return
+		if t is Base:
+			if not (t as Base).walkable:
+				if (t as Base).pushable:
+					_try_push(tiles_at, move_to, direction)
+					return
+				elif hero.is_phasing:
+					_move(hero, direction)
+					return
+				return
 	_move(hero, direction)
 
 
 func _try_push(tiles_at: Array[Node2D], move_to: Vector2, direction: Vector2) -> void:
+	# TODO: Refactor this because not everything that is pushable is a Crate.
 	var crate: Crate = null
 	for t in tiles_at:
-		if t is Crate:
+		if t.pushable:
 			crate = t as Crate
 			break
 	if not crate:
@@ -175,18 +275,23 @@ func _try_push(tiles_at: Array[Node2D], move_to: Vector2, direction: Vector2) ->
 	if not _can_push_crate_to(_probe_tile(move_to + direction)):
 		return
 	_move(hero, direction)
+	## TODO: Add a sound for crate moving?
 	_move(crate, direction)
 
 
 func _can_push_crate_to(tiles_at: Array[Node2D]) -> bool:
 	if tiles_at.is_empty():
 		return true
-	if tiles_at.size() != 1:
-		return false
-	var target: Node2D = tiles_at[0]
-	if target is Goal:
-		return true
-	return target is Door and (target as Door).walkable
+	for tile in tiles_at:
+		if not tile.walkable:
+			return false
+	return true
+	#if tiles_at.size() != 1:
+		#return false
+	#var target: Node2D = tiles_at[0]
+	#if target is Goal:
+		#return true
+	#return target is Door and (target as Door).walkable
 
 
 #func _dispel_fog_of_war() -> void:
@@ -214,6 +319,9 @@ func _load_elements() -> void:
 				continue
 			if child.is_in_group(&"Elements"):
 				elements.append(child)
+				if child is Goal:
+					if not child.walkable:
+						push_warning(child.name, " isn't walkable!")
 				if child is Door:
 					if not child.requires or child.requires.is_empty():
 						push_warning(child.name, " has no requirements!")
@@ -335,15 +443,13 @@ func _move(element: Node2D, dir: Vector2 = Vector2.ZERO) -> void:
 		return
 	element.position += dir * Helper.LENGTH
 	_update_ground_label()
-	for e in _probe_tile(_get_tile(hero)):
+	for e in _probe_tile(_get_tile(element)):
 		if e is TeleportPad:
 			## @TODO: Should I check if destination is active too as condition
 			## to teleport? Also, if destination tile has non-walkable element
 			## what should I do?
-			e.teleport(hero)
-			#if (e as TeleportPad).destination and (e as TeleportPad).active:
-				#element.position = (e as TeleportPad).destination.position
-	#_dispel_fog_of_war()
+			e.teleport(element)
+	_dispel_fog_of_war()
 
 
 func _get_tile(element: Node2D) -> Vector2:

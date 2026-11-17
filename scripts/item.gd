@@ -2,6 +2,8 @@
 class_name Item
 extends Base
 
+@export var is_equipped: bool = false
+
 
 func _ready() -> void:
 	super._ready()

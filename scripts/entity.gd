@@ -2,28 +2,38 @@
 class_name Entity
 extends Base
 
-@export var hit_points: int = 1
+@export_category("Abilities")
+@export_range(1, 30) var stength: int = 10
+@export_range(1, 30) var dexterity: int = 10
+@export_range(1, 30) var constitution: int = 10
+@export_range(1, 30) var charisma: int = 10
+@export_range(1, 30) var wisdom: int = 10
+@export_range(1, 30) var intelligence: int = 10
+@export_category("Points")
 @export var max_hit_points: int = 1
+@export var hit_points: int = 1
+@export var max_mana_points: int = 1
+@export var mana_points: int = 1
+## Field-of view which is a square with size in tiles starting at the entity's
+## center.
+@export var fov: int = 4
+@export_category("In-Game")
 @export var inventory: Array[Node2D] = []
-@export var flying: bool = false:
+@export var is_invisible: bool = false:
 	set(v):
-		flying = v
-		if not polygon:
-			return
-		if flying:
-			if not flying_tween:
-				#print(polygon.is_node_ready())
-				#if polygon.is_node_ready():
-				flying_tween = create_tween()
-				flying_tween.tween_property(polygon, "position", Vector2(0, -4.0), 0.15).set_ease(Tween.EASE_IN)
-				flying_tween.tween_property(polygon, "position", Vector2(0, 4.0), 0.15)
-				flying_tween.set_loops()
-			else:
-				flying_tween.play()
-		else:
-			if flying_tween:
-				flying_tween.stop()
+		is_invisible = v
+		_toggle_invisible(v)
+@export var is_phasing: bool = false:
+	set(v):
+		is_phasing = v
+		_toggle_invisible(v)
+@export var is_flying: bool = false:
+	set(v):
+		is_flying = v
+		_toggle_flying(v)
+@export var can_see_invisible: bool = false
 
+var phasing_tween: Tween = null
 var flying_tween: Tween = null
 var visible_notifier: VisibleOnScreenNotifier2D = null
 
@@ -35,8 +45,54 @@ func _ready() -> void:
 	collision_layer = PhysicsLayer.HERO
 	collision_mask = PhysicsLayer.WALLS | PhysicsLayer.CRATES | PhysicsLayer.HERO
 	visible_notifier = Helper.find_control(self, "VisibleOnScreenNotifier2D")
-	if not visible_notifier:
-		push_warning("No visible_notifier!")
+	#if not visible_notifier:
+		#push_warning("No visible_notifier!")
+	_toggle_invisible(is_invisible)
+	_toggle_phasing(is_phasing)
+	_toggle_flying(is_flying)
+	polygon.get_world_2d()
+	print(polygon.get_viewport_rect())
+
+
+func _toggle_invisible(toggle: bool) -> void:
+	if not polygon:
+		return
+	if toggle:
+		polygon.self_modulate.a = 0.5
+	else:
+		polygon.self_modulate.a = 1.0
+
+
+func _toggle_phasing(toggle: bool) -> void:
+	if not polygon:
+		return
+	if toggle:
+		if not phasing_tween:
+			phasing_tween = create_tween()
+			phasing_tween.tween_property(polygon, "position", Vector2(-1, 0), 0.15).set_ease(Tween.EASE_IN)
+			phasing_tween.tween_property(polygon, "position", Vector2(1, 0), 0.15)
+			phasing_tween.set_loops()
+		else:
+			phasing_tween.play()
+	else:
+		if phasing_tween:
+			phasing_tween.stop()
+
+
+func _toggle_flying(toggle: bool) -> void:
+	if not polygon:
+		return
+	if toggle:
+		if not flying_tween:
+			flying_tween = create_tween()
+			flying_tween.tween_property(polygon, "position", Vector2(0, -4.0), 0.15).set_ease(Tween.EASE_IN)
+			flying_tween.tween_property(polygon, "position", Vector2(0, 4.0), 0.15)
+			flying_tween.set_loops()
+		else:
+			flying_tween.play()
+	else:
+		if flying_tween:
+			flying_tween.stop()
 
 
 func equip(item: Node2D) -> void:
@@ -44,13 +100,14 @@ func equip(item: Node2D) -> void:
 		return
 	if not inventory.has(item):
 		return
-	
-	#var torch = Helper.TORCH.instantiate()
-	#torch.scale = Vector2.ONE * 1.25
-	#add_child(torch)
-
-	#get_parent().add_child.call_deferred(torch)
-	#torch.position = position
+	if item.is_equipped:
+		item.is_equipped = false
+		remove_child(item)
+	else:
+		item.is_equipped = true
+		item.position = Vector2.ZERO
+		add_child(item)
+	inventory_changed.emit()
 
 
 func take(item: Node2D) -> bool:
@@ -58,5 +115,16 @@ func take(item: Node2D) -> bool:
 		return false
 	item.get_parent().remove_child(item)
 	inventory.append(item)
+	inventory_changed.emit()
+	return true
+
+
+func drop(item: Node2D) -> bool:
+	if not item:
+		return false
+	if item.is_equipped:
+		equip(item)
+	inventory.erase(item)
+	item.position = position
 	inventory_changed.emit()
 	return true

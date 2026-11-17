@@ -2,7 +2,10 @@
 class_name TeleportPad
 extends Base
 
-@export var active: bool = true
+@export var active: bool = true:
+	set(v):
+		active = v
+		toggle_light(v)
 @export var destination: TeleportPad = null
 @export var dispels: TileMapLayer = null
 
@@ -21,3 +24,4 @@ func teleport(element: Node2D) -> void:
 	element.position = destination.position
 	if destination.dispels:
 		destination.dispels.visible = false
+	AudioManager.play(Helper.LASER_LARGE_004)

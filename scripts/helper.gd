@@ -21,15 +21,21 @@ const RADIAL_LIGHT = preload("res://resources/lights/radial_light.tres")
 const FORCE_FIELD_001 = preload("uid://bjav7rlibej4q")
 ## Door revealed.
 const IMPACT_BELL_HEAVY_001 = preload("uid://233in7fel5ws")
+## Teleport.
+const LASER_LARGE_004 = preload("uid://bojat5bcaoa58")
+
 #endregion
 
 #region MUSICS
 const FOREBODING_THEME = preload("uid://bvidkrp2c22ub")
+
 #endregion
 
 #region ITEMS
 const TORCH = preload("uid://tcihe7kj34wp")
 const SWORD = preload("uid://fgb6up4u4dbg")
+const GOLD = preload("uid://ciij5gesrk4xp")
+
 #endregion
 
 

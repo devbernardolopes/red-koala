@@ -5,7 +5,9 @@ extends Area2D
 @export var data: BaseData:
 	set(v):
 		data = v
+@export var tile_size: int = 1
 @export var walkable: bool = true
+@export var pushable: bool = false
 ## Whether this node takes part in the board logic (the "Elements" group).
 ## Purely visual children of other elements should opt out.
 @export var in_board: bool = true
@@ -27,7 +29,7 @@ func _ready() -> void:
 	if not collision:
 		collision = CollisionShape2D.new()
 		var collision_shape: RectangleShape2D = RectangleShape2D.new()
-		collision_shape.size = (Vector2.ONE * Helper.LENGTH) - (Vector2.ONE * Helper.MARGIN_1)
+		collision_shape.size = ((Vector2.ONE * tile_size) * Helper.LENGTH) - (Vector2.ONE * Helper.MARGIN_1)
 		collision.shape = collision_shape
 		add_child(collision)
 	polygon = Helper.find_control(self, "Polygon2D")

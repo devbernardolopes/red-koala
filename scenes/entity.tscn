@@ -3,5 +3,8 @@
 [ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_iiwub"]
 
 [node name="Entity" type="Area2D" unique_id=658657832]
+collision_layer = 4
+collision_mask = 7
 script = ExtResource("1_iiwub")
+walkable = false
 metadata/_custom_type_script = "uid://b06rmnpgqswiu"

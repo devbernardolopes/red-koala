@@ -1,7 +1,24 @@
 [gd_scene format=3 uid="uid://s141b0fe5fug"]
 
 [ext_resource type="Script" uid="uid://yb235q3st348" path="res://scripts/decals/teleport_pad.gd" id="1_8vb0p"]
+[ext_resource type="Shader" uid="uid://lhhe0vpnmjkj" path="res://shaders/shine_sweep.gdshader" id="2_1p1e7"]
 [ext_resource type="Texture2D" uid="uid://ctlwhiiok0tnq" path="res://resources/lights/radial_light.tres" id="2_kquvk"]
+[ext_resource type="Texture2D" uid="uid://ct5io32p8p2b1" path="res://resources/textures/shine_gradient_texture_2d.tres" id="3_1ys1e"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kquvk"]
+shader = ExtResource("2_1p1e7")
+shader_parameter/shine_color = Color(0.3254902, 0.5019608, 1, 1)
+shader_parameter/progress = 1.5
+shader_parameter/width = 0.16
+shader_parameter/angle = 0.6
+shader_parameter/intensity = 1.1
+shader_parameter/bands = 1.0
+shader_parameter/band_gap = 0.12
+shader_parameter/band_falloff = 0.45
+shader_parameter/hardness = 0.0
+shader_parameter/tail_color = Color(1, 1, 1, 1)
+shader_parameter/auto_speed = 1.0000000475
+shader_parameter/auto_pause = 1.0
 
 [node name="TeleportPad" type="Area2D" unique_id=32353222]
 collision_layer = 0
@@ -10,8 +27,11 @@ script = ExtResource("1_8vb0p")
 metadata/_custom_type_script = "uid://b06rmnpgqswiu"
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1976806353]
+material = SubResource("ShaderMaterial_kquvk")
 color = Color(0.4745098, 0.23921569, 1, 1)
+texture = ExtResource("3_1ys1e")
 polygon = PackedVector2Array(-24, -16, -16, -24, 16, -24, 24, -16, 24, 16, 16, 24, -16, 24, -24, 16)
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=531282851]
+enabled = false
 texture = ExtResource("2_kquvk")

@@ -56,6 +56,8 @@ func _reveal_door() -> void:
 	if not _all_requirements_met():
 		return
 	_set_wall_visible(false)
+	# This guards so it won't play the sound again nor dispel the already
+	# dispelled fog
 	if has_been_revealed:
 		return
 	has_been_revealed = true
