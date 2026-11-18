@@ -6,7 +6,7 @@ enum FollowType {
 	STATIC = 2,
 }
 
-@export var target: Hero = null:
+@export var target: Entity = null:
 	set(v):
 		target = v
 		if not target:
@@ -25,7 +25,8 @@ func _ready() -> void:
 	if not target:
 		return
 	_snap_to_target()
-	target.visible_notifier.connect("screen_exited", _snap_to_target)
+	#target.visible_notifier.connect("screen_exited", _snap_to_target)
+	#target.visible_notifier.connect("screen_exited", _snap_to_target)
 
 
 func _process(_delta: float) -> void:

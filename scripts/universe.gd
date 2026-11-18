@@ -3,8 +3,16 @@ extends Node2D
 const LEVELS_DIR: String = "res://resources/levels/"
 const WALL_SCENE = preload("res://scenes/wall.tscn")
 
-@export var hero: Hero = null
+@export var current_player_entity: Entity = null:
+	set(v):
+		current_player_entity = v
+		if current_player_entity:
+			if follow_camera:
+				follow_camera.target = current_player_entity
+			player_entity_changed.emit()
+@export var party: Array[Entity] = []
 
+var follow_camera: FollowCamera = null
 var decals_node: Node2D = null
 var goals_node: Node2D = null
 var items_node: Node2D = null
@@ -20,7 +28,7 @@ var inventory_control: Control = null
 var current_filter: Control = null
 var filter_list: Array[Control] = []
 
-var current_inventory_item: Node2D = null
+#var current_inventory_item: Node2D = null
 
 var inventory_toggled: bool = false
 
@@ -29,6 +37,8 @@ var inventory_toggled: bool = false
 @onready var filters: CanvasLayer = $Filters
 @onready var board: Board = $Board
 @onready var board_debug_overlay: Node2D = $Board/BoardDebugOverlay
+
+signal player_entity_changed
 
 
 func _ready() -> void:
@@ -44,14 +54,19 @@ func _ready() -> void:
 		walls_node = find_child("Walls")
 	if not entities_node:
 		entities_node = find_child("Entities")
-	if not hero:
-		push_warning("No Hero!")
+	if not current_player_entity:
+		push_warning("No player entity!")
+	if not party or party.is_empty():
+		push_warning("No player party!")
+	follow_camera = Helper.find_control(self, "FollowCamera")
+	if not follow_camera:
+		push_warning("No FollowCamera!")
 	journal_label = Helper.find_control(self, "Label", &"Journal")
 	ground_label = Helper.find_control(self, "Label", &"Ground")
 	inventory_control = Helper.find_control(self, "VBoxContainer", &"InventoryContainer")
+	#inventory_control = Helper.find_control(self, "MarginContainer", &"InventoryContainer")
 	_load_elements()
-	hero.inventory_changed.connect(_update_inventory)
-	AudioManager.set_listener_target(hero)
+	AudioManager.set_listener_target(current_player_entity)
 	if fog_of_war:
 		fog_of_war.visible = true
 	if canvas_modulate:
@@ -67,6 +82,10 @@ func _ready() -> void:
 	_update_inventory()
 	_update_ground_label()
 	_dispel_fog_of_war()
+	for entity in party:
+		entity.is_playable = true
+		entity.inventory_changed.connect(_update_inventory)
+	follow_camera.target = current_player_entity
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
 
 
@@ -80,7 +99,6 @@ func _input(event: InputEvent) -> void:
 			return
 		if not filter_list:
 			return
-		#print(filter_list)
 		if current_filter is Control:
 			current_filter.visible = false
 		var filter_index: int = filter_list.find(current_filter)
@@ -109,7 +127,7 @@ func _drop(item: Item) -> void:
 		return
 	if not items_node:
 		return
-	hero.drop(current_inventory_item)
+	current_player_entity.drop(current_player_entity.current_inventory_item)
 	items_node.add_child(item)
 	board.register(item)
 	for e: Base in board.get_elements_at(board.get_origin(item)):
@@ -120,39 +138,59 @@ func _drop(item: Item) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not hero:
+	if not current_player_entity:
 		return
+	if event.is_action_pressed("switch_player_entity"):
+		if not party or party.is_empty() or party.size() == 1:
+			return
+		var index: int = party.find(current_player_entity)
+		if index + 1 < party.size():
+			current_player_entity = party.get(index + 1)
+		else:
+			current_player_entity = party.front()
+		_update_inventory()
+		_update_ground_label()
+		get_viewport().set_input_as_handled()
+		return
+	if inventory_toggled:
+		if not current_player_entity.current_inventory_item:
+			return
+		var index: int = current_player_entity.inventory.find(current_player_entity.current_inventory_item)
+		if event.is_action_pressed("up"):
+			if index - 1 < 0:
+				current_player_entity.current_inventory_item = current_player_entity.inventory.back()
+			else:
+				current_player_entity.current_inventory_item = current_player_entity.inventory[index - 1]
+			_update_inventory()
+		elif event.is_action_pressed("down"):
+			if index + 1 > current_player_entity.inventory.size() - 1:
+				current_player_entity.current_inventory_item = current_player_entity.inventory.front()
+			else:
+				current_player_entity.current_inventory_item = current_player_entity.inventory[index + 1]
+			_update_inventory()
+		# The action "take" is being used here as an alternative for "equip".
+		elif event.is_action_pressed("take"):
+			if not current_player_entity.current_inventory_item:
+				return
+			current_player_entity.equip(current_player_entity.current_inventory_item)
+		return
+	
 	if event.is_action_pressed("take"):
 		_take_item()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("drop"):
-		_drop(current_inventory_item)
+		_drop(current_player_entity.current_inventory_item)
 		get_viewport().set_input_as_handled()
 		return
-	if event.is_action_pressed("equip"):
-		if not current_inventory_item:
+	# The action "equip" also unequips.
+	if event.is_action_pssed("equip"):
+		if not current_player_entity.current_inventory_item:
 			return
-		hero.equip(current_inventory_item)
+		current_player_entity.equip(current_player_entity.current_inventory_item)
 		get_viewport().set_input_as_handled()
 		return
-	if inventory_toggled:
-		if not current_inventory_item:
-			return
-		var index: int = hero.inventory.find(current_inventory_item)
-		if event.is_action_pressed("up"):
-			if index - 1 < 0:
-				current_inventory_item = hero.inventory.back()
-			else:
-				current_inventory_item = hero.inventory[index - 1]
-			_update_inventory()
-		elif event.is_action_pressed("down"):
-			if index + 1 > hero.inventory.size() - 1:
-				current_inventory_item = hero.inventory.front()
-			else:
-				current_inventory_item = hero.inventory[index + 1]
-			_update_inventory()
-		return
+	
 	var direction: Vector2 = Vector2.ZERO
 	if event.is_action_pressed("up"):
 		direction = Vector2.UP
@@ -171,7 +209,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _update_journal() -> void:
 	if not journal_label:
 		return
-	if not hero:
+	if not current_player_entity:
 		return
 	journal_label.text = ""
 
@@ -179,39 +217,43 @@ func _update_journal() -> void:
 func _update_inventory() -> void:
 	if not inventory_control:
 		return
-	if not hero:
+	if not current_player_entity:
 		return
 	for child in inventory_control.get_children():
 		child.queue_free()
-	if not hero.inventory:
-		current_inventory_item = null
+	if not current_player_entity.inventory:
+		current_player_entity.current_inventory_item = null
 		return
-	for item in hero.inventory:
+	for item in current_player_entity.inventory:
 		if not item:
 			continue
-		if not current_inventory_item or not hero.inventory.has(current_inventory_item):
-			current_inventory_item = item
-		var l: Label = Label.new()
-		l.text = item.name
-		if Helper.has_property(item, "data"):
-			if not item.data:
-				push_warning(item, " has no data!")
-			else:
-				l.text = item.data.name
-		if item.is_equipped:
-			l.text = "(e) " + l.text
-		if current_inventory_item == item:
-			#l.text = "-> " + l.text
-			l.add_theme_color_override("font_outline_color", Color.RED)
-			l.add_theme_constant_override("outline_size", 2)
-		inventory_control.add_child(l)
+		if not current_player_entity.current_inventory_item or not current_player_entity.inventory.has(current_player_entity.current_inventory_item):
+			current_player_entity.current_inventory_item = item
+		
+		var item_slot: ItemSlot = ItemSlot.new(item)
+		inventory_control.add_child(item_slot)
+
+		#var l: Label = Label.new()
+		#l.text = item.name
+		#if Helper.has_property(item, "data"):
+			#if not item.data:
+				#push_warning(item, " has no data!")
+			#else:
+				#l.text = item.data.name
+		#if item.is_equipped:
+			#l.text = "(e) " + l.text
+		#if current_player_entity.current_inventory_item == item:
+			##l.text = "-> " + l.text
+			#l.add_theme_color_override("font_outline_color", Color.RED)
+			#l.add_theme_constant_override("outline_size", 2)
+		#inventory_control.add_child(l)
 
 
 func _update_ground_label() -> void:
 	if not ground_label:
 		return
 	ground_label.text = ""
-	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(hero))
+	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(current_player_entity))
 	for t: Base in tiles_at:
 		if not t is Item:
 			continue
@@ -222,16 +264,16 @@ func _update_ground_label() -> void:
 
 
 func _dispel_fog_of_war() -> void:
-	if not hero:
+	if not current_player_entity:
 		return
 	if not fog_of_war:
 		return
 	var fog_layer: TileMapLayer = Helper.find_control(fog_of_war, "TileMapLayer", &"FogFull")
 	if not fog_layer:
 		return
-	var center_pos: Vector2i = board.get_origin(hero)
-	for i in range(center_pos.x - hero.fov, center_pos.x + hero.fov + 1):
-		for j in range(center_pos.y - hero.fov, center_pos.y + hero.fov + 1):
+	var center_pos: Vector2i = board.get_origin(current_player_entity)
+	for i in range(center_pos.x - current_player_entity.fov, center_pos.x + current_player_entity.fov + 1):
+		for j in range(center_pos.y - current_player_entity.fov, center_pos.y + current_player_entity.fov + 1):
 			fog_layer.set_cell(Vector2i(i, j))
 	#var fl_x: int = fog_layer.get_used_rect().size.x
 	#var fl_y: int = fog_layer.get_used_rect().size.y
@@ -239,12 +281,12 @@ func _dispel_fog_of_war() -> void:
 	
 
 func _take_item() -> void:
-	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(hero))
+	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(current_player_entity))
 	for t: Base in tiles_at:
 		if not t is Item:
 			continue
 		var item: Item = t
-		if item.data is ItemData and hero.take(item):
+		if item.data is ItemData and current_player_entity.take(item):
 			board.unregister(item)
 			_update_ground_label()
 		return
@@ -254,8 +296,8 @@ func _try_move(direction: Vector2) -> void:
 	var dir: Vector2i = Vector2i(direction)
 	if dir == Vector2i.ZERO:
 		return
-	var mode: Helper.MoveMode = hero.get_move_mode()
-	var move_to: Vector2i = board.get_origin(hero) + dir
+	var mode: Helper.MoveMode = current_player_entity.get_move_mode()
+	var move_to: Vector2i = board.get_origin(current_player_entity) + dir
 	var tiles_at: Array[Base] = board.get_elements_at(move_to)
 	for t: Base in tiles_at:
 		if t.walkable:
@@ -266,9 +308,9 @@ func _try_move(direction: Vector2) -> void:
 		if mode != Helper.MoveMode.PHASE:
 			return
 		break
-	if not board.can_occupy(hero, move_to, mode):
+	if not board.can_occupy(current_player_entity, move_to, mode):
 		return
-	_move(hero, dir)
+	_move(current_player_entity, dir)
 
 
 func _try_push(tiles_at: Array[Base], move_to: Vector2i, direction: Vector2i) -> void:
@@ -287,7 +329,7 @@ func _try_push(tiles_at: Array[Base], move_to: Vector2i, direction: Vector2i) ->
 			return
 	if not _can_push_crate_to(board.get_elements_at(move_to + direction)):
 		return
-	_move(hero, direction)
+	_move(current_player_entity, direction)
 	## TODO: Add a sound for crate moving?
 	_move(crate, direction)
 
@@ -349,11 +391,11 @@ func _create_element_at(type: Helper.ElementType, pos: Vector2i) -> void:
 			var c: Crate = Crate.new()
 			crates_node.add_child(c)
 			board.place(c, pos)
-		Helper.ElementType.HERO:
-			var h: Hero = Hero.new()
-			add_child(h)
-			board.place(h, pos)
-			hero = h
+		Helper.ElementType.ENTITY:
+			var e: Entity = Entity.new()
+			add_child(e)
+			board.place(e, pos)
+			current_player_entity = e
 
 ## @deprecated: There will be no more level loading from files in the future.
 func _load_level(num: int = 0) -> void:
@@ -380,15 +422,15 @@ func _load_level(num: int = 0) -> void:
 						"#":
 							_create_element_at(Helper.ElementType.WALL, Vector2(col, row))
 						"p":
-							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
 						"@":
-							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
 						"P":
 							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
 						"+":
 							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ElementType.HERO, Vector2(col, row))
+							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
 						"b":
 							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
 						"$":

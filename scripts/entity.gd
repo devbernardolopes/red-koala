@@ -2,6 +2,9 @@
 class_name Entity
 extends Base
 
+@export_category("Basic")
+@export var entity_class: ClassData = null
+@export var entity_race: RaceData = null
 @export_category("Abilities")
 @export_range(1, 30) var stength: int = 10
 @export_range(1, 30) var dexterity: int = 10
@@ -10,6 +13,8 @@ extends Base
 @export_range(1, 30) var wisdom: int = 10
 @export_range(1, 30) var intelligence: int = 10
 @export_category("Points")
+@export var level: int = 1
+@export var xp: int = 0
 @export var max_hit_points: int = 1
 @export var hit_points: int = 1
 @export var max_mana_points: int = 1
@@ -41,6 +46,18 @@ extends Base
 var phasing_tween: Tween = null
 var flying_tween: Tween = null
 var visible_notifier: VisibleOnScreenNotifier2D = null
+var is_playable: bool = false:
+	set(v):
+		is_playable = v
+		visible_notifier = Helper.find_control(self, "VisibleOnScreenNotifier2D")
+		if is_playable:
+			if not visible_notifier:
+				visible_notifier = VisibleOnScreenNotifier2D.new()
+				add_child(visible_notifier)
+		else:
+			if visible_notifier:
+				visible_notifier.queue_free()
+var current_inventory_item: Node2D = null
 
 signal inventory_changed
 
@@ -49,9 +66,16 @@ func _ready() -> void:
 	super._ready()
 	collision_layer = PhysicsLayer.HERO
 	collision_mask = PhysicsLayer.WALLS | PhysicsLayer.CRATES | PhysicsLayer.HERO
-	visible_notifier = Helper.find_control(self, "VisibleOnScreenNotifier2D")
-	#if not visible_notifier:
-		#push_warning("No visible_notifier!")
+	if is_playable and not visible_notifier:
+		visible_notifier = Helper.find_control(self, "VisibleOnScreenNotifier2D")
+		if not visible_notifier:
+			visible_notifier = VisibleOnScreenNotifier2D.new()
+			add_child(visible_notifier)
+		push_warning("No visible_notifier!")
+	if not entity_class:
+		push_warning(name, " = No entity class!")
+	if not entity_race:
+		push_warning("No entity race!")
 	_toggle_invisible(is_invisible)
 	_toggle_phasing(is_phasing)
 	_toggle_flying(is_flying)

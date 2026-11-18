@@ -1,11 +1,18 @@
 class_name Helper
 extends Node
 
+enum SkillCategory {
+	DEFENSIVE = 1,
+	OFFENSIVE = 2,
+	MYSTICAL = 3,
+	UTILITY = 4,
+}
+
 enum ElementType {
 	GOAL = 1,
 	CRATE = 2,
 	WALL = 3,
-	HERO = 4,
+	ENTITY = 4,
 }
 
 enum EntityTeam {
@@ -49,6 +56,30 @@ const SWORD = preload("uid://fgb6up4u4dbg")
 const GOLD = preload("uid://ciij5gesrk4xp")
 
 #endregion
+
+## Key = Level, Value = XP.
+const LEVEL_CHART: Dictionary = {
+	1: 0,
+	2: 25,
+	3: 50,
+	4: 100,
+	5: 200,
+	6: 500,
+	7: 1000,
+	8: 5000,
+	9: 10000,
+	10: 25000,
+	11: 50000,
+	12: 100000,
+	13: 150000,
+	14: 200000,
+	15: 250000,
+	16: 300000,
+	17: 350000,
+	18: 400000,
+	19: 450000,
+	20: 500000,
+}
 
 
 static func has_property(target: Node, property: String) -> bool:

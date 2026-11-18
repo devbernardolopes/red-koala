@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ClassData" format=3 uid="uid://lb8i2y6i7bk4"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_l4sy6"]
+[ext_resource type="Resource" uid="uid://clxwq0fc1bmfd" path="res://resources/abilities/constitution.tres" id="2_bxay1"]
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="2_qrpct"]
+[ext_resource type="Resource" uid="uid://d3rk5e0f0iu46" path="res://resources/abilities/strength.tres" id="3_3epri"]
+[ext_resource type="Resource" uid="uid://1q2bf3f7jmwx" path="res://resources/abilities/dexterity.tres" id="4_g6x1b"]
+
+[resource]
+script = ExtResource("2_qrpct")
+distribution = Array[ExtResource("1_l4sy6")]([ExtResource("2_bxay1"), ExtResource("3_3epri"), ExtResource("4_g6x1b")])
+base_hit_points = 14
+id = &"barbarian"
+name = "Barbarian"
+description = "Noble savages, hardened to battle by generations of survival in the unforgiving wilderness. They are not strangers to death's call; legends tell of their incredible strength and battle prowess with heavy weapons."
+metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

@@ -5,4 +5,5 @@
 [resource]
 script = ExtResource("1_52x2r")
 id = &"humanoid"
+name = "Humanoid"
 metadata/_custom_type_script = "uid://c86idpjgqck1t"

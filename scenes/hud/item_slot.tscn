@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://11apw6q44r4h"]
+
+[ext_resource type="Script" uid="uid://4p72j81c5uju" path="res://scripts/hud/item_slot.gd" id="1_dfqpn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1nsl"]
+bg_color = Color(1, 0.6, 0.6, 1)
+
+[node name="ItemSlot" type="MarginContainer" unique_id=944627774]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+script = ExtResource("1_dfqpn")
+
+[node name="PanelContainer" type="Panel" parent="." unique_id=1417831812]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_d1nsl")
+
+[node name="ItemSlotContainer" type="HBoxContainer" parent="PanelContainer" unique_id=158665387]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="PanelContainer/ItemSlotContainer" unique_id=1959368408]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Visual" type="Polygon2D" parent="PanelContainer/ItemSlotContainer/Control" unique_id=2050068018]
+position = Vector2(-1152, 0)
+
+[node name="Amount" type="Label" parent="PanelContainer/ItemSlotContainer" unique_id=407675126]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="PanelContainer/ItemSlotContainer" unique_id=1548269810]
+layout_mode = 2
+size_flags_horizontal = 3

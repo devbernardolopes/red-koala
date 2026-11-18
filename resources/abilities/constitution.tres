@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AbilityData" format=3 uid="uid://clxwq0fc1bmfd"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_n64wx"]
+
+[resource]
+script = ExtResource("1_n64wx")
+code = &"CON"
+id = &"constitution"
+name = "Constitution"
+metadata/_custom_type_script = "uid://dvjebr1pv3u5n"

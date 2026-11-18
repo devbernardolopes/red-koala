@@ -11,4 +11,4 @@ metadata/_custom_type_script = "uid://tdfdon0mic37"
 
 [node name="Polygon" type="Polygon2D" parent="." unique_id=442535499]
 color = Color(0, 1, 1, 1)
-polygon = PackedVector2Array(-24, 24, -24, -24, 24, -24, 24, 24)
+polygon = PackedVector2Array(-24, 24, -16, 0, -16, -8, -24, 0, -24, -8, -8, -16, -8, -24, 8, -24, 8, -16, 24, -8, 24, 0, 16, -8, 16, 0, 24, 24, 16, 24, 8, 16, -8, 16, -16, 24)

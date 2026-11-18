@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://qg6b363e8uex"]
+
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="1_4ceaf"]
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="1_bfylr"]
+[ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="2_7jhnw"]
+
+[resource]
+script = ExtResource("1_4ceaf")
+category = 3
+classes = Array[ExtResource("1_bfylr")]([ExtResource("2_7jhnw")])
+id = &"evocation"
+name = "Evocation"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

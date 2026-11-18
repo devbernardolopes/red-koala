@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AbilityData" format=3 uid="uid://d3rk5e0f0iu46"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_5m0k4"]
+
+[resource]
+script = ExtResource("1_5m0k4")
+code = &"STR"
+id = &"strength"
+name = "Strength"
+metadata/_custom_type_script = "uid://dvjebr1pv3u5n"
