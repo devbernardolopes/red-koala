@@ -1,0 +1,83 @@
+[gd_resource type="Theme" format=3 uid="uid://bx5vnqrok4xjc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qlbhd"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.09019608, 0.06666667, 0.1882353, 0.9019608)
+border_width_bottom = 1
+border_color = Color(0.17254902, 0.14117648, 0.3137255, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbn15"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.019607844, 0.011764706, 0.05882353, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2901961, 0.23921569, 0.47843137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j7xis"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.019607844, 0.011764706, 0.05882353, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.64705884, 0.54901963, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hrule"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d5h5u"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+bg_color = Color(0.22745098, 0.18431373, 0.4, 0.9019608)
+border_width_left = 2
+border_color = Color(0.7254902, 0.6509804, 1, 1)
+
+[resource]
+HudCount/base_type = &"Label"
+HudCount/colors/font_color = Color(0.49019608, 0.4509804, 0.61960787, 1)
+HudCount/font_sizes/font_size = 13
+HudEmpty/base_type = &"Label"
+HudEmpty/colors/font_color = Color(0.41568628, 0.38431373, 0.5019608, 1)
+HudEmpty/font_sizes/font_size = 14
+HudHeaderBar/base_type = &"PanelContainer"
+HudHeaderBar/styles/panel = SubResource("StyleBoxFlat_qlbhd")
+HudPanel/base_type = &"PanelContainer"
+HudPanel/styles/panel = SubResource("StyleBoxFlat_xbn15")
+HudPanelFocused/base_type = &"PanelContainer"
+HudPanelFocused/styles/panel = SubResource("StyleBoxFlat_j7xis")
+HudRow/base_type = &"PanelContainer"
+HudRow/styles/panel = SubResource("StyleBoxFlat_hrule")
+HudRowLabel/base_type = &"Label"
+HudRowLabel/colors/font_color = Color(0.84705883, 0.83137256, 0.9098039, 1)
+HudRowLabel/font_sizes/font_size = 15
+HudRowMarker/base_type = &"Label"
+HudRowMarker/colors/font_color = Color(0.7254902, 0.6509804, 1, 1)
+HudRowMarker/font_sizes/font_size = 15
+HudRowSelected/base_type = &"PanelContainer"
+HudRowSelected/styles/panel = SubResource("StyleBoxFlat_d5h5u")
+HudRowSuffix/base_type = &"Label"
+HudRowSuffix/colors/font_color = Color(0.56078434, 0.5254902, 0.6784314, 1)
+HudRowSuffix/font_sizes/font_size = 13
+HudRows/base_type = &"VBoxContainer"
+HudRows/constants/separation = 1
+HudTitle/base_type = &"Label"
+HudTitle/colors/font_color = Color(0.79607844, 0.7411765, 1, 1)
+HudTitle/font_sizes/font_size = 14

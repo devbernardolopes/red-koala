@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/hud/hud_panel.tscn" id="1_panel"]
+[ext_resource type="Script" path="res://scripts/hud/hud.gd" id="2_hud"]
+[ext_resource type="Theme" path="res://resources/themes/hud_theme.tres" id="3_theme"]
+
+[node name="Hud" type="CanvasLayer"]
+script = ExtResource("2_hud")
+
+[node name="Root" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("3_theme")
+
+[node name="JournalPanel" parent="Root" instance=ExtResource("1_panel")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 16.0
+offset_right = 320.0
+offset_bottom = 222.0
+grow_horizontal = 2
+grow_vertical = 1
+title = "Journal"
+selectable = false
+body_height = 180.0
+
+[node name="RightColumn" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -356.0
+offset_top = -400.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="InventoryPanel" parent="Root/RightColumn" instance=ExtResource("1_panel")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "Inventory"
+
+[node name="GroundPanel" parent="Root/RightColumn" instance=ExtResource("1_panel")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "Ground"

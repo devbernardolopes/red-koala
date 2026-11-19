@@ -1,0 +1,37 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hud/item_row.gd" id="1_row"]
+
+[node name="ItemRow" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 22)
+mouse_filter = 2
+theme_type_variation = &"HudRow"
+script = ExtResource("1_row")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Marker" type="Label" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_type_variation = &"HudRowMarker"
+text = ">"
+vertical_alignment = 1
+
+[node name="NameLabel" type="Label" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HudRowLabel"
+text = "Item"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="SuffixLabel" type="Label" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudRowSuffix"
+vertical_alignment = 1

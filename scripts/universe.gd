@@ -21,22 +21,16 @@ var entities_node: Node2D = null
 var walls_node: TileMapLayer = null
 ## Walls synthesised from [member walls_node]; they are not scene-tree nodes.
 var wall_proxies: Array[Wall] = []
-var journal_label: Label = null
-var ground_label: Label = null
-var inventory_control: Control = null
 
 var current_filter: Control = null
 var filter_list: Array[Control] = []
-
-#var current_inventory_item: Node2D = null
-
-var inventory_toggled: bool = false
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
 @onready var filters: CanvasLayer = $Filters
 @onready var board: Board = $Board
 @onready var board_debug_overlay: Node2D = $Board/BoardDebugOverlay
+@onready var hud: Hud = $Hud
 
 signal player_entity_changed
 
@@ -61,10 +55,7 @@ func _ready() -> void:
 	follow_camera = Helper.find_control(self, "FollowCamera")
 	if not follow_camera:
 		push_warning("No FollowCamera!")
-	journal_label = Helper.find_control(self, "Label", &"Journal")
-	ground_label = Helper.find_control(self, "Label", &"Ground")
-	inventory_control = Helper.find_control(self, "VBoxContainer", &"InventoryContainer")
-	#inventory_control = Helper.find_control(self, "MarginContainer", &"InventoryContainer")
+	hud.inventory_selection_changed.connect(_on_inventory_selection_changed)
 	_load_elements()
 	AudioManager.set_listener_target(current_player_entity)
 	if fog_of_war:
@@ -78,13 +69,12 @@ func _ready() -> void:
 			if filter.visible:
 				current_filter = filter
 		filter_list.append(null)
-	_update_journal()
 	_update_inventory()
-	_update_ground_label()
+	_update_ground()
 	_dispel_fog_of_war()
 	for entity in party:
 		entity.is_playable = true
-		entity.inventory_changed.connect(_update_inventory)
+		entity.inventory_changed.connect(_on_inventory_changed.bind(entity))
 	follow_camera.target = current_player_entity
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
 
@@ -116,28 +106,26 @@ func _input(event: InputEvent) -> void:
 			board_debug_overlay.queue_redraw()
 
 
-func _process(_delta: float) -> void:
-	inventory_toggled = false
-	if Input.is_action_pressed("inventory_modifier"):
-		inventory_toggled = true
-
-
 func _drop(item: Item) -> void:
 	if not item:
 		return
 	if not items_node:
 		return
-	current_player_entity.drop(current_player_entity.current_inventory_item)
+	if not current_player_entity.drop(item):
+		return
 	items_node.add_child(item)
 	board.register(item)
 	for e: Base in board.get_elements_at(board.get_origin(item)):
 		if e is TeleportPad:
 			(e as TeleportPad).teleport(item)
 	board.sync_from_position(item)
-	_update_ground_label()
+	_update_ground()
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if hud.handle_input(event):
+		get_viewport().set_input_as_handled()
+		return
 	if not current_player_entity:
 		return
 	if event.is_action_pressed("switch_player_entity"):
@@ -149,32 +137,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			current_player_entity = party.front()
 		_update_inventory()
-		_update_ground_label()
+		_update_ground()
 		get_viewport().set_input_as_handled()
 		return
-	if inventory_toggled:
-		if not current_player_entity.current_inventory_item:
-			return
-		var index: int = current_player_entity.inventory.find(current_player_entity.current_inventory_item)
-		if event.is_action_pressed("up"):
-			if index - 1 < 0:
-				current_player_entity.current_inventory_item = current_player_entity.inventory.back()
-			else:
-				current_player_entity.current_inventory_item = current_player_entity.inventory[index - 1]
-			_update_inventory()
-		elif event.is_action_pressed("down"):
-			if index + 1 > current_player_entity.inventory.size() - 1:
-				current_player_entity.current_inventory_item = current_player_entity.inventory.front()
-			else:
-				current_player_entity.current_inventory_item = current_player_entity.inventory[index + 1]
-			_update_inventory()
-		# The action "take" is being used here as an alternative for "equip".
-		elif event.is_action_pressed("take"):
-			if not current_player_entity.current_inventory_item:
-				return
-			current_player_entity.equip(current_player_entity.current_inventory_item)
-		return
-	
 	if event.is_action_pressed("take"):
 		_take_item()
 		get_viewport().set_input_as_handled()
@@ -214,61 +179,39 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
-func _update_journal() -> void:
-	if not journal_label:
-		return
-	if not current_player_entity:
-		return
-	journal_label.text = ""
-
-
 func _update_inventory() -> void:
-	if not inventory_control:
+	if not current_player_entity:
+		hud.set_inventory([])
 		return
+	var current: Item = current_player_entity.current_inventory_item
+	if not current or not current_player_entity.inventory.has(current):
+		current = null
+		if not current_player_entity.inventory.is_empty():
+			current = current_player_entity.inventory.front()
+	current_player_entity.current_inventory_item = current
+	hud.set_inventory(current_player_entity.inventory, current)
+
+
+func _update_ground() -> void:
+	if not current_player_entity:
+		hud.set_ground([])
+		return
+	var items: Array[Item] = []
+	for t: Base in board.get_elements_at(board.get_origin(current_player_entity)):
+		if t is Item and (t as Item).data is ItemData:
+			items.append(t as Item)
+	hud.set_ground(items)
+
+
+func _on_inventory_changed(entity: Entity) -> void:
+	if entity == current_player_entity:
+		_update_inventory()
+
+
+func _on_inventory_selection_changed(item: Item) -> void:
 	if not current_player_entity:
 		return
-	for child in inventory_control.get_children():
-		child.queue_free()
-	if not current_player_entity.inventory:
-		current_player_entity.current_inventory_item = null
-		return
-	for item in current_player_entity.inventory:
-		if not item:
-			continue
-		if not current_player_entity.current_inventory_item or not current_player_entity.inventory.has(current_player_entity.current_inventory_item):
-			current_player_entity.current_inventory_item = item
-		
-		var item_slot: ItemSlot = ItemSlot.new(item)
-		inventory_control.add_child(item_slot)
-
-		#var l: Label = Label.new()
-		#l.text = item.name
-		#if Helper.has_property(item, "data"):
-			#if not item.data:
-				#push_warning(item, " has no data!")
-			#else:
-				#l.text = item.data.name
-		#if item.is_equipped:
-			#l.text = "(e) " + l.text
-		#if current_player_entity.current_inventory_item == item:
-			##l.text = "-> " + l.text
-			#l.add_theme_color_override("font_outline_color", Color.RED)
-			#l.add_theme_constant_override("outline_size", 2)
-		#inventory_control.add_child(l)
-
-
-func _update_ground_label() -> void:
-	if not ground_label:
-		return
-	ground_label.text = ""
-	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(current_player_entity))
-	for t: Base in tiles_at:
-		if not t is Item:
-			continue
-		var item: Item = t
-		if item.data is ItemData:
-			ground_label.text += item.data.name + ", "
-	ground_label.text = ground_label.text.trim_suffix(", ")
+	current_player_entity.current_inventory_item = item
 
 
 func _dispel_fog_of_war() -> void:
@@ -289,15 +232,22 @@ func _dispel_fog_of_war() -> void:
 	
 
 func _take_item() -> void:
-	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(current_player_entity))
-	for t: Base in tiles_at:
-		if not t is Item:
-			continue
-		var item: Item = t
-		if item.data is ItemData and current_player_entity.take(item):
-			board.unregister(item)
-			_update_ground_label()
+	if not current_player_entity:
 		return
+	var tiles_at: Array[Base] = board.get_elements_at(board.get_origin(current_player_entity))
+	var item: Item = hud.get_selected_ground_item()
+	if not item or not tiles_at.has(item):
+		item = null
+		for t: Base in tiles_at:
+			if t is Item and (t as Item).data is ItemData:
+				item = t as Item
+				break
+	if not item:
+		return
+	if not current_player_entity.take(item):
+		return
+	board.unregister(item)
+	_update_ground()
 
 
 func _try_move(direction: Vector2) -> void:
@@ -476,7 +426,7 @@ func _move(element: Base, dir: Vector2i = Vector2i.ZERO) -> void:
 	if dir == Vector2i.ZERO:
 		return
 	board.move_element(element, board.get_origin(element) + dir)
-	_update_ground_label()
+	_update_ground()
 	for e: Base in board.get_elements_at(board.get_origin(element)):
 		if e is TeleportPad:
 			## @TODO: Should I check if destination is active too as condition

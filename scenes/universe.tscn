@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://cnvcmedluxbp1" path="res://scenes/entities/wizard.tscn" id="15_tqeu6"]
 [ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="16_5qg6o"]
 [ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="17_1dpui"]
+[ext_resource type="PackedScene" path="res://scenes/hud/hud.tscn" id="18_hud"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_56nod"]
 scenes/1/scene = ExtResource("1_h4s8v")
@@ -282,73 +283,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Hud" type="CanvasLayer" parent="." unique_id=1702739954]
-
-[node name="MarginContainer" type="MarginContainer" parent="Hud" unique_id=1434954394]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 32
-
-[node name="OLD_HUD" type="Control" parent="Hud/MarginContainer" unique_id=1223209228]
-visible = false
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Hud/MarginContainer/OLD_HUD" unique_id=1805363482]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="CenterContainer" type="CenterContainer" parent="Hud/MarginContainer/OLD_HUD/VBoxContainer" unique_id=381265648]
-layout_mode = 2
-
-[node name="Journal" type="Label" parent="Hud/MarginContainer/OLD_HUD/VBoxContainer/CenterContainer" unique_id=1210341252]
-layout_mode = 2
-text = "JOURNAL"
-
-[node name="CenterContainer2" type="CenterContainer" parent="Hud/MarginContainer/OLD_HUD/VBoxContainer" unique_id=1810850475]
-layout_mode = 2
-
-[node name="Ground" type="Label" parent="Hud/MarginContainer/OLD_HUD/VBoxContainer/CenterContainer2" unique_id=77566014]
-layout_mode = 2
-text = "GROUND"
-
-[node name="Control" type="Control" parent="Hud/MarginContainer" unique_id=1875490246]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Hud/MarginContainer/Control" unique_id=986862803]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="CenterContainer" type="CenterContainer" parent="Hud/MarginContainer/Control/VBoxContainer" unique_id=1091800270]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="InventoryPanel" type="Panel" parent="Hud/MarginContainer/Control/VBoxContainer/CenterContainer" unique_id=1479724717]
-layout_mode = 2
-
-[node name="InventoryContainer" type="VBoxContainer" parent="Hud/MarginContainer/Control/VBoxContainer/CenterContainer/InventoryPanel" unique_id=901991686]
-layout_mode = 0
-offset_left = -544.0
-offset_top = -284.0
-offset_right = -453.0
-offset_bottom = -207.0
-
-[node name="ItemSlotLabelPlaceholder" type="Label" parent="Hud/MarginContainer/Control/VBoxContainer/CenterContainer/InventoryPanel/InventoryContainer" unique_id=372731798]
-layout_mode = 2
-text = "INVENTORY"
+[node name="Hud" parent="." unique_id=1111322279 instance=ExtResource("18_hud")]
 
 [node name="FollowCamera" type="Camera2D" parent="." unique_id=523783693]
 script = ExtResource("9_5fwve")

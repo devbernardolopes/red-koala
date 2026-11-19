@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hud/hud_panel.gd" id="1_panel"]
+
+[node name="HudPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(340, 0)
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+script = ExtResource("1_panel")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HudHeaderBar"
+
+[node name="HeaderRow" type="HBoxContainer" parent="Layout/Header"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="TitleLabel" type="Label" parent="Layout/Header/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HudTitle"
+text = "PANEL"
+vertical_alignment = 1
+
+[node name="CountLabel" type="Label" parent="Layout/Header/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudCount"
+text = "0"
+vertical_alignment = 1
+
+[node name="Indicator" type="Label" parent="Layout/Header/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudCount"
+text = "-"
+vertical_alignment = 1
+
+[node name="Body" type="ScrollContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+horizontal_scroll_mode = 0
+
+[node name="BodyMargin" type="MarginContainer" parent="Layout/Body"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Rows" type="VBoxContainer" parent="Layout/Body/BodyMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HudRows"

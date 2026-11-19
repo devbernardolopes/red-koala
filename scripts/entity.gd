@@ -23,7 +23,7 @@ extends Base
 ## center.
 @export var fov: int = 4
 @export_category("In-Game")
-@export var inventory: Array[Node2D] = []
+@export var inventory: Array[Item] = []
 ## Items that this entity will auto-take when entering the same tile.
 @export var auto_take: Array[Item] = []
 @export var is_invisible: bool = false:
@@ -60,7 +60,7 @@ var is_playable: bool = false:
 		else:
 			if visible_notifier:
 				visible_notifier.queue_free()
-var current_inventory_item: Node2D = null
+var current_inventory_item: Item = null
 
 signal inventory_changed
 
