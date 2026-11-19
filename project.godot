@@ -25,6 +25,7 @@ GameManager="*uid://fmh1yqm4ohc8"
 MusicPlayer="*uid://bo0j55y6gx1u8"
 AudioManager="*uid://ch1je27gt2ghb"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
+Journal="*res://scripts/journal.gd"
 
 [display]
 

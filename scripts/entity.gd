@@ -2,8 +2,18 @@
 class_name Entity
 extends Base
 
+enum EquipResult {
+	EQUIPPED,
+	UNEQUIPPED,
+	REFUSED_CURSED,
+	NO_BODY_PART,
+	INVALID,
+}
+
 @export_category("Basic")
 @export var entity_class: ClassData = null
+## Optional name used by the journal; falls back to the node name when empty.
+@export var display_name: String = ""
 #@export var entity_race: RaceData = null
 @export_category("Abilities")
 @export_range(1, 30) var stength: int = 10
@@ -95,6 +105,12 @@ func get_move_mode() -> Helper.MoveMode:
 	return Helper.MoveMode.WALK
 
 
+func get_display_name() -> String:
+	if display_name.is_empty():
+		return name
+	return display_name
+
+
 func _toggle_invisible(toggle: bool) -> void:
 	if not polygon:
 		return
@@ -137,50 +153,50 @@ func _toggle_flying(toggle: bool) -> void:
 
 ## Also acts as the unequip action.
 ## If an item is [Helper.MysticModifier.CURSED] then it can't be unequiped.
-func equip(item: Item) -> void:
+func equip(item: Item) -> EquipResult:
 	if not data:
-		return
+		return EquipResult.INVALID
 	if not (data as EntityData).race:
-		return
+		return EquipResult.INVALID
 	if not (data as EntityData).race.body:
-		return
+		return EquipResult.INVALID
 	if not item:
-		return
+		return EquipResult.INVALID
 	if not item.data:
-		return
+		return EquipResult.INVALID
 	if not inventory.has(item):
-		return
+		return EquipResult.INVALID
+	var result: EquipResult = EquipResult.INVALID
 	# Unequip item.
 	if item.is_equipped:
 		if item.mystic_modifier == Helper.MysticModifier.CURSED:
 			# Can't unequip a cursed item.
-			# TODO: Must add some sort of message (in the Journal).
-			pass
+			result = EquipResult.REFUSED_CURSED
 		else:
-			# TODO: Must add some sort of message (in the Journal).
 			for bodypart in (data as EntityData).race.body:
 				if bodypart.equipped_item == item:
 					bodypart.equipped_item = null
 					item.is_equipped = false
 					remove_child(item)
+					result = EquipResult.UNEQUIPPED
 					break
 	else:
 		if not (item.data as ItemData).equipped_on:
-			return
-		var can_equip: bool = false
+			return EquipResult.INVALID
 		for bodypart in (item.data as ItemData).equipped_on:
 			if (data as EntityData).race.body.has(bodypart):
 				var bp: AnatomyData = (data as EntityData).race.body.get((data as EntityData).race.body.find(bodypart))
 				if not bp.equipped_item:
 					bp.equipped_item = item
-					can_equip = true
+					item.is_equipped = true
+					item.position = Vector2.ZERO
+					add_child(item)
+					result = EquipResult.EQUIPPED
 					break
-		# TODO: Must add some sort of message (in the Journal).
-		if can_equip:
-			item.is_equipped = true
-			item.position = Vector2.ZERO
-			add_child(item)
+		if result == EquipResult.INVALID:
+			result = EquipResult.NO_BODY_PART
 	inventory_changed.emit()
+	return result
 
 
 func take(item: Item) -> bool:

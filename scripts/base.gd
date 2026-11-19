@@ -67,3 +67,8 @@ func toggle_light(toggle: bool) -> void:
 	if not light:
 		return
 	light.enabled = toggle
+
+
+## Name shown in the journal and other UI. Subclasses may override it.
+func get_display_name() -> String:
+	return name

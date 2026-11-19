@@ -61,6 +61,7 @@ func _reveal_door() -> void:
 	if has_been_revealed:
 		return
 	has_been_revealed = true
+	Journal.door_revealed()
 	AudioManager.play(Helper.IMPACT_BELL_HEAVY_001)
 	if dispels:
 		dispels.visible = false

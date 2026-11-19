@@ -10,10 +10,12 @@ extends CanvasLayer
 ## [code]equip[/code]) are still handled by the universe; it queries the
 ## selection through [method get_selected_ground_item] and
 ## [method get_selected_inventory_item].
+##
+## The journal is owned by the [code]Journal[/code] autoload; this node only
+## renders it.
 
 signal inventory_selection_changed(item: Item)
 
-const JOURNAL_MAX_MESSAGES: int = 200
 ## Every action that moves the active entity. While the inventory modifier is
 ## held they are swallowed by the HUD so numpad diagonals cannot leak into
 ## gameplay.
@@ -28,13 +30,15 @@ const MOVE_ACTIONS: Array[StringName] = [
 
 var _inventory_items: Array[Item] = []
 var _ground_items: Array[Item] = []
-var _journal_messages: Array[String] = []
 var _focused_panel: HudPanel = null
 
 
 func _ready() -> void:
 	journal_panel.selectable = false
 	inventory_panel.selection_changed.connect(_on_inventory_selection_changed)
+	Journal.entry_added.connect(_on_journal_entry_added)
+	Journal.cleared.connect(_on_journal_cleared)
+	_refresh_journal()
 	_set_focus(inventory_panel)
 
 
@@ -91,24 +95,6 @@ func handle_input(event: InputEvent) -> bool:
 	return false
 
 
-## Appends one line to the journal and scrolls to it.
-func add_message(message: String) -> void:
-	if message.is_empty():
-		return
-	_journal_messages.append(message)
-	_trim_journal()
-	_refresh_journal()
-
-
-## Replaces the whole journal.
-func set_messages(messages: PackedStringArray) -> void:
-	_journal_messages.clear()
-	for message: String in messages:
-		_journal_messages.append(message)
-	_trim_journal()
-	_refresh_journal()
-
-
 func _handle_navigation(action: StringName) -> void:
 	match action:
 		&"up", &"down":
@@ -135,31 +121,20 @@ func _make_row(item: Item) -> Dictionary:
 	if item.mystic_modifier == Helper.MysticModifier.CURSED:
 		suffix = (suffix + " [C]").strip_edges()
 	return {
-		"text": _item_name(item),
+		"text": item.get_display_name(),
 		"suffix": suffix,
 		"meta": item,
 		"dim": false,
 	}
 
 
-func _item_name(item: Item) -> String:
-	if item.data and not item.data.name.is_empty():
-		return item.data.name
-	return item.name
-
-
 func _sort_items_by_name(a: Item, b: Item) -> bool:
-	return _item_name(a).nocasecmp_to(_item_name(b)) < 0
-
-
-func _trim_journal() -> void:
-	while _journal_messages.size() > JOURNAL_MAX_MESSAGES:
-		_journal_messages.pop_front()
+	return a.get_display_name().nocasecmp_to(b.get_display_name()) < 0
 
 
 func _refresh_journal() -> void:
 	var rows: Array[Dictionary] = []
-	for message: String in _journal_messages:
+	for message: String in Journal.entries:
 		rows.append({
 			"text": message,
 			"suffix": "",
@@ -168,6 +143,14 @@ func _refresh_journal() -> void:
 		})
 	journal_panel.set_rows(rows)
 	journal_panel.scroll_to_bottom()
+
+
+func _on_journal_entry_added(_text: String) -> void:
+	_refresh_journal()
+
+
+func _on_journal_cleared() -> void:
+	journal_panel.set_rows([])
 
 
 func _on_inventory_selection_changed(_index: int, meta: Variant) -> void:

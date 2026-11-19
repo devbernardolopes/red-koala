@@ -6,6 +6,7 @@ const WALL_SCENE = preload("res://scenes/wall.tscn")
 @export var current_player_entity: Entity = null:
 	set(v):
 		current_player_entity = v
+		Journal.speaker = v
 		if current_player_entity:
 			if follow_camera:
 				follow_camera.target = current_player_entity
@@ -56,6 +57,9 @@ func _ready() -> void:
 	if not follow_camera:
 		push_warning("No FollowCamera!")
 	hud.inventory_selection_changed.connect(_on_inventory_selection_changed)
+	Journal.speaker = current_player_entity
+	if current_player_entity:
+		Journal.entered_dungeon()
 	_load_elements()
 	AudioManager.set_listener_target(current_player_entity)
 	if fog_of_war:
@@ -112,7 +116,10 @@ func _drop(item: Item) -> void:
 	if not items_node:
 		return
 	if not current_player_entity.drop(item):
+		if item.is_equipped and item.mystic_modifier == Helper.MysticModifier.CURSED:
+			Journal.refused_removal(item)
 		return
+	Journal.dropped(item)
 	items_node.add_child(item)
 	board.register(item)
 	for e: Base in board.get_elements_at(board.get_origin(item)):
@@ -136,6 +143,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			current_player_entity = party.get(index + 1)
 		else:
 			current_player_entity = party.front()
+		Journal.took_the_lead()
 		_update_inventory()
 		_update_ground()
 		get_viewport().set_input_as_handled()
@@ -150,9 +158,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	# The action "equip" also unequips.
 	if event.is_action_pressed("equip"):
-		if not current_player_entity.current_inventory_item:
+		var item: Item = current_player_entity.current_inventory_item
+		if not item:
 			return
-		current_player_entity.equip(current_player_entity.current_inventory_item)
+		match current_player_entity.equip(item):
+			Entity.EquipResult.EQUIPPED:
+				Journal.equipped(item)
+			Entity.EquipResult.UNEQUIPPED:
+				Journal.unequipped(item)
+			Entity.EquipResult.REFUSED_CURSED:
+				Journal.refused_removal(item)
 		get_viewport().set_input_as_handled()
 		return
 	
@@ -246,6 +261,7 @@ func _take_item() -> void:
 		return
 	if not current_player_entity.take(item):
 		return
+	Journal.took(item)
 	board.unregister(item)
 	_update_ground()
 

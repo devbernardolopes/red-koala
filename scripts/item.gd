@@ -10,3 +10,9 @@ func _ready() -> void:
 	super._ready()
 	collision_layer = PhysicsLayer.ITEMS
 	collision_mask = 0
+
+
+func get_display_name() -> String:
+	if data and not data.name.is_empty():
+		return data.name
+	return name

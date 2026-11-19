@@ -22,6 +22,8 @@ func teleport(element: Node2D) -> void:
 	if not destination:
 		return
 	element.position = destination.position
+	if element == Journal.speaker:
+		Journal.teleported()
 	if destination.dispels:
 		destination.dispels.visible = false
 	AudioManager.play(Helper.LASER_LARGE_004)
