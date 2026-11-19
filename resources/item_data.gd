@@ -5,3 +5,4 @@ extends BaseData
 @export var weapon_data: WeaponData = null
 @export var armor_data: ArmorData = null
 @export var consumable_data: ConsumableData = null
+@export var equipped_on: Array[AnatomyData] = []

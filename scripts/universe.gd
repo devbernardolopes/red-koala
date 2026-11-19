@@ -184,7 +184,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	# The action "equip" also unequips.
-	if event.is_action_pssed("equip"):
+	if event.is_action_pressed("equip"):
 		if not current_player_entity.current_inventory_item:
 			return
 		current_player_entity.equip(current_player_entity.current_inventory_item)
@@ -194,12 +194,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	var direction: Vector2 = Vector2.ZERO
 	if event.is_action_pressed("up"):
 		direction = Vector2.UP
+	elif event.is_action_pressed("up_right"):
+		direction = Vector2.UP + Vector2.RIGHT
 	elif event.is_action_pressed("down"):
 		direction = Vector2.DOWN
+	elif event.is_action_pressed("down_right"):
+		direction = Vector2.DOWN + Vector2.RIGHT
 	elif event.is_action_pressed("left"):
 		direction = Vector2.LEFT
+	elif event.is_action_pressed("down_left"):
+		direction = Vector2.DOWN + Vector2.LEFT
 	elif event.is_action_pressed("right"):
 		direction = Vector2.RIGHT
+	elif event.is_action_pressed("up_left"):
+		direction = Vector2.UP + Vector2.LEFT
 	if direction == Vector2.ZERO:
 		return
 	_try_move(direction)

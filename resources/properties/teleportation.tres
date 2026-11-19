@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://dcrpf1tsuyd37"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_y8pe7"]
+
+[resource]
+script = ExtResource("1_y8pe7")
+id = &"teleportation"
+name = "Teleportation"
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

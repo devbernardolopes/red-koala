@@ -1,11 +1,19 @@
 [gd_resource type="Resource" script_class="EntityData" format=3 uid="uid://o11lt2sgcc4i"]
 
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_58y1a"]
 [ext_resource type="Script" uid="uid://b3qjjrx38oqgu" path="res://resources/entity_data.gd" id="1_s57hb"]
+[ext_resource type="Resource" uid="uid://uvscf4jugu68" path="res://resources/properties/flight.tres" id="2_rbh1c"]
+[ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="3_on2qt"]
+[ext_resource type="Resource" uid="uid://d14l6pyrrwm0f" path="res://resources/races/dragon.tres" id="3_rbh1c"]
+[ext_resource type="Resource" uid="uid://yw6f5dbngtct" path="res://resources/resistances/fire.tres" id="4_r7mt5"]
 
 [resource]
 script = ExtResource("1_s57hb")
 base_hit_points = 100
 base_mana_points = 100
+race = ExtResource("3_rbh1c")
+resistances = Array[ExtResource("3_on2qt")]([ExtResource("4_r7mt5")])
+properties = Array[ExtResource("1_58y1a")]([ExtResource("2_rbh1c")])
 id = &"red_dragon"
 name = "Red Dragon"
 metadata/_custom_type_script = "uid://b3qjjrx38oqgu"

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://d17dp5n4bagfc"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_xybot"]
+
+[resource]
+script = ExtResource("1_xybot")
+id = &"teleport_control"
+name = "Teleport Control"
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

@@ -4,7 +4,7 @@ extends Base
 
 @export_category("Basic")
 @export var entity_class: ClassData = null
-@export var entity_race: RaceData = null
+#@export var entity_race: RaceData = null
 @export_category("Abilities")
 @export_range(1, 30) var stength: int = 10
 @export_range(1, 30) var dexterity: int = 10
@@ -24,6 +24,8 @@ extends Base
 @export var fov: int = 4
 @export_category("In-Game")
 @export var inventory: Array[Node2D] = []
+## Items that this entity will auto-take when entering the same tile.
+@export var auto_take: Array[Item] = []
 @export var is_invisible: bool = false:
 	set(v):
 		is_invisible = v
@@ -38,6 +40,7 @@ extends Base
 		_toggle_flying(v)
 @export var can_see_invisible: bool = false
 @export_category("Mechanics")
+#@export var facing: 
 ## This should be relative to the turn-based mechanic. Albeit I am not sure if
 ## it should be called `energy` instead.
 @export var speed: float = 10.0
@@ -71,11 +74,14 @@ func _ready() -> void:
 		if not visible_notifier:
 			visible_notifier = VisibleOnScreenNotifier2D.new()
 			add_child(visible_notifier)
-		push_warning("No visible_notifier!")
+		push_warning(name, " = No visible_notifier!")
+	if not data:
+		push_warning(name, " = No data!")
+		return
+	if not data.race:
+		push_warning(name, " = No race!")
 	if not entity_class:
 		push_warning(name, " = No entity class!")
-	if not entity_race:
-		push_warning("No entity race!")
 	_toggle_invisible(is_invisible)
 	_toggle_phasing(is_phasing)
 	_toggle_flying(is_flying)
@@ -129,23 +135,55 @@ func _toggle_flying(toggle: bool) -> void:
 		if flying_tween:
 			flying_tween.stop()
 
-
-func equip(item: Node2D) -> void:
+## Also acts as the unequip action.
+## If an item is [Helper.MysticModifier.CURSED] then it can't be unequiped.
+func equip(item: Item) -> void:
+	if not data:
+		return
+	if not (data as EntityData).race:
+		return
+	if not (data as EntityData).race.body:
+		return
 	if not item:
+		return
+	if not item.data:
 		return
 	if not inventory.has(item):
 		return
+	# Unequip item.
 	if item.is_equipped:
-		item.is_equipped = false
-		remove_child(item)
+		if item.mystic_modifier == Helper.MysticModifier.CURSED:
+			# Can't unequip a cursed item.
+			# TODO: Must add some sort of message (in the Journal).
+			pass
+		else:
+			# TODO: Must add some sort of message (in the Journal).
+			for bodypart in (data as EntityData).race.body:
+				if bodypart.equipped_item == item:
+					bodypart.equipped_item = null
+					item.is_equipped = false
+					remove_child(item)
+					break
 	else:
-		item.is_equipped = true
-		item.position = Vector2.ZERO
-		add_child(item)
+		if not (item.data as ItemData).equipped_on:
+			return
+		var can_equip: bool = false
+		for bodypart in (item.data as ItemData).equipped_on:
+			if (data as EntityData).race.body.has(bodypart):
+				var bp: AnatomyData = (data as EntityData).race.body.get((data as EntityData).race.body.find(bodypart))
+				if not bp.equipped_item:
+					bp.equipped_item = item
+					can_equip = true
+					break
+		# TODO: Must add some sort of message (in the Journal).
+		if can_equip:
+			item.is_equipped = true
+			item.position = Vector2.ZERO
+			add_child(item)
 	inventory_changed.emit()
 
 
-func take(item: Node2D) -> bool:
+func take(item: Item) -> bool:
 	if not item:
 		return false
 	item.get_parent().remove_child(item)
@@ -154,11 +192,15 @@ func take(item: Node2D) -> bool:
 	return true
 
 
-func drop(item: Node2D) -> bool:
+func drop(item: Item) -> bool:
 	if not item:
 		return false
 	if item.is_equipped:
-		equip(item)
+		if item.mystic_modifier == Helper.MysticModifier.CURSED:
+			return false
+		else:
+			# Unequip item.
+			equip(item)
 	inventory.erase(item)
 	item.position = position
 	inventory_changed.emit()

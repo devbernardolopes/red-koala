@@ -1,6 +1,24 @@
 class_name Helper
 extends Node
 
+enum AnatomySide {
+	LEFT = -1, 
+	CENTER = 0,
+	RIGHT = 1, 
+}
+
+enum AnatomyPosition {
+	BACK = -1, 
+	CENTER = 0,
+	FRONT = 1, 
+}
+
+enum MysticModifier {
+	CURSED = -1,
+	NONE = 0,
+	BLESSED = 1,
+}
+
 enum SkillCategory {
 	DEFENSIVE = 1,
 	OFFENSIVE = 2,

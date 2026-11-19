@@ -1,12 +1,16 @@
 [gd_scene format=3 uid="uid://bwjgakp7xo0j0"]
 
-[ext_resource type="Script" uid="uid://plobxhw4oh4f" path="res://scripts/hero.gd" id="1_3uyx6"]
+[ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_om1bl"]
+[ext_resource type="Resource" uid="uid://lb8i2y6i7bk4" path="res://resources/classes/barbarian.tres" id="2_s30xn"]
+[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="3_0skjh"]
 
 [node name="Hero" type="Area2D" unique_id=2053302838]
 collision_layer = 4
 collision_mask = 7
-script = ExtResource("1_3uyx6")
-color = Color(0, 1, 1, 1)
+script = ExtResource("1_om1bl")
+entity_class = ExtResource("2_s30xn")
+data = ExtResource("3_0skjh")
+walkable = false
 metadata/_custom_type_script = "uid://tdfdon0mic37"
 
 [node name="Polygon" type="Polygon2D" parent="." unique_id=442535499]

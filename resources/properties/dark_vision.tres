@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://bweqnk286bshg"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_5wifl"]
+
+[resource]
+script = ExtResource("1_5wifl")
+id = &"dark_vision"
+name = "Dark Vision"
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

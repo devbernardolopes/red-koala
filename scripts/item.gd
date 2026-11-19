@@ -2,6 +2,7 @@
 class_name Item
 extends Base
 
+@export var mystic_modifier: Helper.MysticModifier = Helper.MysticModifier.NONE
 @export var is_equipped: bool = false
 
 

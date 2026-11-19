@@ -16,13 +16,11 @@
 [ext_resource type="PackedScene" uid="uid://dunrntu6tlcxj" path="res://scenes/entities/dragon.tscn" id="12_fbuf2"]
 [ext_resource type="Shader" uid="uid://cus4kgcwegtc8" path="res://shaders/simple_crt_vhs.gdshader" id="12_yanup"]
 [ext_resource type="Shader" uid="uid://saevj778gi1u" path="res://shaders/vhs_and_crt_monitor.gdshader" id="13_h8wxb"]
-[ext_resource type="Resource" uid="uid://lb8i2y6i7bk4" path="res://resources/classes/barbarian.tres" id="14_4yhaq"]
 [ext_resource type="Script" uid="uid://2fpq55evhl33" path="res://scripts/board.gd" id="14_board"]
-[ext_resource type="Resource" uid="uid://dot46qba5gf2j" path="res://resources/races/humanoid.tres" id="15_ouimb"]
 [ext_resource type="Script" uid="uid://dwgj8n4pla4e0" path="res://scripts/board_debug_overlay.gd" id="15_overlay"]
 [ext_resource type="PackedScene" uid="uid://cnvcmedluxbp1" path="res://scenes/entities/wizard.tscn" id="15_tqeu6"]
+[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="16_5qg6o"]
 [ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="17_1dpui"]
-[ext_resource type="Resource" uid="uid://d14l6pyrrwm0f" path="res://resources/races/dragon.tres" id="17_ouimb"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_56nod"]
 scenes/1/scene = ExtResource("1_h4s8v")
@@ -102,10 +100,13 @@ script = ExtResource("15_overlay")
 position = Vector2(160, 480)
 destination = NodePath("../TeleportPad2")
 
-[node name="TeleportPad2" parent="Decals" unique_id=974007912 node_paths=PackedStringArray("destination", "dispels") instance=ExtResource("2_3yicu")]
+[node name="TeleportPad2" parent="Decals" unique_id=974007912 node_paths=PackedStringArray("destination") instance=ExtResource("2_3yicu")]
 position = Vector2(1504, 160)
+destination = NodePath("../TeleportPad3")
+
+[node name="TeleportPad3" parent="Decals" unique_id=2024173553 node_paths=PackedStringArray("destination") instance=ExtResource("2_3yicu")]
+position = Vector2(96, 672)
 destination = NodePath("../TeleportPad")
-dispels = NodePath("../../FogOfWar/Fog0005")
 
 [node name="Goals" type="Node2D" parent="." unique_id=2000791855]
 
@@ -140,6 +141,18 @@ position = Vector2(96, 224)
 
 [node name="Gold" parent="Items" unique_id=481641018 instance=ExtResource("6_7f6e7")]
 position = Vector2(800, 736)
+
+[node name="Gold2" parent="Items" unique_id=669560451 instance=ExtResource("6_7f6e7")]
+position = Vector2(352, 928)
+
+[node name="Gold3" parent="Items" unique_id=1989974843 instance=ExtResource("6_7f6e7")]
+position = Vector2(544, 864)
+
+[node name="Gold4" parent="Items" unique_id=1057998627 instance=ExtResource("6_7f6e7")]
+position = Vector2(608, 864)
+
+[node name="Gold5" parent="Items" unique_id=1131131790 instance=ExtResource("6_7f6e7")]
+position = Vector2(864, 800)
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 
@@ -222,21 +235,19 @@ tile_set = SubResource("TileSet_m7uww")
 [node name="Hero" parent="Entities" unique_id=365190293 instance=ExtResource("2_pol6k")]
 modulate = Color(1, 1, 1, 0.128)
 position = Vector2(224, 96)
-entity_class = ExtResource("14_4yhaq")
-entity_race = ExtResource("15_ouimb")
-walkable = false
 
 [node name="Dragon" parent="Entities" unique_id=148953585 instance=ExtResource("12_fbuf2")]
 position = Vector2(128, -64)
 entity_class = ExtResource("17_1dpui")
-entity_race = ExtResource("17_ouimb")
 
 [node name="Wizard" parent="Entities" unique_id=1093125361 instance=ExtResource("15_tqeu6")]
 position = Vector2(224, 224)
+xp = 0
 is_invisible = true
 is_phasing = true
 is_flying = true
 can_see_invisible = true
+data = ExtResource("16_5qg6o")
 walkable = false
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
