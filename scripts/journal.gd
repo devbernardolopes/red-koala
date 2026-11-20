@@ -55,6 +55,14 @@ func refused_removal(item: Item, actor: Entity = null) -> void:
 	add("%s could not remove the cursed %s" % [_actor_name(actor), _item_name(item, false)])
 
 
+func attacked(attacker: Entity, target: Entity) -> void:
+	add("%s attacks %s" % [_actor_name(attacker), _actor_name(target)])
+
+
+func waited(actor: Entity = null) -> void:
+	add("%s waits" % _actor_name(actor))
+
+
 func door_revealed() -> void:
 	add("A door was revealed")
 

@@ -27,6 +27,7 @@
 [ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="17_1dpui"]
 [ext_resource type="PackedScene" path="res://scenes/hud/hud.tscn" id="18_hud"]
 [ext_resource type="PackedScene" uid="uid://t5l8m4hry5bc" path="res://scenes/entities/bandit.tscn" id="22_ij8xa"]
+[ext_resource type="Script" uid="uid://d1ife4iw162dq" path="res://scripts/turn/turn_manager.gd" id="23_turn"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_56nod"]
 scenes/1/scene = ExtResource("1_h4s8v")
@@ -91,7 +92,7 @@ shader_parameter/vignette_opacity = 0.5
 [node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("current_player_entity", "party")]
 script = ExtResource("1_uc3kj")
 current_player_entity = NodePath("Entities/Wizard")
-party = [NodePath("Entities/Hero"), NodePath("Entities/Wizard")]
+party = [NodePath("Entities/Wizard")]
 
 [node name="Board" type="Node" parent="." unique_id=1430288918]
 script = ExtResource("14_board")
@@ -99,6 +100,9 @@ script = ExtResource("14_board")
 [node name="BoardDebugOverlay" type="Node2D" parent="Board" unique_id=1361417077]
 visible = false
 script = ExtResource("15_overlay")
+
+[node name="TurnManager" type="Node" parent="." unique_id=1860433876]
+script = ExtResource("23_turn")
 
 [node name="Decals" type="Node2D" parent="." unique_id=973998349]
 
@@ -250,7 +254,7 @@ tile_set = SubResource("TileSet_m7uww")
 
 [node name="Entities" type="Node2D" parent="." unique_id=199588511]
 
-[node name="Hero" parent="Entities" unique_id=365190293 instance=ExtResource("2_pol6k")]
+[node name="Barbarian" parent="Entities" unique_id=365190293 instance=ExtResource("2_pol6k")]
 modulate = Color(1, 1, 1, 0.128)
 position = Vector2(224, 96)
 
@@ -265,11 +269,13 @@ is_invisible = true
 is_phasing = true
 is_flying = true
 can_see_invisible = true
+speed = 100.0
 data = ExtResource("16_5qg6o")
 walkable = false
 
 [node name="Bandit" parent="Entities" unique_id=1169498443 instance=ExtResource("22_ij8xa")]
 position = Vector2(800, 288)
+speed = 100.0
 data = ExtResource("16_5qg6o")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]

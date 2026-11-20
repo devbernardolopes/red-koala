@@ -1,0 +1,28 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://cx36usd8yhwq4"]
+
+[ext_resource type="Script" uid="uid://cbamwna44k6ok" path="res://scripts/ai/tasks/target_in_melee_range.gd" id="2_melee"]
+[ext_resource type="Script" uid="uid://dui7a8ngv0lli" path="res://scripts/ai/tasks/attack_target.gd" id="3_attack"]
+[ext_resource type="Script" uid="uid://coryx4pkgxtcn" path="res://scripts/ai/tasks/step_toward_target.gd" id="4_step"]
+[ext_resource type="Script" uid="uid://cr7u0c76yxiis" path="res://scripts/ai/tasks/wait_turn.gd" id="5_wait"]
+
+[sub_resource type="BTCondition" id="BTCondition_melee"]
+script = ExtResource("2_melee")
+
+[sub_resource type="BTAction" id="BTAction_attack"]
+script = ExtResource("3_attack")
+
+[sub_resource type="BTSequence" id="BTSequence_attack"]
+custom_name = "Attack when ready"
+children = [SubResource("BTCondition_melee"), SubResource("BTAction_attack")]
+
+[sub_resource type="BTAction" id="BTAction_step"]
+script = ExtResource("4_step")
+
+[sub_resource type="BTAction" id="BTAction_wait"]
+script = ExtResource("5_wait")
+
+[sub_resource type="BTSelector" id="BTSelector_root"]
+children = [SubResource("BTSequence_attack"), SubResource("BTAction_step"), SubResource("BTAction_wait")]
+
+[resource]
+root_task = SubResource("BTSelector_root")

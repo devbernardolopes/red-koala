@@ -56,6 +56,10 @@ enum EquipResult {
 @export var speed: float = 10.0
 @export var team: Helper.EntityTeam = Helper.EntityTeam.NEUTRAL
 
+## Action points left in the current round. The turn manager refills this from
+## [member speed] at the start of every round and spends one action's worth per
+## action taken.
+var energy: int = 0
 var phasing_tween: Tween = null
 var flying_tween: Tween = null
 var visible_notifier: VisibleOnScreenNotifier2D = null

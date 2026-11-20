@@ -112,6 +112,15 @@ const LEVEL_CHART: Dictionary = {
 }
 
 
+## Whether [param a] considers [param b] an enemy. Neutral entities never
+## initiate hostilities, but they can still be attacked by a foe.
+static func are_hostile(a: Entity, b: Entity) -> bool:
+	if not a or not b or a == b:
+		return false
+	return (a.team == EntityTeam.FOE and b.team == EntityTeam.FRIEND) \
+			or (a.team == EntityTeam.FRIEND and b.team == EntityTeam.FOE)
+
+
 static func has_property(target: Node, property: String) -> bool:
 	if not target:
 		return false

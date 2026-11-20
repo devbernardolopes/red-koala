@@ -1,3 +1,4 @@
+class_name Universe
 extends Node2D
 
 const LEVELS_DIR: String = "res://resources/levels/"
@@ -32,6 +33,7 @@ var filter_list: Array[Control] = []
 @onready var board: Board = $Board
 @onready var board_debug_overlay: Node2D = $Board/BoardDebugOverlay
 @onready var hud: Hud = $Hud
+@onready var turn_manager: TurnManager = $TurnManager
 
 signal player_entity_changed
 
@@ -78,9 +80,14 @@ func _ready() -> void:
 	_dispel_fog_of_war()
 	for entity in party:
 		entity.is_playable = true
+		entity.team = Helper.EntityTeam.FRIEND
 		entity.inventory_changed.connect(_on_inventory_changed.bind(entity))
 	follow_camera.target = current_player_entity
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
+	turn_manager.setup(self)
+	# Let the scene finish becoming ready first: brains initialize their
+	# behavior trees against the scene root when it is ready.
+	turn_manager.start.call_deferred()
 
 
 func _input(event: InputEvent) -> void:
@@ -108,25 +115,10 @@ func _input(event: InputEvent) -> void:
 		board_debug_overlay.visible = not board_debug_overlay.visible
 		if board_debug_overlay.visible:
 			board_debug_overlay.queue_redraw()
-
-
-func _drop(item: Item) -> void:
-	if not item:
-		return
-	if not items_node:
-		return
-	if not current_player_entity.drop(item):
-		if item.is_equipped and item.mystic_modifier == Helper.MysticModifier.CURSED:
-			Journal.refused_removal(item)
-		return
-	Journal.dropped(item)
-	items_node.add_child(item)
-	board.register(item)
-	for e: Base in board.get_elements_at(board.get_origin(item)):
-		if e is TeleportPad:
-			(e as TeleportPad).teleport(item)
-	board.sync_from_position(item)
-	_update_ground()
+	if event.is_action_pressed("debug_toggle_turn_delay"):
+		if not turn_manager:
+			return
+		turn_manager.instant = not turn_manager.instant
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -135,25 +127,23 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if not current_player_entity:
 		return
+	if not turn_manager or not turn_manager.is_player_turn():
+		return
 	if event.is_action_pressed("switch_player_entity"):
-		if not party or party.is_empty() or party.size() == 1:
-			return
-		var index: int = party.find(current_player_entity)
-		if index + 1 < party.size():
-			current_player_entity = party.get(index + 1)
-		else:
-			current_player_entity = party.front()
-		Journal.took_the_lead()
-		_update_inventory()
-		_update_ground()
+		if turn_manager.request_wait():
+			Journal.waited(current_player_entity)
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("take"):
 		_take_item()
+		turn_manager.on_player_action()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("drop"):
-		_drop(current_player_entity.current_inventory_item)
+		var dropped: Item = current_player_entity.current_inventory_item
+		if dropped:
+			turn_manager.actions.drop(current_player_entity, dropped)
+			turn_manager.on_player_action()
 		get_viewport().set_input_as_handled()
 		return
 	# The action "equip" also unequips.
@@ -161,13 +151,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		var item: Item = current_player_entity.current_inventory_item
 		if not item:
 			return
-		match current_player_entity.equip(item):
-			Entity.EquipResult.EQUIPPED:
-				Journal.equipped(item)
-			Entity.EquipResult.UNEQUIPPED:
-				Journal.unequipped(item)
-			Entity.EquipResult.REFUSED_CURSED:
-				Journal.refused_removal(item)
+		turn_manager.actions.equip(current_player_entity, item)
+		turn_manager.on_player_action()
 		get_viewport().set_input_as_handled()
 		return
 	
@@ -190,7 +175,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		direction = Vector2.UP + Vector2.LEFT
 	if direction == Vector2.ZERO:
 		return
-	_try_move(direction)
+	var dir: Vector2i = Vector2i(int(direction.x), int(direction.y))
+	turn_manager.actions.move(current_player_entity, dir)
+	turn_manager.on_player_action()
 	get_viewport().set_input_as_handled()
 
 
@@ -269,68 +256,41 @@ func _take_item() -> void:
 				break
 	if not item:
 		return
-	if not current_player_entity.take(item):
+	turn_manager.actions.take(current_player_entity, item)
+
+
+## Switches the entity the player controls. Called by [TurnManager] when a
+## playable actor's turn begins.
+func set_active_player(entity: Entity) -> void:
+	if not entity:
 		return
-	Journal.took(item)
-	board.unregister(item)
+	current_player_entity = entity
+	_update_inventory()
 	_update_ground()
+	_dispel_fog_of_war()
+	AudioManager.set_listener_target(entity)
 
 
-func _try_move(direction: Vector2) -> void:
-	var dir: Vector2i = Vector2i(direction)
-	if dir == Vector2i.ZERO:
-		return
-	var mode: Helper.MoveMode = current_player_entity.get_move_mode()
-	var move_to: Vector2i = board.get_origin(current_player_entity) + dir
-	var tiles_at: Array[Base] = board.get_elements_at(move_to)
-	for t: Base in tiles_at:
-		if t.walkable:
-			continue
-		if t.pushable:
-			_try_push(tiles_at, move_to, dir)
-			return
-		if mode != Helper.MoveMode.PHASE:
-			return
-		break
-	if not board.can_occupy(current_player_entity, move_to, mode):
-		return
-	_move(current_player_entity, dir)
+## The brain attached to [param entity], if any.
+func get_brain(entity: Entity) -> BrainComponent:
+	if not entity:
+		return null
+	for child: Node in entity.get_children():
+		if child is BrainComponent:
+			return child as BrainComponent
+	return null
 
 
-func _try_push(tiles_at: Array[Base], move_to: Vector2i, direction: Vector2i) -> void:
-	# TODO: Refactor this because not everything that is pushable is a Crate.
-	var crate: Crate = null
-	for t: Base in tiles_at:
-		if t.pushable:
-			crate = t as Crate
-			break
-	if not crate:
-		return
-	# The hero takes the crate's former tile, so it must be free for everything
-	# else on it (e.g. a closed door under the crate).
-	for t: Base in tiles_at:
-		if t != crate and not t.walkable:
-			return
-	if not _can_push_crate_to(board.get_elements_at(move_to + direction)):
-		return
-	_move(current_player_entity, direction)
-	## TODO: Add a sound for crate moving?
-	_move(crate, direction)
+## Called by [EntityActions] after an element moved. Only the player reveals
+## fog, so AI movement never uncovers the map.
+func after_element_moved(element: Base) -> void:
+	_update_ground()
+	if element == current_player_entity:
+		_dispel_fog_of_war()
 
 
-func _can_push_crate_to(tiles_at: Array[Base]) -> bool:
-	if tiles_at.is_empty():
-		return true
-	for tile: Base in tiles_at:
-		if not tile.walkable:
-			return false
-	return true
-	#if tiles_at.size() != 1:
-		#return false
-	#var target: Node2D = tiles_at[0]
-	#if target is Goal:
-		#return true
-	#return target is Door and (target as Door).walkable
+func after_item_change() -> void:
+	_update_ground()
 
 
 func _load_elements() -> void:
@@ -444,21 +404,3 @@ func _clear_universe() -> void:
 		board.unregister(w)
 		w.free()
 	wall_proxies.clear()
-
-
-func _move(element: Base, dir: Vector2i = Vector2i.ZERO) -> void:
-	if not element:
-		return
-	if dir == Vector2i.ZERO:
-		return
-	board.move_element(element, board.get_origin(element) + dir)
-	_update_ground()
-	for e: Base in board.get_elements_at(board.get_origin(element)):
-		if e is TeleportPad:
-			## @TODO: Should I check if destination is active too as condition
-			## to teleport? Also, if destination tile has non-walkable element
-			## what should I do?
-			(e as TeleportPad).teleport(element)
-	# Teleporting sets position directly, so the index must catch up.
-	board.sync_from_position(element)
-	_dispel_fog_of_war()
