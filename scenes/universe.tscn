@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://4yl6uf22wpu4" path="res://scripts/universe.gd" id="1_uc3kj"]
 [ext_resource type="PackedScene" uid="uid://dv7m0vn1ffgeq" path="res://scenes/goal.tscn" id="1_xq63u"]
 [ext_resource type="PackedScene" uid="uid://s141b0fe5fug" path="res://scenes/decals/teleport_pad.tscn" id="2_3yicu"]
-[ext_resource type="PackedScene" uid="uid://bwjgakp7xo0j0" path="res://scenes/entities/hero.tscn" id="2_pol6k"]
+[ext_resource type="PackedScene" uid="uid://bwjgakp7xo0j0" path="res://scenes/entities/barbarian.tscn" id="2_pol6k"]
 [ext_resource type="PackedScene" uid="uid://mmghofrx4gy1" path="res://scenes/crate.tscn" id="2_uc3kj"]
 [ext_resource type="PackedScene" uid="uid://fgb6up4u4dbg" path="res://scenes/items/sword.tscn" id="4_7viwd"]
 [ext_resource type="PackedScene" uid="uid://d12xchcrktinl" path="res://scenes/door.tscn" id="5_qbb8e"]
