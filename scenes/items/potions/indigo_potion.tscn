@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://eu8g6y7aca3x"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_t0d0n"]
+[ext_resource type="Resource" uid="uid://jdyc1cnv8f82" path="res://resources/items/potions/indigo_potion.tres" id="2_t0d0n"]
+[ext_resource type="Shader" uid="uid://cv3hcxr1jpvsq" path="res://shaders/liquid_wave.gdshader" id="3_dk082"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d1d6t"]
+shader = ExtResource("3_dk082")
+shader_parameter/liquid_level = 0.750000035625
+shader_parameter/liquid_color = Color(0.007843138, 0.07058824, 0.14509805, 0.8)
+shader_parameter/foam_color = Color(0.8, 0.9, 1, 0.6)
+shader_parameter/wave_amplitude = 0.02
+shader_parameter/wave_frequency = 5.0
+shader_parameter/wave_speed = 2.0
+shader_parameter/gravity_angle = 0.0
+shader_parameter/gravity_direction = Vector2(0, 1)
+shader_parameter/foam_thickness = 0.02
+shader_parameter/shine_intensity = 0.3
+shader_parameter/add_bubble = true
+shader_parameter/bubble_scale = 10.0
+shader_parameter/bubble_speed = 0.5
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nbpdr"]
+width = 32
+height = 32
+seamless = true
+
+[node name="IndigoPotion" type="Area2D" unique_id=1031172198]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_t0d0n")
+data = ExtResource("2_t0d0n")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1076739473]
+color = Color(0.84705883, 0.9098039, 0.80784315, 1)
+polygon = PackedVector2Array(-16, 16, -16, 0, -8, 0, -8, -8, 8, -8, 8, 0, 16, 0, 16, 16, 0, 24)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Polygon2D" unique_id=1008279410]
+color = Color(0.3529412, 0.23137255, 0, 1)
+polygon = PackedVector2Array(-8, 0, -8, -8, 8, -8, 8, 0)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=278122587]
+material = SubResource("ShaderMaterial_d1d6t")
+color = Color(0.14509805, 1, 0.09019608, 1)
+texture = SubResource("NoiseTexture2D_nbpdr")
+polygon = PackedVector2Array(-16, 0, 16, 0, 16, 16, 0, 24, -16, 16)

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsumableData" format=3 uid="uid://jdyc1cnv8f82"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_l6m1a"]
+[ext_resource type="Resource" uid="uid://bamm23xrotag3" path="res://resources/materials/glass.tres" id="2_rapmy"]
+[ext_resource type="Script" uid="uid://uyhbi88n7yht" path="res://resources/consumable_data.gd" id="2_ukt07"]
+
+[resource]
+script = ExtResource("2_ukt07")
+material = ExtResource("2_rapmy")
+id = &"indigo_potion"
+name = "Indigo Potion"
+metadata/_custom_type_script = "uid://uyhbi88n7yht"

@@ -15,7 +15,9 @@
 [ext_resource type="PackedScene" uid="uid://b2xtt37os1hjr" path="res://scenes/items/armors/leather_vest.tscn" id="9_1dpui"]
 [ext_resource type="Script" uid="uid://wplsifd11k2q" path="res://scripts/follow_camera.gd" id="9_5fwve"]
 [ext_resource type="PackedScene" uid="uid://k6sv27fuxovo" path="res://scenes/items/armors/studded_leather_vest.tscn" id="10_5qg6o"]
+[ext_resource type="PackedScene" uid="uid://ol86bjru6tta" path="res://scenes/items/potions/green_potion.tscn" id="11_pbo0o"]
 [ext_resource type="PackedScene" uid="uid://dunrntu6tlcxj" path="res://scenes/entities/dragon.tscn" id="12_fbuf2"]
+[ext_resource type="PackedScene" uid="uid://eu8g6y7aca3x" path="res://scenes/items/potions/indigo_potion.tscn" id="12_v7xte"]
 [ext_resource type="Shader" uid="uid://cus4kgcwegtc8" path="res://shaders/simple_crt_vhs.gdshader" id="12_yanup"]
 [ext_resource type="Shader" uid="uid://saevj778gi1u" path="res://shaders/vhs_and_crt_monitor.gdshader" id="13_h8wxb"]
 [ext_resource type="Script" uid="uid://2fpq55evhl33" path="res://scripts/board.gd" id="14_board"]
@@ -162,6 +164,12 @@ position = Vector2(224, 288)
 
 [node name="StuddedLeatherVest" parent="Items" unique_id=1737856383 instance=ExtResource("10_5qg6o")]
 position = Vector2(288, 288)
+
+[node name="GreenPotion" parent="Items" unique_id=1031172198 instance=ExtResource("11_pbo0o")]
+position = Vector2(352, 288)
+
+[node name="IndigoPotion" parent="Items" unique_id=280504374 instance=ExtResource("12_v7xte")]
+position = Vector2(160, 288)
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 

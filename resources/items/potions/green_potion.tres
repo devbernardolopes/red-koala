@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsumableData" format=3 uid="uid://b65w0sjaqsx80"]
+
+[ext_resource type="Script" uid="uid://uyhbi88n7yht" path="res://resources/consumable_data.gd" id="1_hgpax"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_u8j5a"]
+[ext_resource type="Resource" uid="uid://bamm23xrotag3" path="res://resources/materials/glass.tres" id="2_6r0rk"]
+
+[resource]
+script = ExtResource("1_hgpax")
+material = ExtResource("2_6r0rk")
+id = &"green_potion"
+name = "Green Potion"
+metadata/_custom_type_script = "uid://uyhbi88n7yht"

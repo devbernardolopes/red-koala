@@ -1,2 +1,2 @@
 class_name ConsumableData
-extends BaseData
+extends ItemData
