@@ -154,10 +154,14 @@ func is_tile_blocked(tile: Vector2i, mover: Base = null, mode: Helper.MoveMode =
 			continue
 		if element.walkable:
 			continue
-		# Phasing passes through walls and closed doors but still has to deal
-		# with pushable elements (crates).
-		if mode == Helper.MoveMode.PHASE and not element.pushable:
-			continue
+		# Phasing passes through terrain (walls, closed doors) but it cannot
+		# share a tile with another entity, unless that entity is walkable.
+		# It still has to deal with pushable elements (crates).
+		if mode == Helper.MoveMode.PHASE:
+			if element is Entity:
+				return true
+			if not element.pushable:
+				continue
 		return true
 	return false
 
