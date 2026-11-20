@@ -42,14 +42,32 @@ func _ready() -> void:
 	_set_focus(inventory_panel)
 
 
-## Replaces the inventory rows. [param current_item] is the entity's selected
-## item and drives the row selection.
-func set_inventory(items: Array[Item], current_item: Item = null) -> void:
+## Replaces the inventory rows. Equipped items are listed first as their
+## body-part slot; the remaining items are grouped into one row per stack.
+## [param current_item] is the entity's selected item and drives the row
+## selection, [param body_parts] maps equipped items to their body part.
+func set_inventory(items: Array[Item], current_item: Item = null,
+		body_parts: Array[AnatomyData] = []) -> void:
 	_inventory_items.clear()
 	_inventory_items.append_array(items)
 	var rows: Array[Dictionary] = []
+	var equipped: Array[Item] = []
+	for body_part: AnatomyData in body_parts:
+		var item: Item = body_part.equipped_item
+		if not item or not item.is_equipped:
+			continue
+		if not _inventory_items.has(item) or equipped.has(item):
+			continue
+		rows.append(_make_equipped_row(item, body_part.name))
+		equipped.append(item)
+	# An equipped item missing from the anatomy still deserves a row, even if
+	# that state should not happen.
 	for item: Item in _inventory_items:
-		rows.append(_make_row(item))
+		if item.is_equipped and not equipped.has(item):
+			rows.append(_make_equipped_row(item))
+			equipped.append(item)
+	for group: Dictionary in _group_items(equipped):
+		rows.append(_make_group_row(group))
 	inventory_panel.set_rows(rows, current_item)
 
 
@@ -115,17 +133,105 @@ func _set_focus(panel: HudPanel) -> void:
 
 
 func _make_row(item: Item) -> Dictionary:
-	var suffix: String = ""
-	if item.is_equipped:
-		suffix = "[E]"
-	if item.mystic_modifier == Helper.MysticModifier.CURSED:
-		suffix = (suffix + " [C]").strip_edges()
+	var row_items: Array[Item] = [item]
 	return {
 		"text": item.get_display_name(),
-		"suffix": suffix,
+		"suffix": _modifier_suffix(item),
 		"meta": item,
+		"items": row_items,
+		"visual": item,
+		"weight": _get_weight(item),
 		"dim": false,
 	}
+
+
+## A body-part slot row: the body part is the title and the item name sits
+## above it in a smaller font.
+func _make_equipped_row(item: Item, body_part_name: String = "") -> Dictionary:
+	var subtitle: String = ""
+	var title: String = body_part_name
+	if title.is_empty():
+		title = item.get_display_name()
+	else:
+		subtitle = item.get_display_name()
+	var row_items: Array[Item] = [item]
+	return {
+		"text": title,
+		"subtitle": subtitle,
+		"suffix": _modifier_suffix(item),
+		"meta": item,
+		"items": row_items,
+		"visual": item,
+		"weight": _get_weight(item),
+		"dim": false,
+	}
+
+
+func _make_group_row(group: Dictionary) -> Dictionary:
+	var items: Array[Item] = group.get("items")
+	var representative: Item = group.get("item")
+	var suffix: String = ""
+	if items.size() > 1:
+		suffix = "×%d" % items.size()
+	var modifier: String = _modifier_suffix(representative)
+	if not modifier.is_empty():
+		suffix = (suffix + " " + modifier).strip_edges()
+	return {
+		"text": representative.get_display_name(),
+		"suffix": suffix,
+		"meta": representative,
+		"items": items,
+		"visual": representative,
+		"weight": float(group.get("weight", 0.0)),
+		"dim": false,
+	}
+
+
+## Groups the carried (non-equipped) items into stacks of equal items.
+func _group_items(exclude: Array[Item]) -> Array[Dictionary]:
+	var groups: Array[Dictionary] = []
+	for item: Item in _inventory_items:
+		if item.is_equipped or exclude.has(item):
+			continue
+		var group: Dictionary = {}
+		for candidate: Dictionary in groups:
+			if _is_same_stack(candidate, item):
+				group = candidate
+				break
+		if group.is_empty():
+			var group_items: Array[Item] = [item]
+			groups.append({
+				"item": item,
+				"items": group_items,
+				"weight": _get_weight(item),
+			})
+			continue
+		var stack: Array[Item] = group.get("items")
+		stack.append(item)
+		group["weight"] = float(group.get("weight", 0.0)) + _get_weight(item)
+	return groups
+
+
+func _is_same_stack(group: Dictionary, item: Item) -> bool:
+	var representative: Item = group.get("item")
+	if representative.mystic_modifier != item.mystic_modifier:
+		return false
+	if representative.data != null and item.data != null:
+		return representative.data == item.data
+	return representative.get_display_name() == item.get_display_name()
+
+
+func _get_weight(item: Item) -> float:
+	if item.data is ItemData:
+		return (item.data as ItemData).weight
+	return 0.0
+
+
+## Mystic modifiers are shown after the count, if the row has one.
+func _modifier_suffix(item: Item) -> String:
+	if item.mystic_modifier == Helper.MysticModifier.CURSED:
+		return "[C]"
+	return ""
 
 
 func _sort_items_by_name(a: Item, b: Item) -> bool:

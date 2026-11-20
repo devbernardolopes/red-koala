@@ -6,10 +6,14 @@ extends PanelContainer
 ## Rows are plain dictionaries so the same panel can display items, journal
 ## messages or character stats:
 ## [codeblock]
-## {"text": "Sword", "suffix": "[E]", "meta": sword, "dim": false}
+## {"text": "Sword", "subtitle": "", "suffix": "×2", "meta": sword,
+##  "items": [sword, other_sword], "visual": sword, "weight": 20.0,
+##  "dim": false}
 ## [/codeblock]
 ## The [code]meta[/code] value is opaque to the panel and is handed back through
-## [signal selection_changed] and [method get_selected_meta].
+## [signal selection_changed] and [method get_selected_meta]. [code]items[/code]
+## lists every value a row represents (a grouped stack has more than one), so
+## the selection can be preserved even when a group's [code]meta[/code] changes.
 
 signal selection_changed(index: int, meta: Variant)
 
@@ -130,10 +134,7 @@ func _rebuild(selected_meta: Variant) -> void:
 	for row_data: Dictionary in _rows:
 		var row: Control = ROW_SCENE.instantiate()
 		_rows_container.add_child(row)
-		row.setup(
-				String(row_data.get("text", "")),
-				String(row_data.get("suffix", "")),
-				bool(row_data.get("dim", false)))
+		row.setup(row_data)
 		_row_nodes.append(row)
 	_selected_index = _find_index(selected_meta)
 	if _selected_index < 0:
@@ -157,6 +158,12 @@ func _find_index(meta: Variant) -> int:
 		return -1
 	for i: int in _rows.size():
 		if _rows[i].get("meta") == meta:
+			return i
+	# A grouped row exposes one representative item as its meta, but the
+	# selection may be any member of the group.
+	for i: int in _rows.size():
+		var items: Variant = _rows[i].get("items")
+		if items is Array and (items as Array).has(meta):
 			return i
 	return -1
 
@@ -190,7 +197,15 @@ func _apply_focus() -> void:
 
 
 func _update_header() -> void:
-	_count_label.text = str(_rows.size())
+	# Grouped rows stand for several items, so count items rather than rows.
+	var total: int = 0
+	for row_data: Dictionary in _rows:
+		var items: Variant = row_data.get("items")
+		if items is Array:
+			total += (items as Array).size()
+		else:
+			total += 1
+	_count_label.text = str(total)
 
 
 func _scroll_to_selection() -> void:

@@ -204,7 +204,17 @@ func _update_inventory() -> void:
 		if not current_player_entity.inventory.is_empty():
 			current = current_player_entity.inventory.front()
 	current_player_entity.current_inventory_item = current
-	hud.set_inventory(current_player_entity.inventory, current)
+	hud.set_inventory(current_player_entity.inventory, current,
+			_get_body_parts(current_player_entity))
+
+
+func _get_body_parts(entity: Entity) -> Array[AnatomyData]:
+	var body_parts: Array[AnatomyData] = []
+	if entity.data is EntityData:
+		var race: RaceData = (entity.data as EntityData).race
+		if race:
+			body_parts = race.body
+	return body_parts
 
 
 func _update_ground() -> void:
