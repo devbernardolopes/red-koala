@@ -2,14 +2,12 @@
 
 [ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_87lab"]
 [ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="2_nivq1"]
-[ext_resource type="Resource" uid="uid://dot46qba5gf2j" path="res://resources/races/humanoid.tres" id="3_1jrmc"]
 
 [node name="Wizard" type="Area2D" unique_id=1093125361]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_87lab")
 entity_class = ExtResource("2_nivq1")
-entity_race = ExtResource("3_1jrmc")
 xp = 1
 metadata/_custom_type_script = "uid://tdfdon0mic37"
 

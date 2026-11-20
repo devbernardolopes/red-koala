@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b2xtt37os1hjr"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_optbc"]
+[ext_resource type="Resource" uid="uid://dqtemllmgs4cn" path="res://resources/items/armors/leather_vest.tres" id="2_lfadq"]
+
+[node name="LeatherVest" type="Area2D" unique_id=2007858883]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_optbc")
+data = ExtResource("2_lfadq")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=485116794]
+color = Color(0.49411765, 0.27058825, 0.09019608, 1)
+polygon = PackedVector2Array(-16, 8, -16, -8, -8, -16, 0, -8, 8, -16, 16, -8, 16, 8, 0, 8)

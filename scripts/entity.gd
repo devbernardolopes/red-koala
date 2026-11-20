@@ -166,6 +166,8 @@ func equip(item: Item) -> EquipResult:
 		return EquipResult.INVALID
 	if not inventory.has(item):
 		return EquipResult.INVALID
+	if not polygon:
+		return EquipResult.INVALID
 	var result: EquipResult = EquipResult.INVALID
 	# Unequip item.
 	if item.is_equipped:
@@ -177,7 +179,7 @@ func equip(item: Item) -> EquipResult:
 				if bodypart.equipped_item == item:
 					bodypart.equipped_item = null
 					item.is_equipped = false
-					remove_child(item)
+					polygon.remove_child(item)
 					result = EquipResult.UNEQUIPPED
 					break
 	else:
@@ -190,7 +192,7 @@ func equip(item: Item) -> EquipResult:
 					bp.equipped_item = item
 					item.is_equipped = true
 					item.position = Vector2.ZERO
-					add_child(item)
+					polygon.add_child(item)
 					result = EquipResult.EQUIPPED
 					break
 		if result == EquipResult.INVALID:

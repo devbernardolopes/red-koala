@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://c6rfy2do3bcie"]
+
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="1_66xkm"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="2_c7avj"]
+
+[resource]
+script = ExtResource("2_c7avj")
+category = 1
+id = &"heavy_armor"
+name = "Heavy Armor"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

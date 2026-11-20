@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_4ahxd"]
 [ext_resource type="Shader" uid="uid://lhhe0vpnmjkj" path="res://shaders/shine_sweep.gdshader" id="2_0usjv"]
-[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/gold.tres" id="2_mxqjo"]
+[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold.tres" id="2_mxqjo"]
 [ext_resource type="Texture2D" uid="uid://ct5io32p8p2b1" path="res://resources/textures/shine_gradient_texture_2d.tres" id="3_mxqjo"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o54n4"]

@@ -6,13 +6,15 @@
 [ext_resource type="PackedScene" uid="uid://s141b0fe5fug" path="res://scenes/decals/teleport_pad.tscn" id="2_3yicu"]
 [ext_resource type="PackedScene" uid="uid://bwjgakp7xo0j0" path="res://scenes/entities/barbarian.tscn" id="2_pol6k"]
 [ext_resource type="PackedScene" uid="uid://mmghofrx4gy1" path="res://scenes/crate.tscn" id="2_uc3kj"]
-[ext_resource type="PackedScene" uid="uid://fgb6up4u4dbg" path="res://scenes/items/sword.tscn" id="4_7viwd"]
+[ext_resource type="PackedScene" uid="uid://fgb6up4u4dbg" path="res://scenes/items/weapons/sword.tscn" id="4_7viwd"]
 [ext_resource type="PackedScene" uid="uid://d12xchcrktinl" path="res://scenes/door.tscn" id="5_qbb8e"]
 [ext_resource type="PackedScene" uid="uid://tcihe7kj34wp" path="res://scenes/items/torch.tscn" id="5_yanup"]
-[ext_resource type="PackedScene" uid="uid://ciij5gesrk4xp" path="res://scenes/items/gold.tscn" id="6_7f6e7"]
+[ext_resource type="PackedScene" uid="uid://ciij5gesrk4xp" path="res://scenes/items/currencies/gold.tscn" id="6_7f6e7"]
 [ext_resource type="Shader" uid="uid://cpebok8t5oej6" path="res://shaders/lightweight_crt.gdshader" id="6_jegdv"]
 [ext_resource type="Texture2D" uid="uid://blvchni6jkidb" path="res://assets/tiles/fog_of_war_full_64.png" id="8_56nod"]
+[ext_resource type="PackedScene" uid="uid://b2xtt37os1hjr" path="res://scenes/items/armors/leather_vest.tscn" id="9_1dpui"]
 [ext_resource type="Script" uid="uid://wplsifd11k2q" path="res://scripts/follow_camera.gd" id="9_5fwve"]
+[ext_resource type="PackedScene" uid="uid://k6sv27fuxovo" path="res://scenes/items/armors/studded_leather_vest.tscn" id="10_5qg6o"]
 [ext_resource type="PackedScene" uid="uid://dunrntu6tlcxj" path="res://scenes/entities/dragon.tscn" id="12_fbuf2"]
 [ext_resource type="Shader" uid="uid://cus4kgcwegtc8" path="res://shaders/simple_crt_vhs.gdshader" id="12_yanup"]
 [ext_resource type="Shader" uid="uid://saevj778gi1u" path="res://shaders/vhs_and_crt_monitor.gdshader" id="13_h8wxb"]
@@ -154,6 +156,12 @@ position = Vector2(608, 864)
 
 [node name="Gold5" parent="Items" unique_id=1131131790 instance=ExtResource("6_7f6e7")]
 position = Vector2(864, 800)
+
+[node name="LeatherVest" parent="Items" unique_id=2007858883 instance=ExtResource("9_1dpui")]
+position = Vector2(224, 288)
+
+[node name="StuddedLeatherVest" parent="Items" unique_id=1737856383 instance=ExtResource("10_5qg6o")]
+position = Vector2(288, 288)
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 

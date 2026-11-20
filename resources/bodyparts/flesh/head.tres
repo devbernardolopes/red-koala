@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AnatomyData" format=3 uid="uid://bbkb0pcptmc60"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_p2bxs"]
+[ext_resource type="Resource" uid="uid://b5jfk4kt3deyt" path="res://resources/materials/flesh.tres" id="1_ud3ur"]
+
+[resource]
+script = ExtResource("1_p2bxs")
+material = ExtResource("1_ud3ur")
+id = &"head"
+name = "Head"
+metadata/_custom_type_script = "uid://dovglatpiuiwq"
