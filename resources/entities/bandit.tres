@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EntityData" format=3 uid="uid://c55rpmn7rytdq"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_ryxbr"]
+[ext_resource type="Resource" uid="uid://dot46qba5gf2j" path="res://resources/races/humanoid.tres" id="2_2ulxn"]
+[ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="3_gw4uf"]
+[ext_resource type="Script" uid="uid://b3qjjrx38oqgu" path="res://resources/entity_data.gd" id="4_7lsrg"]
+
+[resource]
+script = ExtResource("4_7lsrg")
+base_hit_points = 10
+race = ExtResource("2_2ulxn")
+id = &"bandit"
+name = "Bandit"
+metadata/_custom_type_script = "uid://b3qjjrx38oqgu"

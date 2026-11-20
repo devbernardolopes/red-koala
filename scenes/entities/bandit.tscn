@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://t5l8m4hry5bc"]
+
+[ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_u68yi"]
+[ext_resource type="Resource" uid="uid://lb8i2y6i7bk4" path="res://resources/classes/barbarian.tres" id="2_u68yi"]
+
+[node name="Bandit" type="Area2D" unique_id=1093125361]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_u68yi")
+entity_class = ExtResource("2_u68yi")
+xp = 1
+walkable = false
+metadata/_custom_type_script = "uid://tdfdon0mic37"
+
+[node name="Polygon" type="Polygon2D" parent="." unique_id=390837982]
+color = Color(0.6390047, 0.3147762, 0.46580565, 1)
+polygon = PackedVector2Array(-24, 24, -16, 24, -8, 16, 8, 16, 16, 24, 24, 24, 8, 8, 16, 0, 24, 0, 8, -8, 16, -8, 8, -24, 0, -24, -8, -24, -16, -8, -8, -8, -24, 0, -16, 0, -8, 8)
