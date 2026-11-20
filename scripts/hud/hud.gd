@@ -146,7 +146,7 @@ func _make_row(item: Item) -> Dictionary:
 
 
 ## A body-part slot row: the body part is the title and the item name sits
-## above it in a smaller font.
+## below it in a smaller font.
 func _make_equipped_row(item: Item, body_part_name: String = "") -> Dictionary:
 	var subtitle: String = ""
 	var title: String = body_part_name

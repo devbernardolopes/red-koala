@@ -38,13 +38,6 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="Row/TextColumn"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_type_variation = &"HudRowSuffix"
-text = "Item"
-
 [node name="NameLabel" type="Label" parent="Row/TextColumn"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -53,6 +46,13 @@ theme_type_variation = &"HudRowLabel"
 text = "Item"
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="SubtitleLabel" type="Label" parent="Row/TextColumn"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"HudRowSuffix"
+text = "Item"
 
 [node name="SuffixLabel" type="Label" parent="Row"]
 unique_name_in_owner = true
