@@ -120,6 +120,12 @@ func _init_values() -> void:
 # Strength: Melee attack with a weapon or an Unarmed Strike.
 # Dexterity: Ranged attack with a weapon.
 # Various: Attack with spells (to be defined).
+# A player-controlled entity will automatically attack (melee) another entity
+# if the other entity is in the opposite team (Foe vs Friend, but not Neutral).
+# If the player presses a movement key toward an opposite team entity and the
+# entity is visible for the player entity, then it will be a melee attack with
+# whatever weapon is equipped (will think about dual-wielding later) or if not
+# then an Unarmed Strike.
 
 
 # TODO: Must implement getting hit.
