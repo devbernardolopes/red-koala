@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DietData" format=3 uid="uid://7kft2oymoe4x"]
+
+[ext_resource type="Script" uid="uid://conaxrapxg6n6" path="res://resources/material_data.gd" id="1_1ckba"]
+[ext_resource type="Resource" uid="uid://b5jfk4kt3deyt" path="res://resources/materials/flesh.tres" id="2_jesvj"]
+[ext_resource type="Script" uid="uid://dbwybdv7pluvm" path="res://resources/diet_data.gd" id="4_rl0c3"]
+
+[resource]
+script = ExtResource("4_rl0c3")
+eats = Array[ExtResource("1_1ckba")]([ExtResource("2_jesvj")])
+id = &"carnivore"
+name = "Carnivore"
+metadata/_custom_type_script = "uid://dbwybdv7pluvm"

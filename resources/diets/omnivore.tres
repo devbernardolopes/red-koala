@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DietData" format=3 uid="uid://bidonue681ry6"]
+
+[ext_resource type="Script" uid="uid://conaxrapxg6n6" path="res://resources/material_data.gd" id="1_73dm7"]
+[ext_resource type="Script" uid="uid://dbwybdv7pluvm" path="res://resources/diet_data.gd" id="1_f4kg5"]
+[ext_resource type="Resource" uid="uid://b5jfk4kt3deyt" path="res://resources/materials/flesh.tres" id="2_uyefm"]
+[ext_resource type="Resource" uid="uid://k44nlgao53mq" path="res://resources/materials/plant.tres" id="3_q0vvi"]
+
+[resource]
+script = ExtResource("1_f4kg5")
+eats = Array[ExtResource("1_73dm7")]([ExtResource("2_uyefm"), ExtResource("3_q0vvi")])
+id = &"omnivore"
+name = "Omnivore"
+metadata/_custom_type_script = "uid://dbwybdv7pluvm"

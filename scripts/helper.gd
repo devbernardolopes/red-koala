@@ -1,6 +1,12 @@
 class_name Helper
 extends Node
 
+enum DiceAdvantage {
+	DISADVANTAGE = -1,
+	NONE = 0,
+	ADVANTAGE = 1,
+}
+
 enum ArmorCategory {
 	LIGHT = 0,
 	MEDIUM = 1,

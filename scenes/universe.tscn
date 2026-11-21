@@ -10,7 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://d12xchcrktinl" path="res://scenes/door.tscn" id="5_qbb8e"]
 [ext_resource type="PackedScene" uid="uid://tcihe7kj34wp" path="res://scenes/items/torch.tscn" id="5_yanup"]
 [ext_resource type="PackedScene" uid="uid://ciij5gesrk4xp" path="res://scenes/items/currencies/gold.tscn" id="6_7f6e7"]
+[ext_resource type="PackedScene" uid="uid://cct7u075uxb35" path="res://scenes/decals/fountain.tscn" id="6_exv6n"]
 [ext_resource type="Shader" uid="uid://cpebok8t5oej6" path="res://shaders/lightweight_crt.gdshader" id="6_jegdv"]
+[ext_resource type="PackedScene" uid="uid://xtk67jvkxfwe" path="res://scenes/decals/hole.tscn" id="7_y3mqg"]
 [ext_resource type="Texture2D" uid="uid://blvchni6jkidb" path="res://assets/tiles/fog_of_war_full_64.png" id="8_56nod"]
 [ext_resource type="PackedScene" uid="uid://b2xtt37os1hjr" path="res://scenes/items/armors/leather_vest.tscn" id="9_1dpui"]
 [ext_resource type="Script" uid="uid://wplsifd11k2q" path="res://scripts/follow_camera.gd" id="9_5fwve"]
@@ -118,6 +120,12 @@ destination = NodePath("../TeleportPad3")
 [node name="TeleportPad3" parent="Decals" unique_id=2024173553 node_paths=PackedStringArray("destination") instance=ExtResource("2_3yicu")]
 position = Vector2(96, 672)
 destination = NodePath("../TeleportPad")
+
+[node name="Fountain" parent="Decals" unique_id=572391818 instance=ExtResource("6_exv6n")]
+position = Vector2(480, 480)
+
+[node name="Hole" parent="Decals" unique_id=426290350 instance=ExtResource("7_y3mqg")]
+position = Vector2(992, 96)
 
 [node name="Goals" type="Node2D" parent="." unique_id=2000791855]
 
@@ -260,6 +268,8 @@ modulate = Color(1, 1, 1, 0.128)
 position = Vector2(224, 96)
 max_hit_points = 14
 hit_points = 14
+speed = 100.0
+team = 2
 
 [node name="Dragon" parent="Entities" unique_id=148953585 instance=ExtResource("12_fbuf2")]
 position = Vector2(128, -64)
@@ -280,6 +290,7 @@ is_phasing = true
 is_flying = true
 can_see_invisible = true
 speed = 100.0
+team = 2
 data = ExtResource("16_5qg6o")
 walkable = false
 
@@ -287,14 +298,12 @@ walkable = false
 position = Vector2(800, 288)
 max_hit_points = 14
 hit_points = 14
-speed = 100.0
 data = ExtResource("24_4c3kv")
 
 [node name="Bandit2" parent="Entities" unique_id=732322922 instance=ExtResource("22_ij8xa")]
 position = Vector2(608, 288)
 max_hit_points = 14
 hit_points = 14
-speed = 100.0
 data = ExtResource("24_4c3kv")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]

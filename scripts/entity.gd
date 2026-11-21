@@ -112,6 +112,24 @@ func _init_values() -> void:
 	mana_points = max_mana_points
 
 
+# TODO: Must implement attack.
+# Follows the rules of Dungeons and Dragons (System Reference Document).
+# Attack Roll: a d20 roll where 1 is a miss and 20 is a critical hit.
+# On a hit, then roll damage.
+# Ability modifiers:
+# Strength: Melee attack with a weapon or an Unarmed Strike.
+# Dexterity: Ranged attack with a weapon.
+# Various: Attack with spells (to be defined).
+
+
+# TODO: Must implement getting hit.
+
+
+# TODO: Must implement death.
+# Hit points == 0 is death.
+# Always leaves corpses persistently.
+
+
 func get_move_mode() -> Helper.MoveMode:
 	if is_phasing:
 		return Helper.MoveMode.PHASE

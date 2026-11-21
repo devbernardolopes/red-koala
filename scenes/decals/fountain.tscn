@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://cct7u075uxb35"]
+
+[ext_resource type="Script" uid="uid://bd2824q5qt7o0" path="res://scripts/decals/fountain.gd" id="1_o5g5y"]
+[ext_resource type="Shader" uid="uid://d0xtfyrujlk34" path="res://shaders/water_distortion.gdshader" id="2_o5g5y"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dvonu"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_aqutj"]
+noise = SubResource("FastNoiseLite_dvonu")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m7uww"]
+shader = ExtResource("2_o5g5y")
+shader_parameter/waterNoise = SubResource("NoiseTexture2D_aqutj")
+shader_parameter/waterColor = Color(0.117, 0.27, 0.58, 1)
+shader_parameter/colorCorection = 0.35
+shader_parameter/distortionForce = 0.01
+shader_parameter/WDBrightness = 1.5
+shader_parameter/WDFreq = 0.6
+shader_parameter/WDSize = 0.9
+shader_parameter/WDSpeed = 4.0
+shader_parameter/tiling = Vector2(1, 1)
+shader_parameter/offSetSpeed = Vector2(0.1, 0.1)
+shader_parameter/backGroundDirX = 0.01
+shader_parameter/backGroundDirY = 0.01
+
+[sub_resource type="Gradient" id="Gradient_my0wx"]
+colors = PackedColorArray(0, 0, 0, 1, 0.15686275, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wsqxv"]
+gradient = SubResource("Gradient_my0wx")
+fill = 1
+fill_from = Vector2(0.5045872, 0.5275229)
+
+[node name="Fountain" type="Area2D" unique_id=572391818]
+script = ExtResource("1_o5g5y")
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1574027649]
+material = SubResource("ShaderMaterial_m7uww")
+texture = SubResource("GradientTexture2D_wsqxv")
+polygon = PackedVector2Array(-24, -8, -8, -16, 8, -16, 24, -8, 24, 16, 16, 24, -16, 24, -24, 16)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=1708063033]
+color = Color(0.8047426, 0.80474263, 0.8047426, 1)
+polygon = PackedVector2Array(-8, 0, 8, 0, 8, -24, -8, -24)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Polygon2D" unique_id=2124488867]
+color = Color(0.5729883, 0.5729883, 0.5729883, 1)
+polygon = PackedVector2Array(-24, 8, -24, 16, -16, 24, 16, 24, 24, 16, 24, 8, 16, 16, -16, 16)

@@ -22,6 +22,9 @@ signal blocks_sight_changed
 		blocks_sight = v
 		blocks_sight_changed.emit()
 @export var pushable: bool = false
+## Whether this node is concealed (not visible for an entity even if no fog of
+## war tile obscures it).
+@export var concealed: bool = false
 ## Whether this node takes part in the board logic (the "Elements" group).
 ## Purely visual children of other elements should opt out.
 @export var in_board: bool = true
@@ -67,6 +70,10 @@ func toggle_light(toggle: bool) -> void:
 	if not light:
 		return
 	light.enabled = toggle
+
+
+func toggle_concealment(toggle: bool) -> void:
+	concealed = toggle
 
 
 ## Name shown in the journal and other UI. Subclasses may override it.

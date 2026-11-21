@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="MaterialData" format=3 uid="uid://b6lww35nhmxrb"]
+
+[ext_resource type="Script" uid="uid://conaxrapxg6n6" path="res://resources/material_data.gd" id="1_ytob0"]
+
+[resource]
+script = ExtResource("1_ytob0")
+id = &"light"
+name = "Light"
+metadata/_custom_type_script = "uid://conaxrapxg6n6"

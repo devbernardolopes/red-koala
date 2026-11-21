@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://xtk67jvkxfwe"]
 
-[ext_resource type="Script" uid="uid://b06rmnpgqswiu" path="res://scripts/base.gd" id="1_lerre"]
+[ext_resource type="Script" uid="uid://cwsjnafnr5cf2" path="res://scripts/decals/hole.gd" id="1_12qe2"]
 
 [node name="Hole" type="Area2D" unique_id=426290350]
 collision_layer = 0
 collision_mask = 6
-script = ExtResource("1_lerre")
+script = ExtResource("1_12qe2")
 metadata/_custom_type_script = "uid://b06rmnpgqswiu"
 
 [node name="Polygon" type="Polygon2D" parent="." unique_id=1344629754]
