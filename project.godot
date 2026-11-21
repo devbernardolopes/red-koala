@@ -203,6 +203,10 @@ switch_player_entity={
 2d_physics/layer_4="Goals"
 2d_physics/layer_5="Items"
 
+[limbo_ai]
+
+behavior_tree/user_task_dirs=PackedStringArray("res://scripts/ai/tasks")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

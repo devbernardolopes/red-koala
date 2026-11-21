@@ -56,9 +56,9 @@ enum EquipResult {
 @export var speed: float = 10.0
 @export var team: Helper.EntityTeam = Helper.EntityTeam.NEUTRAL
 
-## Action points left in the current round. The turn manager refills this from
-## [member speed] at the start of every round and spends one action's worth per
-## action taken.
+## Action points left in the current round. Starts empty and accumulates from
+## [member speed] at the start of every round; the turn manager spends one
+## action's cost per action taken.
 var energy: int = 0
 var phasing_tween: Tween = null
 var flying_tween: Tween = null
@@ -75,6 +75,9 @@ var is_playable: bool = false:
 			if visible_notifier:
 				visible_notifier.queue_free()
 var current_inventory_item: Item = null
+## Cached [BrainComponent], set by the brain itself when it becomes ready. Kept
+## untyped to avoid a dependency cycle between Entity and BrainComponent.
+var brain: Node = null
 
 signal inventory_changed
 

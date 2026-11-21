@@ -32,7 +32,7 @@ func _tick(_delta: float) -> Status:
 	if nearest:
 		blackboard.set_var(BrainBlackboard.TARGET, nearest)
 		blackboard.set_var(BrainBlackboard.LAST_KNOWN_TARGET_POS, board.get_origin(nearest))
+		blackboard.set_var(BrainBlackboard.HAS_LAST_KNOWN_TARGET_POS, true)
 	else:
 		blackboard.set_var(BrainBlackboard.TARGET, null)
-		blackboard.set_var(BrainBlackboard.LAST_KNOWN_TARGET_POS, Vector2i(-1, -1))
 	return SUCCESS

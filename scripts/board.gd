@@ -19,11 +19,16 @@ const NEIGHBOURS: Array[Vector2i] = [
 	Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN,
 	Vector2i(-1, -1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(1, 1),
 ]
+## Extra tiles searched outside the registered bounds, for levels whose open
+## floor extends past the last registered footprint.
+const PATH_BOUNDS_MARGIN: int = 4
 
 ## Cell index. Values are `Array[Base]`; Godot does not support nested typed
 ## collections, so the value type itself has to stay untyped.
 var _cells: Dictionary[Vector2i, Array] = {}
 var _origins: Dictionary[Base, Vector2i] = {}
+var _entities: Array[Entity] = []
+var _empty_cell: Array = []
 var _bounds: Rect2i = Rect2i()
 var _has_bounds: bool = false
 
@@ -53,6 +58,13 @@ static func footprint_cells(origin: Vector2i, size: int) -> Array[Vector2i]:
 	return cells
 
 
+## Centre cell of a footprint, used for line-of-sight checks. Single-tile
+## footprints return their origin.
+static func footprint_center(origin: Vector2i, size: int) -> Vector2i:
+	var _size: int = maxi(size, 1)
+	return origin + Vector2i((_size - 1) >> 1, (_size - 1) >> 1)
+
+
 func register(element: Base) -> void:
 	if not element:
 		return
@@ -62,6 +74,10 @@ func register(element: Base) -> void:
 	var origin: Vector2i = world_to_origin(element.position, element.tile_size)
 	_origins[element] = origin
 	_update_cells(element, origin)
+	if element is Entity:
+		var entity: Entity = element as Entity
+		if not _entities.has(entity):
+			_entities.append(entity)
 	var state_changed: Callable = _on_element_state_changed.bind(element)
 	if not element.walkability_changed.is_connected(state_changed):
 		element.walkability_changed.connect(state_changed)
@@ -80,6 +96,8 @@ func unregister(element: Base) -> void:
 	var origin: Vector2i = _origins[element]
 	_origins.erase(element)
 	_remove_cells(element, origin)
+	if element is Entity:
+		_entities.erase(element as Entity)
 	var state_changed: Callable = _on_element_state_changed.bind(element)
 	if element.walkability_changed.is_connected(state_changed):
 		element.walkability_changed.disconnect(state_changed)
@@ -149,13 +167,28 @@ func get_elements_at(tile: Vector2i) -> Array[Base]:
 	return result
 
 
+## Non-copying cell lookup for internal hot paths. Callers must not mutate the
+## returned array.
+func _get_cell(tile: Vector2i) -> Array:
+	if _cells.has(tile):
+		return _cells[tile]
+	return _empty_cell
+
+
+## Every entity currently registered with the board.
+func get_entities() -> Array[Entity]:
+	var result: Array[Entity] = []
+	result.assign(_entities)
+	return result
+
+
 ## Grow-only bounds of all footprints ever registered.
 func get_bounds() -> Rect2i:
 	return _bounds
 
 
 func is_tile_blocked(tile: Vector2i, mover: Base = null, mode: Helper.MoveMode = Helper.MoveMode.WALK) -> bool:
-	for element: Base in get_elements_at(tile):
+	for element: Base in _get_cell(tile):
 		if element == mover:
 			continue
 		if element.walkable:
@@ -175,6 +208,9 @@ func is_tile_blocked(tile: Vector2i, mover: Base = null, mode: Helper.MoveMode =
 func can_occupy(mover: Base, origin: Vector2i, mode: Helper.MoveMode = Helper.MoveMode.WALK) -> bool:
 	if not mover:
 		return false
+	# Single-tile movers are by far the common case; skip the footprint array.
+	if mover.tile_size <= 1:
+		return not is_tile_blocked(origin, mover, mode)
 	for tile: Vector2i in footprint_cells(origin, mover.tile_size):
 		if is_tile_blocked(tile, mover, mode):
 			return false
@@ -194,8 +230,18 @@ func can_step(mover: Base, dir: Vector2i, mode: Helper.MoveMode = Helper.MoveMod
 	return can_occupy(mover, origin + dir, mode)
 
 
+## Whether [param a] can attack [param b] from where it stands: the footprints
+## must be adjacent, and diagonal contact must not be cut by a blocked corner.
+## This is the attack-side counterpart of [method can_step]'s no-corner-cutting
+## rule.
+func can_reach_adjacent_attack(a: Base, b: Base) -> bool:
+	if not a or not b:
+		return false
+	return _is_reachable_adjacent(get_origin(a), a.tile_size, get_origin(b), b.tile_size)
+
+
 func blocks_sight(tile: Vector2i) -> bool:
-	for element: Base in get_elements_at(tile):
+	for element: Base in _get_cell(tile):
 		if element.blocks_sight:
 			return true
 	return false
@@ -295,34 +341,32 @@ func find_path_to_adjacent(mover: Base, target: Base,
 	if not mover or not target:
 		return []
 	var start: Vector2i = get_origin(mover)
-	if is_footprints_adjacent(mover, target):
+	if can_reach_adjacent_attack(mover, target):
 		return []
 	return _find_path(mover, start, get_origin(target), mode, true, target.tile_size)
 
 
 func _find_path(mover: Base, start: Vector2i, target: Vector2i, mode: Helper.MoveMode,
 		stop_adjacent: bool, target_size: int) -> Array[Vector2i]:
-	var open: Array[Vector2i] = [start]
+	var open_tiles: Array[Vector2i] = []
+	var open_scores: Array[float] = []
 	var closed: Dictionary[Vector2i, bool] = {}
 	var came_from: Dictionary[Vector2i, Vector2i] = {}
 	var g_score: Dictionary[Vector2i, float] = {start: 0.0}
-	var f_score: Dictionary[Vector2i, float] = {start: _heuristic(start, target)}
-	var bounds: Rect2i = get_bounds() if _has_bounds else Rect2i()
-	var min_tile: Vector2i = Vector2i(maxi(bounds.position.x, 0), maxi(bounds.position.y, 0))
-	var max_tile: Vector2i = Vector2i(maxi(bounds.end.x - 1, 0), maxi(bounds.end.y - 1, 0))
-	if min_tile > max_tile:
-		return []
+	var min_tile: Vector2i = Vector2i.ZERO
+	var max_tile: Vector2i = Vector2i.ZERO
+	if _has_bounds:
+		var bounds: Rect2i = get_bounds()
+		var margin: Vector2i = Vector2i(PATH_BOUNDS_MARGIN, PATH_BOUNDS_MARGIN)
+		min_tile = bounds.position - margin
+		max_tile = bounds.end - Vector2i.ONE + margin
+	_heap_push(open_tiles, open_scores, start, _heuristic(start, target))
 	var found: Vector2i = start
 	var has_found: bool = false
 	var search_limit: int = 4096
-	while not open.is_empty() and search_limit > 0:
+	while not open_tiles.is_empty() and search_limit > 0:
 		search_limit -= 1
-		var best: int = 0
-		for i: int in open.size():
-			if f_score.get(open[i], INF) < f_score.get(open[best], INF):
-				best = i
-		var current: Vector2i = open[best]
-		open.remove_at(best)
+		var current: Vector2i = _heap_pop(open_tiles, open_scores)
 		if closed.has(current):
 			continue
 		closed[current] = true
@@ -349,8 +393,8 @@ func _find_path(mover: Base, start: Vector2i, target: Vector2i, mode: Helper.Mov
 				continue
 			came_from[next] = current
 			g_score[next] = tentative
-			f_score[next] = tentative + _heuristic(next, target)
-			open.append(next)
+			_heap_push(open_tiles, open_scores, next,
+					tentative + _heuristic(next, target))
 	if not has_found:
 		return []
 	var path: Array[Vector2i] = []
@@ -361,6 +405,56 @@ func _find_path(mover: Base, start: Vector2i, target: Vector2i, mode: Helper.Mov
 			return []
 		node = came_from[node]
 	return path
+
+
+## Binary min-heap helpers. Entries can be duplicated; the A* closed set filters
+## the stale ones. Scores are kept in a parallel array so the heap never has to
+## compare composite objects.
+func _heap_push(tiles: Array[Vector2i], scores: Array[float], tile: Vector2i,
+		score: float) -> void:
+	tiles.append(tile)
+	scores.append(score)
+	var index: int = tiles.size() - 1
+	while index > 0:
+		var parent: int = (index - 1) >> 1
+		if scores[parent] <= scores[index]:
+			break
+		_heap_swap(tiles, scores, parent, index)
+		index = parent
+
+
+func _heap_pop(tiles: Array[Vector2i], scores: Array[float]) -> Vector2i:
+	var top: Vector2i = tiles[0]
+	var last_tile: Vector2i = tiles.pop_back()
+	var last_score: float = scores.pop_back()
+	if tiles.is_empty():
+		return top
+	tiles[0] = last_tile
+	scores[0] = last_score
+	var index: int = 0
+	var count: int = tiles.size()
+	while true:
+		var left: int = (index << 1) + 1
+		if left >= count:
+			break
+		var right: int = left + 1
+		var smallest: int = left
+		if right < count and scores[right] < scores[left]:
+			smallest = right
+		if scores[index] <= scores[smallest]:
+			break
+		_heap_swap(tiles, scores, index, smallest)
+		index = smallest
+	return top
+
+
+func _heap_swap(tiles: Array[Vector2i], scores: Array[float], a: int, b: int) -> void:
+	var tile: Vector2i = tiles[a]
+	tiles[a] = tiles[b]
+	tiles[b] = tile
+	var score: float = scores[a]
+	scores[a] = scores[b]
+	scores[b] = score
 
 
 func _can_step_from(mover: Base, from: Vector2i, dir: Vector2i,
@@ -376,9 +470,28 @@ func _can_step_from(mover: Base, from: Vector2i, dir: Vector2i,
 
 func _is_adjacent_to(origin: Vector2i, size: int, target_origin: Vector2i,
 		target_size: int) -> bool:
-	if footprints_overlap(origin, size, target_origin, target_size):
+	return _is_reachable_adjacent(origin, size, target_origin, target_size)
+
+
+## Adjacency that respects the no-corner-cutting rule: a diagonal touch is only
+## reachable when both orthogonal tiles between the footprints are free.
+func _is_reachable_adjacent(a_origin: Vector2i, a_size: int, b_origin: Vector2i,
+		b_size: int) -> bool:
+	if footprints_overlap(a_origin, a_size, b_origin, b_size):
 		return false
-	return footprint_gap(origin, size, target_origin, target_size) == Vector2i.ZERO
+	if footprint_gap(a_origin, a_size, b_origin, b_size) != Vector2i.ZERO:
+		return false
+	for cell: Vector2i in footprint_cells(a_origin, a_size):
+		for other: Vector2i in footprint_cells(b_origin, b_size):
+			var delta: Vector2i = other - cell
+			if delta == Vector2i.ZERO or absi(delta.x) > 1 or absi(delta.y) > 1:
+				continue
+			if delta.x != 0 and delta.y != 0:
+				if is_tile_blocked(cell + Vector2i(delta.x, 0)) \
+						or is_tile_blocked(cell + Vector2i(0, delta.y)):
+					continue
+			return true
+	return false
 
 
 func _heuristic(from: Vector2i, to: Vector2i) -> float:

@@ -275,18 +275,16 @@ func set_active_player(entity: Entity) -> void:
 func get_brain(entity: Entity) -> BrainComponent:
 	if not entity:
 		return null
-	for child: Node in entity.get_children():
-		if child is BrainComponent:
-			return child as BrainComponent
-	return null
+	return entity.brain as BrainComponent
 
 
 ## Called by [EntityActions] after an element moved. Only the player reveals
 ## fog, so AI movement never uncovers the map.
 func after_element_moved(element: Base) -> void:
+	if element != current_player_entity:
+		return
 	_update_ground()
-	if element == current_player_entity:
-		_dispel_fog_of_war()
+	_dispel_fog_of_war()
 
 
 func after_item_change() -> void:

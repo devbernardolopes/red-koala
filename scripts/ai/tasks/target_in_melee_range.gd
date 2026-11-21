@@ -17,7 +17,7 @@ func _tick(_delta: float) -> Status:
 		return FAILURE
 	if not is_instance_valid(target) or target == entity:
 		return FAILURE
-	if not board.is_footprints_adjacent(entity, target):
+	if not board.can_reach_adjacent_attack(entity, target):
 		return FAILURE
 	if not perception.can_see(entity, target):
 		return FAILURE

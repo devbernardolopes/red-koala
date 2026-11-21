@@ -22,6 +22,7 @@ func _ready() -> void:
 	if not agent:
 		push_error("%s must be a child of an Entity." % name)
 		return
+	agent.brain = self
 	if not behavior_tree:
 		push_warning("%s has no behavior tree." % name)
 		return
@@ -33,6 +34,11 @@ func _ready() -> void:
 	bt_player.update_mode = BTPlayer.MANUAL
 	bt_player.set_scene_root_hint(_find_scene_root())
 	add_child(bt_player)
+
+
+func _exit_tree() -> void:
+	if is_instance_valid(agent) and agent.brain == self:
+		agent.brain = null
 
 
 func configure(_actions: EntityActions, _perception: Perception) -> void:

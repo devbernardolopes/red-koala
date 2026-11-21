@@ -16,3 +16,5 @@ const VISIBLE_HOSTILES := &"visible_hostiles"
 const TARGET := &"target"
 ## Last tile the target was seen on. Remembered after losing sight.
 const LAST_KNOWN_TARGET_POS := &"last_known_target_pos"
+## Whether [constant LAST_KNOWN_TARGET_POS] holds a position worth searching.
+const HAS_LAST_KNOWN_TARGET_POS := &"has_last_known_target_pos"

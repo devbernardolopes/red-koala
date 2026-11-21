@@ -19,10 +19,7 @@ func visible_entities(observer: Entity) -> Array[Entity]:
 	var result: Array[Entity] = []
 	if not board or not is_instance_valid(observer):
 		return result
-	for element: Base in board.get_all_elements():
-		if not element is Entity:
-			continue
-		var target: Entity = element as Entity
+	for target: Entity in board.get_entities():
 		if target == observer:
 			continue
 		if can_see(observer, target):
@@ -60,7 +57,15 @@ func can_see(observer: Entity, target: Entity) -> bool:
 		return false
 	if _distance(observer, target) > observer.fov:
 		return false
-	return board.has_line_of_sight(board.get_origin(observer), board.get_origin(target))
+	# Sight starts at the observer's centre tile and succeeds when any cell of
+	# the target's footprint is visible. Single-tile entities behave as before.
+	var observer_center: Vector2i = Board.footprint_center(
+			board.get_origin(observer), observer.tile_size)
+	var target_origin: Vector2i = board.get_origin(target)
+	for cell: Vector2i in Board.footprint_cells(target_origin, target.tile_size):
+		if board.has_line_of_sight(observer_center, cell):
+			return true
+	return false
 
 
 ## Tiles the observer can currently see, in field of view and line of sight.

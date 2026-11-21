@@ -19,21 +19,28 @@ func _tick(_delta: float) -> Status:
 	var target: Entity = blackboard.get_var(BrainBlackboard.TARGET, null, false) as Entity
 	var path: Array[Vector2i] = []
 	if is_instance_valid(target) and target != entity:
-		if board.is_footprints_adjacent(entity, target):
+		if board.can_reach_adjacent_attack(entity, target):
 			return FAILURE
 		path = board.find_path_to_adjacent(entity, target, entity.get_move_mode())
 	if path.is_empty():
-		var last_known: Vector2i = blackboard.get_var(
-				BrainBlackboard.LAST_KNOWN_TARGET_POS, Vector2i(-1, -1), false)
-		if last_known.x < 0:
+		if not blackboard.get_var(
+				BrainBlackboard.HAS_LAST_KNOWN_TARGET_POS, false, false):
 			return FAILURE
+		var last_known: Vector2i = blackboard.get_var(
+				BrainBlackboard.LAST_KNOWN_TARGET_POS, Vector2i.ZERO, false)
 		var origin: Vector2i = board.get_origin(entity)
 		if origin == last_known:
 			# Searched the last known position and found nothing.
-			blackboard.set_var(BrainBlackboard.LAST_KNOWN_TARGET_POS, Vector2i(-1, -1))
+			_clear_last_known()
 			return FAILURE
 		path = board.find_path(entity, last_known, entity.get_move_mode())
 		if path.is_empty():
+			# The last known tile is unreachable, so there is nothing to search.
+			_clear_last_known()
 			return FAILURE
 	var direction: Vector2i = path.front() - board.get_origin(entity)
 	return SUCCESS if actions.move(entity, direction) else FAILURE
+
+
+func _clear_last_known() -> void:
+	blackboard.set_var(BrainBlackboard.HAS_LAST_KNOWN_TARGET_POS, false)

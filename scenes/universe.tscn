@@ -266,7 +266,7 @@ entity_class = ExtResource("17_1dpui")
 [node name="Wizard" parent="Entities" unique_id=1093125361 instance=ExtResource("15_tqeu6")]
 position = Vector2(224, 224)
 xp = 0
-is_invisible = true
+is_invisible = false
 is_phasing = true
 is_flying = true
 can_see_invisible = true
@@ -277,7 +277,7 @@ walkable = false
 [node name="Bandit" parent="Entities" unique_id=1169498443 instance=ExtResource("22_ij8xa")]
 position = Vector2(800, 288)
 speed = 100.0
-data = ExtResource("16_5qg6o")
+data = ExtResource("24_4c3kv")
 
 [node name="Bandit2" parent="Entities" unique_id=732322922 instance=ExtResource("22_ij8xa")]
 position = Vector2(608, 288)

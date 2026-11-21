@@ -3,12 +3,12 @@ extends Node
 
 ## Rounds, action points and input gating.
 ##
-## Every round each actor refills [member Entity.energy] from its speed. The
-## actors are sorted by speed and take turns in passes; a pass gives every
-## actor with enough energy exactly one action. Playable actors wait for the
-## player, everyone else is asked for an action through an optional
-## [BrainComponent]. An actor that produces no action waits, so the loop can
-## never spin forever.
+## Every round each actor accumulates [member Entity.energy] from its speed, up
+## to [constant MAX_ENERGY]. The actors are sorted by speed and take turns in
+## passes; a pass gives every actor with enough energy exactly one action.
+## Playable actors wait for the player, everyone else is asked for an action
+## through an optional [BrainComponent]. An actor that produces no action
+## waits, so the loop can never spin forever.
 
 enum State {
 	IDLE,
@@ -19,6 +19,11 @@ enum State {
 ## Energy a standard action costs. With the default speed of 10 an actor gets
 ## one action per round; speed 20 gives two, and so on.
 const ACTION_COST: int = 10
+## Upper bound for the energy pool, so a fast actor cannot bank an unbounded
+## number of actions across rounds.
+const MAX_ENERGY: int = ACTION_COST * 20
+## Safety valve for a game where no actor can ever afford another action.
+const MAX_EMPTY_ROUNDS: int = 1000
 
 ## Seconds between CPU actions so the player can follow what is happening.
 @export var action_delay: float = 0.1
@@ -35,9 +40,12 @@ var round_number: int = 0
 var state: State = State.IDLE
 
 var _order: Array[Entity] = []
+## Actors registered while a round is running. They join at the next round.
+var _pending_actors: Array[Entity] = []
 var _pass: int = 0
 var _index: int = 0
 var _max_passes: int = 1
+var _empty_rounds: int = 0
 var _cpu_timer: float = 0.0
 var _preferred_actor: Entity = null
 
@@ -61,15 +69,18 @@ func start() -> void:
 	_preferred_actor = universe.current_player_entity
 	_order = actors.duplicate()
 	_order.sort_custom(_compare_actors)
-	var max_speed: float = 0.0
+	_pending_actors.clear()
+	_empty_rounds = 0
+	round_number = 0
+	_pass = 0
+	_index = 0
+	# Force the first call to _advance() to start a round.
+	_max_passes = 0
 	for actor: Entity in _order:
-		max_speed = maxf(max_speed, actor.speed)
 		var brain: BrainComponent = universe.get_brain(actor)
 		if brain:
 			brain.configure(actions, perception)
-	_max_passes = maxi(1, floori(max_speed / float(ACTION_COST)))
-	round_number = 0
-	_start_round()
+	_advance()
 
 
 func is_player_turn() -> bool:
@@ -81,13 +92,48 @@ func get_current_actor() -> Entity:
 	return current_actor
 
 
+## Adds an actor spawned at runtime. It joins the order from the next round, so
+## the current round is not disturbed.
+func register_actor(actor: Entity) -> void:
+	if not actor or actors.has(actor):
+		return
+	actors.append(actor)
+	if universe and actions and perception:
+		var brain: BrainComponent = universe.get_brain(actor)
+		if brain:
+			brain.configure(actions, perception)
+	if round_number == 0:
+		# No round is running yet, so the actor can join immediately.
+		if not _order.has(actor):
+			_order.append(actor)
+		_order.sort_custom(_compare_actors)
+		return
+	if not _order.has(actor) and not _pending_actors.has(actor):
+		_pending_actors.append(actor)
+
+
+## Removes an actor killed or despawned at runtime.
+func unregister_actor(actor: Entity) -> void:
+	if not actor:
+		return
+	actors.erase(actor)
+	var order_index: int = _order.find(actor)
+	if order_index >= 0:
+		_order.remove_at(order_index)
+		# Keep _index pointing at the same next actor.
+		if order_index < _index:
+			_index -= 1
+	_pending_actors.erase(actor)
+
+
 ## Called by the universe after the player attempted an action. The action
 ## layer decides whether anything actually happened, so blocked moves keep the
 ## player's turn.
 func on_player_action() -> void:
-	if state != State.PLAYER:
+	if state != State.PLAYER or not actions.has_acted():
 		return
 	_resolve_action()
+	_advance()
 
 
 ## Spends the player's action without doing anything.
@@ -97,6 +143,7 @@ func request_wait() -> bool:
 	if not actions.wait(current_actor):
 		return false
 	_resolve_action()
+	_advance()
 	return true
 
 
@@ -108,28 +155,48 @@ func _process(delta: float) -> void:
 		return
 	set_process(false)
 	_run_cpu()
-
-
-func _start_round() -> void:
-	round_number += 1
-	for actor: Entity in _order:
-		if is_instance_valid(actor):
-			# Everyone gets at least one action, even with a very low speed.
-			actor.energy = maxi(roundi(actor.speed), ACTION_COST)
-	_pass = 0
-	_index = 0
 	_advance()
 
 
+## Refills energy, recomputes the passes for this round and reports whether the
+## round can start. Returns false when nobody can ever act again.
+func _start_round() -> bool:
+	_merge_pending_actors()
+	_prune_order()
+	if _order.is_empty():
+		return false
+	round_number += 1
+	var max_energy: int = 0
+	for actor: Entity in _order:
+		actor.energy = mini(actor.energy + roundi(actor.speed), MAX_ENERGY)
+		max_energy = maxi(max_energy, actor.energy)
+	_max_passes = maxi(1, floori(float(max_energy) / ACTION_COST))
+	_pass = 0
+	_index = 0
+	if max_energy < ACTION_COST:
+		# Nobody can act yet; slow actors simply need more rounds to save up.
+		_empty_rounds += 1
+		if _empty_rounds >= MAX_EMPTY_ROUNDS:
+			push_warning("TurnManager: no actor can act; stopping rounds.")
+			return false
+	else:
+		_empty_rounds = 0
+	return true
+
+
+## Drives the turn loop. Instant CPU turns are resolved inline; the function
+## only returns when the player must act or a CPU turn is being paced.
 func _advance() -> void:
+	set_process(false)
 	while true:
-		if _order.is_empty():
-			state = State.IDLE
-			current_actor = null
+		if _order.is_empty() and _pending_actors.is_empty():
+			_go_idle()
 			return
 		if _pass >= _max_passes:
-			_start_round()
-			return
+			if not _start_round():
+				_go_idle()
+				return
+			continue
 		if _index >= _order.size():
 			_pass += 1
 			_index = 0
@@ -141,7 +208,8 @@ func _advance() -> void:
 		if actor.energy < ACTION_COST:
 			continue
 		_begin_actor(actor)
-		return
+		if state != State.IDLE:
+			return
 
 
 func _begin_actor(actor: Entity) -> void:
@@ -154,9 +222,9 @@ func _begin_actor(actor: Entity) -> void:
 		return
 	state = State.CPU
 	var brain: BrainComponent = universe.get_brain(actor)
-	# Brainless actors only wait, so there is no reason to make the player sit
-	# through a delay for them.
-	if instant or not brain:
+	# Actors outside the player's view act instantly: waiting for them would
+	# only slow the game down without showing anything.
+	if instant or not brain or not _is_visible_to_player(actor):
 		_run_cpu()
 		return
 	_cpu_timer = action_delay
@@ -170,27 +238,65 @@ func _run_cpu() -> void:
 		return
 	var brain: BrainComponent = universe.get_brain(actor)
 	if brain:
+		if not brain.actions or not brain.perception:
+			# The brain became ready after registration (runtime spawns).
+			brain.configure(actions, perception)
 		brain.take_turn()
-	if universe.board_debug_overlay:
+	if universe.board_debug_overlay and universe.board_debug_overlay.visible:
 		(universe.board_debug_overlay as BoardDebugOverlay).set_visible_tiles(
 				perception.visible_tiles(actor))
 	if not actions.has_acted():
 		# A brain that could not act still spends the action, otherwise the
 		# same actor would be asked again forever.
-		actions.wait(actor)
+		if not actions.wait(actor):
+			# Not even a wait is possible (e.g. the actor left the board), so
+			# drop its energy to keep the loop from selecting it forever.
+			actor.energy = 0
 	_resolve_action()
 
 
 func _resolve_action() -> void:
 	var acted: bool = actions.end_turn()
 	if is_instance_valid(current_actor) and acted:
-		current_actor.energy = maxi(0, current_actor.energy - ACTION_COST)
+		current_actor.energy = maxi(0, current_actor.energy - actions.last_cost)
 	current_actor = null
 	state = State.IDLE
-	_advance()
+
+
+func _go_idle() -> void:
+	state = State.IDLE
+	current_actor = null
+	set_process(false)
+
+
+func _merge_pending_actors() -> void:
+	for actor: Entity in _pending_actors:
+		if is_instance_valid(actor) and not _order.has(actor):
+			_order.append(actor)
+	_pending_actors.clear()
+
+
+func _prune_order() -> void:
+	for i: int in range(_order.size() - 1, -1, -1):
+		var actor: Entity = _order[i]
+		if not is_instance_valid(actor) or actor.is_queued_for_deletion():
+			_order.remove_at(i)
+	# Speed can change (haste, slow), so the order is refreshed every round.
+	_order.sort_custom(_compare_actors)
+
+
+func _is_visible_to_player(actor: Entity) -> bool:
+	if not universe or not perception or not is_instance_valid(actor):
+		return false
+	var player: Entity = universe.current_player_entity
+	if not is_instance_valid(player):
+		return false
+	return perception.visible_tiles(player).has(universe.board.get_origin(actor))
 
 
 func _compare_actors(a: Entity, b: Entity) -> bool:
+	if a == b:
+		return false
 	if not is_equal_approx(a.speed, b.speed):
 		return a.speed > b.speed
 	# Ties go to the entity that was active when the game started, then to the

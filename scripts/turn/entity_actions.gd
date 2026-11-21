@@ -4,14 +4,18 @@ extends Node
 ## The only place that mutates the world on behalf of an entity.
 ##
 ## Both player input and AI brains go through this node, so AI cannot perform
-## actions the player could not, and every action costs the same amount of
-## energy. [method begin_turn] arms exactly one action: after the first
-## successful action every further call fails until [method end_turn] is used.
-## This is what stops a behavior tree from moving twice in a single turn.
+## actions the player could not, and every action spends its own energy cost.
+## [method begin_turn] arms exactly one action: after the first successful
+## action every further call fails until [method end_turn] is used. This is
+## what stops a behavior tree from moving twice in a single turn.
 
 var board: Board = null
 ## Kept untyped to avoid a dependency cycle with the universe script.
 var universe = null
+
+## Energy spent by the most recent action. Actions may override this when
+## variable costs are introduced.
+var last_cost: int = TurnManager.ACTION_COST
 
 var _actor: Entity = null
 var _acted: bool = false
@@ -20,6 +24,7 @@ var _acted: bool = false
 func begin_turn(actor: Entity) -> void:
 	_actor = actor
 	_acted = false
+	last_cost = TurnManager.ACTION_COST
 
 
 ## Ends the current action opportunity. Returns whether anything happened, so
@@ -45,6 +50,13 @@ func move(entity: Entity, direction: Vector2i) -> bool:
 		return false
 	var mode: Helper.MoveMode = entity.get_move_mode()
 	var move_to: Vector2i = board.get_origin(entity) + dir
+	# Diagonal movement must not cut corners, exactly like Board.can_step and
+	# the A* search. A diagonal push also needs both orthogonal tiles clear.
+	if dir.x != 0 and dir.y != 0:
+		var origin: Vector2i = board.get_origin(entity)
+		if not board.can_occupy(entity, origin + Vector2i(dir.x, 0), mode) \
+				or not board.can_occupy(entity, origin + Vector2i(0, dir.y), mode):
+			return false
 	# Only single-tile movers push for now; multi-tile pushing needs its own
 	# rules and there are no multi-tile player characters.
 	if entity.tile_size == 1:
@@ -158,8 +170,10 @@ func _push(entity: Entity, pushable: Base, dir: Vector2i, move_to: Vector2i) -> 
 	for element: Base in board.get_elements_at(move_to + dir):
 		if not element.walkable:
 			return false
-	_move_element(entity, dir)
+	# Move the crate first: a TeleportPad it lands on must not move the pusher
+	# while the push is still in progress.
 	_move_element(crate, dir)
+	_move_element(entity, dir)
 	_acted = true
 	return true
 
