@@ -3,8 +3,8 @@ extends PanelContainer
 
 ## A collapsible HUD panel with a scrollable list of rows.
 ##
-## Rows are plain dictionaries so the same panel can display items, journal
-## messages or character stats:
+## Rows are plain dictionaries so the same panel can display items or journal
+## messages:
 ## [codeblock]
 ## {"text": "Sword", "subtitle": "", "suffix": "×2", "meta": sword,
 ##  "items": [sword, other_sword], "visual": sword, "weight": 20.0,

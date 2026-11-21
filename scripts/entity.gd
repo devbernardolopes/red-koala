@@ -102,6 +102,14 @@ func _ready() -> void:
 	_toggle_invisible(is_invisible)
 	_toggle_phasing(is_phasing)
 	_toggle_flying(is_flying)
+	_init_values()
+
+
+func _init_values() -> void:
+	max_hit_points = (entity_class as ClassData).base_hit_points
+	hit_points = max_hit_points
+	max_mana_points = (entity_class as ClassData).base_mana_points
+	mana_points = max_mana_points
 
 
 func get_move_mode() -> Helper.MoveMode:

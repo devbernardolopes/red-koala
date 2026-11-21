@@ -27,6 +27,8 @@ const MOVE_ACTIONS: Array[StringName] = [
 @onready var journal_panel: HudPanel = %JournalPanel
 @onready var inventory_panel: HudPanel = %InventoryPanel
 @onready var ground_panel: HudPanel = %GroundPanel
+@onready var character_panel: HudCharacterPanel = %CharacterPanel
+@onready var grimoire_panel: HudPanel = %GrimoirePanel
 
 var _inventory_items: Array[Item] = []
 var _ground_items: Array[Item] = []
@@ -35,6 +37,8 @@ var _focused_panel: HudPanel = null
 
 func _ready() -> void:
 	journal_panel.selectable = false
+	grimoire_panel.selectable = false
+	grimoire_panel.set_rows([])
 	inventory_panel.selection_changed.connect(_on_inventory_selection_changed)
 	Journal.entry_added.connect(_on_journal_entry_added)
 	Journal.cleared.connect(_on_journal_cleared)
@@ -84,6 +88,16 @@ func set_ground(items: Array[Item]) -> void:
 	ground_panel.set_rows(rows, previous)
 
 
+## Replaces the character sheet with [param entity]'s data.
+func set_character(entity: Entity) -> void:
+	character_panel.set_entity(entity)
+
+
+## Re-reads the character sheet, for when the active entity's stats changed.
+func refresh_character() -> void:
+	character_panel.refresh()
+
+
 func get_selected_ground_item() -> Item:
 	return ground_panel.get_selected_meta() as Item
 
@@ -103,6 +117,12 @@ func handle_input(event: InputEvent) -> bool:
 		return true
 	if event.is_action_pressed(&"toggle_journal"):
 		journal_panel.toggle_collapsed()
+		return true
+	if event.is_action_pressed(&"toggle_entity"):
+		character_panel.toggle_collapsed()
+		return true
+	if event.is_action_pressed(&"toggle_grimoire"):
+		grimoire_panel.toggle_collapsed()
 		return true
 	if not Input.is_action_pressed(&"inventory_modifier"):
 		return false

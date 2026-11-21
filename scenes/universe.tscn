@@ -93,7 +93,7 @@ shader_parameter/vignette_opacity = 0.5
 [node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("current_player_entity", "party")]
 script = ExtResource("1_uc3kj")
 current_player_entity = NodePath("Entities/Wizard")
-party = [NodePath("Entities/Wizard")]
+party = [NodePath("Entities/Barbarian"), NodePath("Entities/Wizard")]
 
 [node name="Board" type="Node" parent="." unique_id=1430288918]
 script = ExtResource("14_board")
@@ -258,15 +258,24 @@ tile_set = SubResource("TileSet_m7uww")
 [node name="Barbarian" parent="Entities" unique_id=365190293 instance=ExtResource("2_pol6k")]
 modulate = Color(1, 1, 1, 0.128)
 position = Vector2(224, 96)
+max_hit_points = 14
+hit_points = 14
 
 [node name="Dragon" parent="Entities" unique_id=148953585 instance=ExtResource("12_fbuf2")]
 position = Vector2(128, -64)
 entity_class = ExtResource("17_1dpui")
+max_hit_points = 10
+hit_points = 10
+max_mana_points = 6
+mana_points = 6
 
 [node name="Wizard" parent="Entities" unique_id=1093125361 instance=ExtResource("15_tqeu6")]
 position = Vector2(224, 224)
 xp = 0
-is_invisible = false
+max_hit_points = 10
+hit_points = 10
+max_mana_points = 6
+mana_points = 6
 is_phasing = true
 is_flying = true
 can_see_invisible = true
@@ -276,11 +285,15 @@ walkable = false
 
 [node name="Bandit" parent="Entities" unique_id=1169498443 instance=ExtResource("22_ij8xa")]
 position = Vector2(800, 288)
+max_hit_points = 14
+hit_points = 14
 speed = 100.0
 data = ExtResource("24_4c3kv")
 
 [node name="Bandit2" parent="Entities" unique_id=732322922 instance=ExtResource("22_ij8xa")]
 position = Vector2(608, 288)
+max_hit_points = 14
+hit_points = 14
 speed = 100.0
 data = ExtResource("24_4c3kv")
 

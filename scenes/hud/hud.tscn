@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/hud/hud_panel.tscn" id="1_panel"]
 [ext_resource type="Script" path="res://scripts/hud/hud.gd" id="2_hud"]
 [ext_resource type="Theme" path="res://resources/themes/hud_theme.tres" id="3_theme"]
+[ext_resource type="PackedScene" path="res://scenes/hud/character_panel.tscn" id="4_character"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("2_hud")
@@ -64,3 +65,29 @@ title = "Inventory"
 unique_name_in_owner = true
 layout_mode = 2
 title = "Ground"
+
+[node name="LeftColumn" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -424.0
+offset_right = 356.0
+offset_bottom = -16.0
+grow_horizontal = 1
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="CharacterPanel" parent="Root/LeftColumn" instance=ExtResource("4_character")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "Character"
+
+[node name="GrimoirePanel" parent="Root/LeftColumn" instance=ExtResource("1_panel")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "Grimoire"
+selectable = false

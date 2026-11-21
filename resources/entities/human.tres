@@ -7,7 +7,6 @@
 
 [resource]
 script = ExtResource("3_cnxgt")
-base_hit_points = 10
 race = ExtResource("2_cnxgt")
 id = &"human"
 name = "Human"

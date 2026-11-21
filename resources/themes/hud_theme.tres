@@ -51,6 +51,18 @@ border_width_left = 2
 border_color = Color(0.7254902, 0.6509804, 1, 1)
 
 [resource]
+HudCharacterDivider/base_type = &"Label"
+HudCharacterDivider/colors/font_color = Color(0.41568628, 0.38431373, 0.5019608, 1)
+HudCharacterDivider/font_sizes/font_size = 13
+HudCharacterName/base_type = &"Label"
+HudCharacterName/colors/font_color = Color(0.79607844, 0.7411765, 1, 1)
+HudCharacterName/font_sizes/font_size = 16
+HudCharacterProperty/base_type = &"Label"
+HudCharacterProperty/colors/font_color = Color(0.56078434, 0.5254902, 0.6784314, 1)
+HudCharacterProperty/font_sizes/font_size = 13
+HudCharacterStat/base_type = &"Label"
+HudCharacterStat/colors/font_color = Color(0.84705883, 0.83137256, 0.9098039, 1)
+HudCharacterStat/font_sizes/font_size = 13
 HudCount/base_type = &"Label"
 HudCount/colors/font_color = Color(0.49019608, 0.4509804, 0.61960787, 1)
 HudCount/font_sizes/font_size = 13

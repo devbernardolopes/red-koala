@@ -77,6 +77,7 @@ func _ready() -> void:
 		filter_list.append(null)
 	_update_inventory()
 	_update_ground()
+	_update_character()
 	_dispel_fog_of_war()
 	for entity in party:
 		entity.is_playable = true
@@ -195,6 +196,12 @@ func _update_inventory() -> void:
 			_get_body_parts(current_player_entity))
 
 
+## Pushes the active entity's sheet to the HUD. Stats can change outside the
+## inventory flow (combat, levelling), so callers refresh it when that happens.
+func _update_character() -> void:
+	hud.set_character(current_player_entity)
+
+
 func _get_body_parts(entity: Entity) -> Array[AnatomyData]:
 	var body_parts: Array[AnatomyData] = []
 	if entity.data is EntityData:
@@ -218,6 +225,7 @@ func _update_ground() -> void:
 func _on_inventory_changed(entity: Entity) -> void:
 	if entity == current_player_entity:
 		_update_inventory()
+		_update_character()
 
 
 func _on_inventory_selection_changed(item: Item) -> void:
@@ -267,6 +275,7 @@ func set_active_player(entity: Entity) -> void:
 	current_player_entity = entity
 	_update_inventory()
 	_update_ground()
+	_update_character()
 	_dispel_fog_of_war()
 	AudioManager.set_listener_target(entity)
 
