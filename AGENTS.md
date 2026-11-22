@@ -18,6 +18,7 @@ The testing device is:
 - Godot 4 API differs from Godot 3. When unsure about a property or method, check the Godot 4.7 docs instead of guessing.
 - Avoid local variables or parameters that shadow existing member variables (GDScript warns on shadowing). If a local/parameter name would collide with a member (e.g. a method parameter named `scale` when the class is a Node2D that already has `scale` ), rename the local/parameter with a `_` prefix (e.g. `_scale`).
 - Don't bother reading the contents of `res://addons` because they're just third-party plug-ins and their code isn't relevant to this development.
+- Don't use backslash to break long lines, instead use parenthesised multi-line.
 
 ## Commit Convention
 

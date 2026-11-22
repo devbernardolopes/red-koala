@@ -96,7 +96,7 @@ shader_parameter/vignette_opacity = 0.5
 [node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("current_player_entity", "party")]
 script = ExtResource("1_uc3kj")
 current_player_entity = NodePath("Entities/Wizard")
-party = [NodePath("Entities/Wizard")]
+party = [NodePath("Entities/Wizard"), NodePath("Entities/Barbarian")]
 
 [node name="Board" type="Node" parent="." unique_id=1430288918]
 script = ExtResource("14_board")
