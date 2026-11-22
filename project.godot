@@ -39,6 +39,7 @@ enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
 [file_customization]
 
 folder_colors={
+"res://ai/": "teal",
 "res://assets/": "yellow",
 "res://autoloaders/": "blue",
 "res://resources/": "orange",

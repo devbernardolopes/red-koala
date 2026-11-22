@@ -49,6 +49,13 @@ var _empty_rounds: int = 0
 var _cpu_timer: float = 0.0
 var _preferred_actor: Entity = null
 
+## True while the player chooses the order in which the party acts in this pass.
+var _party_phase: bool = false
+## Playable actors that can still act in this pass, the current one included.
+var _party_pending: Array[Entity] = []
+## Playable actors that already acted in this pass.
+var _party_done: Array[Entity] = []
+
 
 func setup(the_universe: Universe) -> void:
 	universe = the_universe
@@ -77,6 +84,9 @@ func start() -> void:
 	_index = 0
 	# Force the first call to _advance() to start a round.
 	_max_passes = 0
+	_party_phase = false
+	_party_pending.clear()
+	_party_done.clear()
 	for actor: Entity in _order:
 		var brain: BrainComponent = universe.get_brain(actor)
 		if brain:
@@ -127,6 +137,8 @@ func unregister_actor(actor: Entity) -> void:
 		if order_index < _index:
 			_index -= 1
 	_pending_actors.erase(actor)
+	_party_pending.erase(actor)
+	_party_done.erase(actor)
 	# A current actor that leaves the world (death) must not leave the loop
 	# waiting for an action that can never come.
 	if was_current and (state == State.PLAYER or state == State.CPU):
@@ -148,8 +160,10 @@ func on_player_action() -> void:
 func request_wait() -> bool:
 	if state != State.PLAYER or not is_instance_valid(current_actor):
 		return false
-	if not actions.wait(current_actor):
+	var waiter: Entity = current_actor
+	if not actions.wait(waiter):
 		return false
+	Journal.waited(waiter)
 	_resolve_action()
 	_advance()
 	return true
@@ -203,12 +217,16 @@ func _advance() -> void:
 		if _order.is_empty() and _pending_actors.is_empty():
 			_go_idle()
 			return
-		# Without a living playable actor there is nobody left to wait for.
-		# Continuing would spin forever when every remaining actor is an
-		# instant CPU actor.
 		if not _has_playable_actor():
 			_go_idle()
 			return
+		# The player is still choosing who acts next in this pass.
+		if _party_phase:
+			_prune_party_pending()
+			if not _party_pending.is_empty():
+				_begin_party_member(_party_pending.front())
+				return
+			_party_phase = false
 		if _pass >= _max_passes:
 			if not _start_round():
 				_go_idle()
@@ -217,39 +235,63 @@ func _advance() -> void:
 		if _index >= _order.size():
 			_pass += 1
 			_index = 0
+			_party_done.clear()
 			continue
 		var actor: Entity = _order[_index]
 		_index += 1
-		if not is_instance_valid(actor) or actor.is_queued_for_deletion():
+		if not _can_act_now(actor):
 			continue
-		if actor.is_dead:
-			continue
-		if actor.energy < ACTION_COST:
-			continue
+		if actor.is_playable:
+			if _party_done.has(actor):
+				continue
+			_start_party_phase()
+			_begin_party_member(actor)
+			return
 		_begin_actor(actor)
 		if state != State.IDLE:
 			return
 
 
+## CPU actors only; playable actors go through [method _begin_party_member].
 func _begin_actor(actor: Entity) -> void:
-	# first line of _begin_actor(actor)
-	print("  pass %d -> %s (energy %d)" % [_pass, actor.name, actor.energy])
 	current_actor = actor
 	actions.begin_turn(actor)
-	if actor.is_playable:
-		state = State.PLAYER
-		set_process(false)
-		universe.set_active_player(actor)
-		return
 	state = State.CPU
 	var brain: BrainComponent = universe.get_brain(actor)
-	# Actors outside the player's view act instantly: waiting for them would
-	# only slow the game down without showing anything.
 	if instant or not brain or not _is_visible_to_player(actor):
 		_run_cpu()
 		return
 	_cpu_timer = action_delay
 	set_process(true)
+
+
+func _begin_party_member(member: Entity) -> void:
+	current_actor = member
+	actions.begin_turn(member)
+	state = State.PLAYER
+	set_process(false)
+	universe.set_active_player(member)
+
+
+func _start_party_phase() -> void:
+	_party_phase = true
+	_party_pending.clear()
+	for member: Entity in _order:
+		if _can_act_now(member) and member.is_playable and not _party_done.has(member):
+			_party_pending.append(member)
+
+
+func _prune_party_pending() -> void:
+	for i: int in range(_party_pending.size() - 1, -1, -1):
+		if not _can_act_now(_party_pending[i]):
+			_party_pending.remove_at(i)
+
+
+func _can_act_now(actor: Entity) -> bool:
+	return (is_instance_valid(actor)
+			and not actor.is_queued_for_deletion()
+			and not actor.is_dead
+			and actor.energy >= ACTION_COST)
 
 
 func _run_cpu() -> void:
@@ -277,9 +319,13 @@ func _run_cpu() -> void:
 
 
 func _resolve_action() -> void:
+	var actor: Entity = current_actor
 	var acted: bool = actions.end_turn()
-	if is_instance_valid(current_actor) and acted:
-		current_actor.energy = maxi(0, current_actor.energy - actions.last_cost)
+	if is_instance_valid(actor) and acted:
+		actor.energy = maxi(0, actor.energy - actions.last_cost)
+		if actor.is_playable:
+			_party_done.append(actor)
+	_party_pending.erase(actor)
 	current_actor = null
 	state = State.IDLE
 
@@ -345,3 +391,17 @@ func _compare_actors(a: Entity, b: Entity) -> bool:
 	if b == _preferred_actor:
 		return false
 	return actors.find(a) < actors.find(b)
+
+
+## Hands the player turn to the next party member that can still act in this
+## pass. It costs nothing and does not end anybody's turn.
+func cycle_player(step: int = 1) -> bool:
+	if state != State.PLAYER or not _party_phase or _party_pending.size() < 2:
+		return false
+	var index: int = _party_pending.find(current_actor)
+	if index < 0:
+		return false
+	var next: Entity = _party_pending[posmod(index + step, _party_pending.size())]
+	_begin_party_member(next)
+	Journal.took_the_lead(next)
+	return true

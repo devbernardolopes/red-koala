@@ -137,8 +137,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not turn_manager or not turn_manager.is_player_turn():
 		return
 	if event.is_action_pressed("switch_player_entity"):
-		if turn_manager.request_wait():
-			Journal.waited(current_player_entity)
+		turn_manager.cycle_player()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed("wait"):
+		turn_manager.request_wait()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("take"):
