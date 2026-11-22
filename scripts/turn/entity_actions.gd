@@ -55,8 +55,8 @@ func move(entity: Entity, direction: Vector2i) -> bool:
 	# the A* search. A diagonal push also needs both orthogonal tiles clear.
 	if dir.x != 0 and dir.y != 0:
 		var origin: Vector2i = board.get_origin(entity)
-		if not board.can_occupy(entity, origin + Vector2i(dir.x, 0), mode) \
-				or not board.can_occupy(entity, origin + Vector2i(0, dir.y), mode):
+		if (not board.can_occupy(entity, origin + Vector2i(dir.x, 0), mode) 
+				or not board.can_occupy(entity, origin + Vector2i(0, dir.y), mode)):
 			return false
 	# Only single-tile movers push for now; multi-tile pushing needs its own
 	# rules and there are no multi-tile player characters.
@@ -169,10 +169,10 @@ func attack(entity: Entity, target: Entity,
 	if not board.can_reach_adjacent_attack(entity, target):
 		return false
 	var result: AttackResult = Combat.resolve_attack(entity, target, _profile)
+	Journal.attack_result(result, _profile)
 	if result.hit:
 		target.take_damage(result.damage, entity)
 		result.killed = target.is_dead
-	Journal.attack_result(result, _profile)
 	if result.killed:
 		Journal.slain(entity, target)
 	_acted = true

@@ -337,9 +337,9 @@ func _resolve_player(player_path: String, for_write: bool = false) -> Dictionary
 	if resolved.has("error"):
 		return resolved
 	var node: Node = resolved.node
-	var is_player := node is AudioStreamPlayer \
-		or node is AudioStreamPlayer2D \
-		or node is AudioStreamPlayer3D
+	var is_player := (node is AudioStreamPlayer 
+			or node is AudioStreamPlayer2D 
+			or node is AudioStreamPlayer3D)
 	if not is_player:
 		return ErrorCodes.make(
 			ErrorCodes.WRONG_TYPE,

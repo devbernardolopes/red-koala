@@ -224,9 +224,9 @@ func can_step(mover: Base, dir: Vector2i, mode: Helper.MoveMode = Helper.MoveMod
 		return false
 	var origin: Vector2i = get_origin(mover)
 	if dir.x != 0 and dir.y != 0:
-		return can_occupy(mover, origin + Vector2i(dir.x, 0), mode) \
-				and can_occupy(mover, origin + Vector2i(0, dir.y), mode) \
-				and can_occupy(mover, origin + dir, mode)
+		return (can_occupy(mover, origin + Vector2i(dir.x, 0), mode) 
+				and can_occupy(mover, origin + Vector2i(0, dir.y), mode) 
+				and can_occupy(mover, origin + dir, mode))
 	return can_occupy(mover, origin + dir, mode)
 
 
@@ -269,8 +269,10 @@ static func footprints_overlap(a_origin: Vector2i, a_size: int, b_origin: Vector
 		b_size: int) -> bool:
 	var _a_size: int = maxi(a_size, 1)
 	var _b_size: int = maxi(b_size, 1)
-	return a_origin.x < b_origin.x + _b_size and b_origin.x < a_origin.x + _a_size \
-			and a_origin.y < b_origin.y + _b_size and b_origin.y < a_origin.y + _a_size
+	return (a_origin.x < b_origin.x + _b_size 
+			and b_origin.x < a_origin.x + _a_size 
+			and a_origin.y < b_origin.y + _b_size 
+			and b_origin.y < a_origin.y + _a_size)
 
 
 ## Whether the two elements touch, including diagonally, without overlapping.
@@ -462,9 +464,9 @@ func _can_step_from(mover: Base, from: Vector2i, dir: Vector2i,
 	if dir == Vector2i.ZERO:
 		return false
 	if dir.x != 0 and dir.y != 0:
-		return can_occupy(mover, from + Vector2i(dir.x, 0), mode) \
-				and can_occupy(mover, from + Vector2i(0, dir.y), mode) \
-				and can_occupy(mover, from + dir, mode)
+		return (can_occupy(mover, from + Vector2i(dir.x, 0), mode) 
+				and can_occupy(mover, from + Vector2i(0, dir.y), mode) 
+				and can_occupy(mover, from + dir, mode))
 	return can_occupy(mover, from + dir, mode)
 
 
@@ -487,8 +489,8 @@ func _is_reachable_adjacent(a_origin: Vector2i, a_size: int, b_origin: Vector2i,
 			if delta == Vector2i.ZERO or absi(delta.x) > 1 or absi(delta.y) > 1:
 				continue
 			if delta.x != 0 and delta.y != 0:
-				if is_tile_blocked(cell + Vector2i(delta.x, 0)) \
-						or is_tile_blocked(cell + Vector2i(0, delta.y)):
+				if (is_tile_blocked(cell + Vector2i(delta.x, 0)) 
+						or is_tile_blocked(cell + Vector2i(0, delta.y))):
 					continue
 			return true
 	return false

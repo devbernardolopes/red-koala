@@ -305,12 +305,16 @@ func _prune_order() -> void:
 ## actors count because they join at the next round.
 func _has_playable_actor() -> bool:
 	for actor: Entity in _order:
-		if is_instance_valid(actor) and not actor.is_queued_for_deletion() \
-				and not actor.is_dead and actor.is_playable:
+		if (is_instance_valid(actor) 
+				and not actor.is_queued_for_deletion() 
+				and not actor.is_dead 
+				and actor.is_playable):
 			return true
 	for actor: Entity in _pending_actors:
-		if is_instance_valid(actor) and not actor.is_queued_for_deletion() \
-				and not actor.is_dead and actor.is_playable:
+		if (is_instance_valid(actor) 
+				and not actor.is_queued_for_deletion() 
+				and not actor.is_dead 
+				and actor.is_playable):
 			return true
 	return false
 

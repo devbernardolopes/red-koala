@@ -123,8 +123,8 @@ const LEVEL_CHART: Dictionary = {
 static func are_hostile(a: Entity, b: Entity) -> bool:
 	if not a or not b or a == b:
 		return false
-	return (a.team == EntityTeam.FOE and b.team == EntityTeam.FRIEND) \
-			or (a.team == EntityTeam.FRIEND and b.team == EntityTeam.FOE)
+	return ((a.team == EntityTeam.FOE and b.team == EntityTeam.FRIEND) 
+			or (a.team == EntityTeam.FRIEND and b.team == EntityTeam.FOE))
 
 
 static func has_property(target: Node, property: String) -> bool:

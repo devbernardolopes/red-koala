@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://c46tg0hk0ohue"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_ipa8w"]
+[ext_resource type="Resource" uid="uid://h6s3b72dukmt" path="res://resources/bodyparts/flesh/left_hand.tres" id="2_nx348"]
+[ext_resource type="Resource" uid="uid://do7mb8vthvo56" path="res://resources/bodyparts/flesh/right_hand.tres" id="3_juk7o"]
+[ext_resource type="Resource" uid="uid://bsn1hv5pao1ua" path="res://resources/materials/steel.tres" id="4_yi6c3"]
+[ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="5_bxp4a"]
+
+[resource]
+script = ExtResource("5_bxp4a")
+weight = 4.0
+material = ExtResource("4_yi6c3")
+equipped_on = Array[ExtResource("1_ipa8w")]([ExtResource("2_nx348"), ExtResource("3_juk7o")])
+id = &"dagger"
+name = "Dagger"
+metadata/_custom_type_script = "uid://dtsnprxxyisjd"

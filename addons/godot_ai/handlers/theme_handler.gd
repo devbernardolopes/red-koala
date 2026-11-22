@@ -785,8 +785,10 @@ static func _parse_number_field(dict_name: String, key: String, raw: Variant, st
 			## Must survive the float32 round-trip and stay in int32, or the
 			## int getter reads back a rounded or wrapped value.
 			var narrowed: float = PackedFloat32Array([number])[0]
-			if not is_finite(narrowed) or narrowed < float(_INT32_MIN) or narrowed > float(_INT32_MAX) \
-					or int(narrowed) != int(number):
+			if (not is_finite(narrowed) 
+					or narrowed < float(_INT32_MIN) 
+					or narrowed > float(_INT32_MAX) 
+					or int(narrowed) != int(number)):
 				return ErrorCodes.make(ErrorCodes.VALUE_OUT_OF_RANGE,
 					"'%s.%s' is out of range for the float-backed 32-bit int storage (got %s)" % [dict_name, key, str(number)])
 			return {"value": int(narrowed)}

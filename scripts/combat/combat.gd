@@ -77,8 +77,9 @@ static func attack_profile(entity: Entity) -> AttackProfile:
 static func attack_bonus(entity: Entity, profile: AttackProfile) -> int:
 	if not is_instance_valid(entity) or not profile:
 		return 0
-	return entity.get_ability_modifier(profile.ability) \
-			+ entity.get_proficiency_bonus() + profile.attack_bonus
+	return (entity.get_ability_modifier(profile.ability) 
+			+ entity.get_proficiency_bonus() 
+			+ profile.attack_bonus)
 
 
 ## Rolls the attack and, on a hit, the damage. Never applies the result.
@@ -95,8 +96,8 @@ static func resolve_attack(attacker: Entity, target: Entity, profile: AttackProf
 	result.target_ac = armor_class(target)
 	result.fumble = result.natural == 1
 	result.critical = result.natural == 20
-	result.hit = result.critical \
-			or (not result.fumble and result.total >= result.target_ac)
+	result.hit = (result.critical 
+			or (not result.fumble and result.total >= result.target_ac))
 	if result.hit:
 		var dice_count: int = profile.damage_dice * (2 if result.critical else 1)
 		var damage: int = Dice.roll(dice_count, profile.damage_sides)

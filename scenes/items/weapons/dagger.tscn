@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://d06hs660053wm"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_6rd4b"]
+[ext_resource type="Resource" uid="uid://c46tg0hk0ohue" path="res://resources/items/weapons/dagger.tres" id="2_6rd4b"]
+
+[node name="Dagger" type="Area2D" unique_id=1953011227]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_6rd4b")
+data = ExtResource("2_6rd4b")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1401478495]
+color = Color(0.64705884, 0.7411765, 0.78431374, 1)
+polygon = PackedVector2Array(16, -16, 8, 0, 0, 0, 0, 0)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=849671982]
+color = Color(0.24477637, 0.2447764, 0.24477637, 1)
+polygon = PackedVector2Array(-1, 5, 0, 6, 5, 2, 10, 2, 8, 0, -2, -3, 1, 2)

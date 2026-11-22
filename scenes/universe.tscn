@@ -26,6 +26,7 @@
 [ext_resource type="Script" uid="uid://dwgj8n4pla4e0" path="res://scripts/board_debug_overlay.gd" id="15_overlay"]
 [ext_resource type="PackedScene" uid="uid://cnvcmedluxbp1" path="res://scenes/entities/wizard.tscn" id="15_tqeu6"]
 [ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="16_5qg6o"]
+[ext_resource type="PackedScene" uid="uid://d06hs660053wm" path="res://scenes/items/weapons/dagger.tscn" id="16_neukn"]
 [ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="17_1dpui"]
 [ext_resource type="PackedScene" path="res://scenes/hud/hud.tscn" id="18_hud"]
 [ext_resource type="PackedScene" uid="uid://t5l8m4hry5bc" path="res://scenes/entities/bandit.tscn" id="22_ij8xa"]
@@ -95,7 +96,7 @@ shader_parameter/vignette_opacity = 0.5
 [node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("current_player_entity", "party")]
 script = ExtResource("1_uc3kj")
 current_player_entity = NodePath("Entities/Wizard")
-party = [NodePath("Entities/Barbarian"), NodePath("Entities/Wizard")]
+party = [NodePath("Entities/Wizard")]
 
 [node name="Board" type="Node" parent="." unique_id=1430288918]
 script = ExtResource("14_board")
@@ -184,6 +185,9 @@ position = Vector2(352, 288)
 
 [node name="IndigoPotion" parent="Items" unique_id=280504374 instance=ExtResource("12_v7xte")]
 position = Vector2(160, 288)
+
+[node name="Dagger" parent="Items" unique_id=49761707 instance=ExtResource("16_neukn")]
+position = Vector2(416, 224)
 
 [node name="Crates" type="Node2D" parent="." unique_id=270435340]
 
@@ -279,29 +283,30 @@ hit_points = 10
 max_mana_points = 6
 mana_points = 6
 
-[node name="Wizard" parent="Entities" unique_id=1093125361 instance=ExtResource("15_tqeu6")]
+[node name="Wizard" parent="Entities" unique_id=1093125361 node_paths=PackedStringArray("inventory") instance=ExtResource("15_tqeu6")]
 position = Vector2(224, 224)
 xp = 0
 max_hit_points = 10
 hit_points = 10
 max_mana_points = 6
 mana_points = 6
+inventory = [NodePath("../../Items/Sword"), NodePath("../../Items/LeatherVest")]
 is_phasing = true
 is_flying = true
 can_see_invisible = true
-speed = 20.0
 team = 2
 data = ExtResource("16_5qg6o")
 walkable = false
 
-[node name="Bandit" parent="Entities" unique_id=1169498443 instance=ExtResource("22_ij8xa")]
-position = Vector2(800, 288)
+[node name="Bandit" parent="Entities" unique_id=1169498443 node_paths=PackedStringArray("inventory") instance=ExtResource("22_ij8xa")]
+position = Vector2(1056, 160)
 max_hit_points = 14
 hit_points = 14
+inventory = [NodePath("../../Items/Dagger")]
 data = ExtResource("24_4c3kv")
 
 [node name="Bandit2" parent="Entities" unique_id=732322922 instance=ExtResource("22_ij8xa")]
-position = Vector2(608, 288)
+position = Vector2(544, -32)
 max_hit_points = 14
 hit_points = 14
 data = ExtResource("24_4c3kv")

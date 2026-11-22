@@ -2,15 +2,22 @@
 
 [ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_u68yi"]
 [ext_resource type="Resource" uid="uid://lb8i2y6i7bk4" path="res://resources/classes/barbarian.tres" id="2_u68yi"]
-[ext_resource type="Script" path="res://scripts/ai/brain_component.gd" id="3_brain"]
-[ext_resource type="BehaviorTree" path="res://ai/brains/melee_chaser.tres" id="4_tree"]
+[ext_resource type="Script" uid="uid://cy4bk2kt8auke" path="res://scripts/ai/brain_component.gd" id="3_brain"]
+[ext_resource type="BehaviorTree" uid="uid://cx36usd8yhwq4" path="res://ai/brains/melee_chaser.tres" id="4_tree"]
 
 [node name="Bandit" type="Area2D" unique_id=1093125361]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_u68yi")
 entity_class = ExtResource("2_u68yi")
-xp = 1
+display_name = "Bandit"
+strength = 6
+dexterity = 8
+constitution = 9
+charisma = 3
+wisdom = 1
+intelligence = 2
+fov = 3
 team = 3
 walkable = false
 metadata/_custom_type_script = "uid://tdfdon0mic37"

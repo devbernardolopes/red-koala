@@ -254,7 +254,10 @@ func _on_entity_died(entity: Entity, _source: Entity) -> void:
 	var parent: Node = entity.get_parent()
 	if parent:
 		var corpse: Corpse = Corpse.create_from(entity)
-		parent.add_child(corpse)
+		if not decals_node:
+			parent.add_child(corpse)
+		else:
+			decals_node.add_child(corpse)
 		board.register(corpse)
 	Journal.died(entity)
 	var was_player: bool = entity == current_player_entity
@@ -286,7 +289,7 @@ func _on_entity_died(entity: Entity, _source: Entity) -> void:
 
 func _disable_input() -> void:
 	_input_disabled = true
-	set_process_unhandled_input(false)
+	#set_process_unhandled_input(false)
 
 
 func _dispel_fog_of_war() -> void:
@@ -384,6 +387,17 @@ func _load_elements() -> void:
 			w.blocks_sight = true
 			board.place(w, cell)
 			wall_proxies.append(w)
+	# TODO: Refactor this in the future. I am doing this so that editor-authored
+	# entities that start with items in their inventory have the items removed
+	# from the board and equipped when possible.
+	for entity in board.get_entities():
+		if not entity.inventory:
+			continue
+		for item in entity.inventory:
+			item.get_parent().remove_child(item)
+			board.unregister(item)
+			entity.equip(item)
+
 
 ## @deprecated It is being used when loading levels from file but there will be
 ## no more file loading in the future.
@@ -402,6 +416,7 @@ func _create_element_at(type: Helper.ElementType, pos: Vector2i) -> void:
 			add_child(e)
 			board.place(e, pos)
 			current_player_entity = e
+
 
 ## @deprecated: There will be no more level loading from files in the future.
 func _load_level(num: int = 0) -> void:
