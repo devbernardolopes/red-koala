@@ -58,6 +58,7 @@ func setup(the_universe: Universe) -> void:
 	actions.universe = universe
 	add_child(actions)
 	perception = Perception.new(universe.board)
+	actions.perception = perception
 
 
 func start() -> void:
@@ -84,8 +85,9 @@ func start() -> void:
 
 
 func is_player_turn() -> bool:
-	return state == State.PLAYER and is_instance_valid(current_actor) \
-			and current_actor.is_playable
+	return (state == State.PLAYER 
+			and is_instance_valid(current_actor) 
+			and current_actor.is_playable)
 
 
 func get_current_actor() -> Entity:
@@ -116,6 +118,7 @@ func register_actor(actor: Entity) -> void:
 func unregister_actor(actor: Entity) -> void:
 	if not actor:
 		return
+	var was_current: bool = actor == current_actor
 	actors.erase(actor)
 	var order_index: int = _order.find(actor)
 	if order_index >= 0:
@@ -124,6 +127,11 @@ func unregister_actor(actor: Entity) -> void:
 		if order_index < _index:
 			_index -= 1
 	_pending_actors.erase(actor)
+	# A current actor that leaves the world (death) must not leave the loop
+	# waiting for an action that can never come.
+	if was_current and (state == State.PLAYER or state == State.CPU):
+		_resolve_action()
+		_advance()
 
 
 ## Called by the universe after the player attempted an action. The action
@@ -192,6 +200,12 @@ func _advance() -> void:
 		if _order.is_empty() and _pending_actors.is_empty():
 			_go_idle()
 			return
+		# Without a living playable actor there is nobody left to wait for.
+		# Continuing would spin forever when every remaining actor is an
+		# instant CPU actor.
+		if not _has_playable_actor():
+			_go_idle()
+			return
 		if _pass >= _max_passes:
 			if not _start_round():
 				_go_idle()
@@ -204,6 +218,8 @@ func _advance() -> void:
 		var actor: Entity = _order[_index]
 		_index += 1
 		if not is_instance_valid(actor) or actor.is_queued_for_deletion():
+			continue
+		if actor.is_dead:
 			continue
 		if actor.energy < ACTION_COST:
 			continue
@@ -279,10 +295,24 @@ func _merge_pending_actors() -> void:
 func _prune_order() -> void:
 	for i: int in range(_order.size() - 1, -1, -1):
 		var actor: Entity = _order[i]
-		if not is_instance_valid(actor) or actor.is_queued_for_deletion():
+		if not is_instance_valid(actor) or actor.is_queued_for_deletion() or actor.is_dead:
 			_order.remove_at(i)
 	# Speed can change (haste, slow), so the order is refreshed every round.
 	_order.sort_custom(_compare_actors)
+
+
+## Whether at least one living playable actor is still registered. Pending
+## actors count because they join at the next round.
+func _has_playable_actor() -> bool:
+	for actor: Entity in _order:
+		if is_instance_valid(actor) and not actor.is_queued_for_deletion() \
+				and not actor.is_dead and actor.is_playable:
+			return true
+	for actor: Entity in _pending_actors:
+		if is_instance_valid(actor) and not actor.is_queued_for_deletion() \
+				and not actor.is_dead and actor.is_playable:
+			return true
+	return false
 
 
 func _is_visible_to_player(actor: Entity) -> bool:

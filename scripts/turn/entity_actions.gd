@@ -12,6 +12,7 @@ extends Node
 var board: Board = null
 ## Kept untyped to avoid a dependency cycle with the universe script.
 var universe = null
+var perception: Perception = null
 
 ## Energy spent by the most recent action. Actions may override this when
 ## variable costs are introduced.
@@ -95,9 +96,31 @@ func take(entity: Entity, item: Item) -> bool:
 func drop(entity: Entity, item: Item) -> bool:
 	if not _can_act(entity) or not item:
 		return false
+	if not _drop_item(entity, item, false):
+		return false
+	_acted = true
+	return true
+
+
+## Drops every carried item when [param entity] dies. The cursed rule is
+## ignored and the action layer is not consulted, because the entity can no
+## longer act.
+func drop_all_on_death(entity: Entity) -> void:
+	if not is_instance_valid(entity):
+		return
+	var items: Array[Item] = []
+	items.append_array(entity.inventory)
+	for item: Item in items:
+		_drop_item(entity, item, true)
+
+
+## Shared drop path. [param _ignore_cursed] is only true for death.
+func _drop_item(entity: Entity, item: Item, _ignore_cursed: bool) -> bool:
+	if not is_instance_valid(entity) or not item:
+		return false
 	if not entity.inventory.has(item):
 		return false
-	if not entity.drop(item):
+	if not entity.drop(item, _ignore_cursed):
 		return false
 	if universe and universe.items_node:
 		universe.items_node.add_child(item)
@@ -109,7 +132,6 @@ func drop(entity: Entity, item: Item) -> bool:
 		if element is TeleportPad:
 			(element as TeleportPad).teleport(item)
 	board.sync_from_position(item)
-	_acted = true
 	_after_item_change()
 	return true
 
@@ -131,14 +153,58 @@ func equip(entity: Entity, item: Item) -> Entity.EquipResult:
 	return result
 
 
-## Combat is not implemented yet. This reserves the turn and journal entry so
-## behavior trees can be built and tested against the real action flow.
-func attack(entity: Entity, target: Entity) -> bool:
-	if not _can_act(entity) or not is_instance_valid(target) or target == entity:
+## Makes a melee attack against [param target]. Hostility is the caller's
+## policy: AI tasks and [method bump] decide who is worth attacking, while this
+## method only checks that the target is alive and within reach.
+func attack(entity: Entity, target: Entity,
+		profile: AttackProfile = null) -> bool:
+	if not _can_act(entity):
 		return false
-	Journal.attacked(entity, target)
+	if not is_instance_valid(target) or target == entity or target.is_dead:
+		return false
+	var _profile: AttackProfile = profile if profile else Combat.attack_profile(entity)
+	# Ranged attacks are not implemented yet.
+	if _profile.is_ranged:
+		return false
+	if not board.can_reach_adjacent_attack(entity, target):
+		return false
+	var result: AttackResult = Combat.resolve_attack(entity, target, _profile)
+	if result.hit:
+		target.take_damage(result.damage, entity)
+		result.killed = target.is_dead
+	Journal.attack_result(result, _profile)
+	if result.killed:
+		Journal.slain(entity, target)
 	_acted = true
+	last_cost = TurnManager.ACTION_COST
 	return true
+
+
+## Player-facing movement: bump into a visible living hostile to attack it,
+## otherwise walk (or push) like [method move]. Neutral, friendly and unseen
+## entities never trigger an attack.
+func bump(entity: Entity, direction: Vector2i) -> bool:
+	if not _can_act(entity):
+		return false
+	var dir: Vector2i = Vector2i(int(direction.x > 0) - int(direction.x < 0),
+			int(direction.y > 0) - int(direction.y < 0))
+	if dir == Vector2i.ZERO:
+		return false
+	var target_tile: Vector2i = board.get_origin(entity) + dir
+	for element: Base in board.get_elements_at(target_tile):
+		if not element is Entity:
+			continue
+		var target: Entity = element as Entity
+		if not is_instance_valid(target) or target == entity or target.is_dead:
+			continue
+		if not Helper.are_hostile(entity, target):
+			continue
+		if not perception or not perception.can_see(entity, target):
+			continue
+		if board.can_reach_adjacent_attack(entity, target):
+			return attack(entity, target)
+		break
+	return move(entity, dir)
 
 
 ## Spends the action without doing anything in the world.
@@ -151,6 +217,8 @@ func wait(entity: Entity) -> bool:
 
 func _can_act(entity: Entity) -> bool:
 	if not board or not is_instance_valid(entity):
+		return false
+	if entity.is_dead:
 		return false
 	if entity != _actor or _acted:
 		return false

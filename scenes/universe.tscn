@@ -268,7 +268,7 @@ modulate = Color(1, 1, 1, 0.128)
 position = Vector2(224, 96)
 max_hit_points = 14
 hit_points = 14
-speed = 100.0
+speed = 20.0
 team = 2
 
 [node name="Dragon" parent="Entities" unique_id=148953585 instance=ExtResource("12_fbuf2")]
@@ -289,7 +289,7 @@ mana_points = 6
 is_phasing = true
 is_flying = true
 can_see_invisible = true
-speed = 100.0
+speed = 20.0
 team = 2
 data = ExtResource("16_5qg6o")
 walkable = false

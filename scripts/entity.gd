@@ -2,6 +2,15 @@
 class_name Entity
 extends Base
 
+## Attack rolls, damage and armor class are implemented by [Combat]. The action
+## layer ([EntityActions]) is the only place that applies them to the world:
+## melee attacks use the first equipped weapon (or an unarmed strike), and a
+## player bumps into a visible hostile to attack it.
+##
+## Damage and death are handled by [method take_damage]. Reaching zero hit
+## points sets [member is_dead] and emits [signal died]; the universe then
+## removes the entity and leaves a [Corpse] behind.
+
 enum EquipResult {
 	EQUIPPED,
 	UNEQUIPPED,
@@ -16,7 +25,7 @@ enum EquipResult {
 @export var display_name: String = ""
 #@export var entity_race: RaceData = null
 @export_category("Abilities")
-@export_range(1, 30) var stength: int = 10
+@export_range(1, 30) var strength: int = 10
 @export_range(1, 30) var dexterity: int = 10
 @export_range(1, 30) var constitution: int = 10
 @export_range(1, 30) var charisma: int = 10
@@ -34,6 +43,9 @@ enum EquipResult {
 @export var fov: int = 4
 @export_category("In-Game")
 @export var inventory: Array[Item] = []
+## Items currently worn or wielded by this entity, keyed by body part. Equipment
+## is per entity even though [RaceData.body] is a shared resource.
+var equipment: Dictionary[AnatomyData, Item] = {}
 ## Items that this entity will auto-take when entering the same tile.
 @export var auto_take: Array[Item] = []
 @export var is_invisible: bool = false:
@@ -60,6 +72,9 @@ enum EquipResult {
 ## [member speed] at the start of every round; the turn manager spends one
 ## action's cost per action taken.
 var energy: int = 0
+## Set once hit points reach zero. Dead entities are ignored by perception and
+## cannot act or be attacked.
+var is_dead: bool = false
 var phasing_tween: Tween = null
 var flying_tween: Tween = null
 var visible_notifier: VisibleOnScreenNotifier2D = null
@@ -80,6 +95,9 @@ var current_inventory_item: Item = null
 var brain: Node = null
 
 signal inventory_changed
+signal damaged(amount: int, source: Entity)
+signal died(source: Entity)
+signal stats_changed
 
 
 func _ready() -> void:
@@ -112,30 +130,6 @@ func _init_values() -> void:
 	mana_points = max_mana_points
 
 
-# TODO: Must implement attack.
-# Follows the rules of Dungeons and Dragons (System Reference Document).
-# Attack Roll: a d20 roll where 1 is a miss and 20 is a critical hit.
-# On a hit, then roll damage.
-# Ability modifiers:
-# Strength: Melee attack with a weapon or an Unarmed Strike.
-# Dexterity: Ranged attack with a weapon.
-# Various: Attack with spells (to be defined).
-# A player-controlled entity will automatically attack (melee) another entity
-# if the other entity is in the opposite team (Foe vs Friend, but not Neutral).
-# If the player presses a movement key toward an opposite team entity and the
-# entity is visible for the player entity, then it will be a melee attack with
-# whatever weapon is equipped (will think about dual-wielding later) or if not
-# then an Unarmed Strike.
-
-
-# TODO: Must implement getting hit.
-
-
-# TODO: Must implement death.
-# Hit points == 0 is death.
-# Always leaves corpses persistently.
-
-
 func get_move_mode() -> Helper.MoveMode:
 	if is_phasing:
 		return Helper.MoveMode.PHASE
@@ -148,6 +142,50 @@ func get_display_name() -> String:
 	if display_name.is_empty():
 		return name
 	return display_name
+
+
+## Applies [param amount] damage from [param source]. Dead entities ignore
+## further damage, and hit points never leave the [code][0, max_hit_points][/code]
+## range. Returns how much damage was actually dealt.
+func take_damage(amount: int, source: Entity = null) -> int:
+	if is_dead or amount <= 0:
+		return 0
+	var previous: int = hit_points
+	hit_points = clampi(hit_points - amount, 0, max_hit_points)
+	var dealt: int = previous - hit_points
+	damaged.emit(dealt, source)
+	stats_changed.emit()
+	if hit_points == 0:
+		is_dead = true
+		died.emit(source)
+	return dealt
+
+
+## Ability modifier for [param code] ([code]STR[/code], [code]DEX[/code],
+## [code]CON[/code], [code]INT[/code], [code]WIS[/code] or [code]CHA[/code]).
+func get_ability_modifier(code: StringName) -> int:
+	match code:
+		&"STR":
+			return Combat.ability_modifier(strength)
+		&"DEX":
+			return Combat.ability_modifier(dexterity)
+		&"CON":
+			return Combat.ability_modifier(constitution)
+		&"INT":
+			return Combat.ability_modifier(intelligence)
+		&"WIS":
+			return Combat.ability_modifier(wisdom)
+		&"CHA":
+			return Combat.ability_modifier(charisma)
+	return 0
+
+
+func get_armor_class() -> int:
+	return Combat.armor_class(self)
+
+
+func get_proficiency_bonus() -> int:
+	return Combat.proficiency_bonus(level)
 
 
 func _toggle_invisible(toggle: bool) -> void:
@@ -190,6 +228,20 @@ func _toggle_flying(toggle: bool) -> void:
 		if flying_tween:
 			flying_tween.stop()
 
+## The item worn on [param part], or [code]null[/code] when the slot is empty.
+func get_equipped_item(part: AnatomyData) -> Item:
+	return equipment.get(part) as Item
+
+
+## Every item currently equipped by this entity, in no particular order.
+func get_equipped_items() -> Array[Item]:
+	var result: Array[Item] = []
+	for value: Variant in equipment.values():
+		if value is Item and not result.has(value as Item):
+			result.append(value as Item)
+	return result
+
+
 ## Also acts as the unequip action.
 ## If an item is [Helper.MysticModifier.CURSED] then it can't be unequiped.
 func equip(item: Item) -> EquipResult:
@@ -213,31 +265,59 @@ func equip(item: Item) -> EquipResult:
 		if item.mystic_modifier == Helper.MysticModifier.CURSED:
 			# Can't unequip a cursed item.
 			result = EquipResult.REFUSED_CURSED
-		else:
-			for bodypart in (data as EntityData).race.body:
-				if bodypart.equipped_item == item:
-					bodypart.equipped_item = null
-					item.is_equipped = false
-					polygon.remove_child(item)
-					result = EquipResult.UNEQUIPPED
-					break
+		elif force_unequip(item):
+			result = EquipResult.UNEQUIPPED
 	else:
 		if not (item.data as ItemData).equipped_on:
 			return EquipResult.INVALID
-		for bodypart in (item.data as ItemData).equipped_on:
-			if (data as EntityData).race.body.has(bodypart):
-				var bp: AnatomyData = (data as EntityData).race.body.get((data as EntityData).race.body.find(bodypart))
-				if not bp.equipped_item:
-					bp.equipped_item = item
-					item.is_equipped = true
-					item.position = Vector2.ZERO
-					polygon.add_child(item)
-					result = EquipResult.EQUIPPED
-					break
+		for bodypart: AnatomyData in (item.data as ItemData).equipped_on:
+			var bp: AnatomyData = _find_body_part(bodypart)
+			if not bp:
+				continue
+			if equipment.has(bp):
+				continue
+			equipment[bp] = item
+			item.is_equipped = true
+			item.position = Vector2.ZERO
+			polygon.add_child(item)
+			result = EquipResult.EQUIPPED
+			break
 		if result == EquipResult.INVALID:
 			result = EquipResult.NO_BODY_PART
 	inventory_changed.emit()
 	return result
+
+
+## Clears the slot holding [param item] regardless of its mystic modifier.
+## Returns whether the item was equipped. Used by [method drop] on death, where
+## the cursed rule no longer applies.
+func force_unequip(item: Item) -> bool:
+	if not item:
+		return false
+	var slot: AnatomyData = null
+	for part: AnatomyData in equipment:
+		if equipment[part] == item:
+			slot = part
+			break
+	if not slot:
+		return false
+	equipment.erase(slot)
+	item.is_equipped = false
+	if polygon and item.get_parent() == polygon:
+		polygon.remove_child(item)
+	return true
+
+
+func _find_body_part(bodypart: AnatomyData) -> AnatomyData:
+	if not data or not (data is EntityData):
+		return null
+	var race: RaceData = (data as EntityData).race
+	if not race:
+		return null
+	for candidate: AnatomyData in race.body:
+		if candidate == bodypart:
+			return candidate
+	return null
 
 
 func take(item: Item) -> bool:
@@ -249,15 +329,21 @@ func take(item: Item) -> bool:
 	return true
 
 
-func drop(item: Item) -> bool:
+## Removes [param item] from the inventory. An equipped item is unequipped
+## through the same slot-clearing path as [method equip]. Cursed items are
+## refused unless [param _ignore_cursed] is set, which the universe uses when
+## the entity dies.
+func drop(item: Item, _ignore_cursed: bool = false) -> bool:
 	if not item:
 		return false
 	if item.is_equipped:
-		if item.mystic_modifier == Helper.MysticModifier.CURSED:
+		if item.mystic_modifier == Helper.MysticModifier.CURSED and not _ignore_cursed:
 			return false
-		else:
-			# Unequip item.
-			equip(item)
+		if _ignore_cursed:
+			force_unequip(item)
+			item.is_equipped = false
+		elif equip(item) != EquipResult.UNEQUIPPED:
+			return false
 	inventory.erase(item)
 	item.position = position
 	inventory_changed.emit()

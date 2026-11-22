@@ -49,8 +49,21 @@ func _ready() -> void:
 
 ## Shows [param entity]'s sheet. Passing [code]null[/code] clears every value.
 func set_entity(entity: Entity) -> void:
+	_disconnect_entity()
 	_entity = entity
+	if is_instance_valid(_entity):
+		_entity.stats_changed.connect(refresh)
+		_entity.inventory_changed.connect(refresh)
 	refresh()
+
+
+func _disconnect_entity() -> void:
+	if not is_instance_valid(_entity):
+		return
+	if _entity.stats_changed.is_connected(refresh):
+		_entity.stats_changed.disconnect(refresh)
+	if _entity.inventory_changed.is_connected(refresh):
+		_entity.inventory_changed.disconnect(refresh)
 
 
 ## Re-reads the current entity, for when its stats may have changed while the
@@ -66,7 +79,7 @@ func refresh() -> void:
 	_class_label.text = _data_name(entity.entity_class)
 	_race_label.text = _data_name(_get_race(entity))
 	_level_label.text = "Level %d" % entity.level
-	_strength_label.text = "STR %d" % entity.stength
+	_strength_label.text = "STR %d" % entity.strength
 	_dexterity_label.text = "DEX %d" % entity.dexterity
 	_constitution_label.text = "CON %d" % entity.constitution
 	_wisdom_label.text = "WIS %d" % entity.wisdom
@@ -74,9 +87,9 @@ func refresh() -> void:
 	_charisma_label.text = "CHA %d" % entity.charisma
 	_health_label.text = "Health: %d/%d" % [entity.hit_points, entity.max_hit_points]
 	_mana_label.text = "Mana: %d/%d" % [entity.mana_points, entity.max_mana_points]
-	# Combat is not implemented yet; the cells are ready for real values.
-	_attack_label.text = "ATK: " + EMPTY_VALUE
-	_defense_label.text = "DEF: " + EMPTY_VALUE
+	var profile: AttackProfile = Combat.attack_profile(entity)
+	_attack_label.text = "ATK: %+d" % Combat.attack_bonus(entity, profile)
+	_defense_label.text = "DEF: %d" % entity.get_armor_class()
 	_refresh_properties(entity)
 
 

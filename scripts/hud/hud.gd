@@ -49,15 +49,15 @@ func _ready() -> void:
 ## Replaces the inventory rows. Equipped items are listed first as their
 ## body-part slot; the remaining items are grouped into one row per stack.
 ## [param current_item] is the entity's selected item and drives the row
-## selection, [param body_parts] maps equipped items to their body part.
+## selection, and [param entity] supplies the per-entity equipment slots.
 func set_inventory(items: Array[Item], current_item: Item = null,
-		body_parts: Array[AnatomyData] = []) -> void:
+		entity: Entity = null) -> void:
 	_inventory_items.clear()
 	_inventory_items.append_array(items)
 	var rows: Array[Dictionary] = []
 	var equipped: Array[Item] = []
-	for body_part: AnatomyData in body_parts:
-		var item: Item = body_part.equipped_item
+	for body_part: AnatomyData in _get_body_parts(entity):
+		var item: Item = entity.get_equipped_item(body_part)
 		if not item or not item.is_equipped:
 			continue
 		if not _inventory_items.has(item) or equipped.has(item):
@@ -150,6 +150,16 @@ func _set_focus(panel: HudPanel) -> void:
 	_focused_panel = panel
 	inventory_panel.set_focused(panel == inventory_panel)
 	ground_panel.set_focused(panel == ground_panel)
+
+
+func _get_body_parts(entity: Entity) -> Array[AnatomyData]:
+	var body_parts: Array[AnatomyData] = []
+	if not is_instance_valid(entity) or not (entity.data is EntityData):
+		return body_parts
+	var race: RaceData = (entity.data as EntityData).race
+	if race:
+		body_parts = race.body
+	return body_parts
 
 
 func _make_row(item: Item) -> Dictionary:

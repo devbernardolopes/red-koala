@@ -26,6 +26,7 @@ var wall_proxies: Array[Wall] = []
 
 var current_filter: Control = null
 var filter_list: Array[Control] = []
+var _input_disabled: bool = false
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
@@ -36,6 +37,7 @@ var filter_list: Array[Control] = []
 @onready var turn_manager: TurnManager = $TurnManager
 
 signal player_entity_changed
+signal no_player_left
 
 
 func _ready() -> void:
@@ -62,6 +64,7 @@ func _ready() -> void:
 	Journal.speaker = current_player_entity
 	if current_player_entity:
 		Journal.entered_dungeon()
+	board.element_registered.connect(_on_element_registered)
 	_load_elements()
 	AudioManager.set_listener_target(current_player_entity)
 	if fog_of_war:
@@ -123,6 +126,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _input_disabled:
+		return
 	if hud.handle_input(event):
 		get_viewport().set_input_as_handled()
 		return
@@ -177,7 +182,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if direction == Vector2.ZERO:
 		return
 	var dir: Vector2i = Vector2i(int(direction.x), int(direction.y))
-	turn_manager.actions.move(current_player_entity, dir)
+	turn_manager.actions.bump(current_player_entity, dir)
 	turn_manager.on_player_action()
 	get_viewport().set_input_as_handled()
 
@@ -192,23 +197,13 @@ func _update_inventory() -> void:
 		if not current_player_entity.inventory.is_empty():
 			current = current_player_entity.inventory.front()
 	current_player_entity.current_inventory_item = current
-	hud.set_inventory(current_player_entity.inventory, current,
-			_get_body_parts(current_player_entity))
+	hud.set_inventory(current_player_entity.inventory, current, current_player_entity)
 
 
 ## Pushes the active entity's sheet to the HUD. Stats can change outside the
 ## inventory flow (combat, levelling), so callers refresh it when that happens.
 func _update_character() -> void:
 	hud.set_character(current_player_entity)
-
-
-func _get_body_parts(entity: Entity) -> Array[AnatomyData]:
-	var body_parts: Array[AnatomyData] = []
-	if entity.data is EntityData:
-		var race: RaceData = (entity.data as EntityData).race
-		if race:
-			body_parts = race.body
-	return body_parts
 
 
 func _update_ground() -> void:
@@ -232,6 +227,66 @@ func _on_inventory_selection_changed(item: Item) -> void:
 	if not current_player_entity:
 		return
 	current_player_entity.current_inventory_item = item
+
+
+## Every entity that reaches the board is watched for death, whether it came
+## from the scene or was spawned at runtime.
+func _on_element_registered(element: Base) -> void:
+	if element is Entity:
+		_connect_entity(element as Entity)
+
+
+func _connect_entity(entity: Entity) -> void:
+	if not is_instance_valid(entity) or entity.has_meta(&"death_connected"):
+		return
+	entity.set_meta(&"death_connected", true)
+	entity.died.connect(func(source: Entity) -> void: _on_entity_died(entity, source))
+
+
+## Single death path: drop the loot, leave a corpse, update the party and the
+## turn order, then remove the entity.
+func _on_entity_died(entity: Entity, _source: Entity) -> void:
+	if not is_instance_valid(entity) or entity.has_meta(&"death_handled"):
+		return
+	entity.set_meta(&"death_handled", true)
+	if turn_manager and turn_manager.actions:
+		turn_manager.actions.drop_all_on_death(entity)
+	var parent: Node = entity.get_parent()
+	if parent:
+		var corpse: Corpse = Corpse.create_from(entity)
+		parent.add_child(corpse)
+		board.register(corpse)
+	Journal.died(entity)
+	var was_player: bool = entity == current_player_entity
+	var next_player: Entity = null
+	if was_player:
+		for member: Entity in party:
+			if is_instance_valid(member) and member != entity and not member.is_dead:
+				next_player = member
+				break
+	party.erase(entity)
+	if was_player:
+		if next_player:
+			set_active_player(next_player)
+		else:
+			no_player_left.emit()
+			Journal.add("All is lost")
+			_disable_input()
+			current_player_entity = null
+			if follow_camera:
+				follow_camera.target = null
+			hud.set_character(null)
+			hud.set_inventory([])
+			hud.set_ground([])
+	if turn_manager:
+		turn_manager.unregister_actor(entity)
+	board.unregister(entity)
+	entity.queue_free()
+
+
+func _disable_input() -> void:
+	_input_disabled = true
+	set_process_unhandled_input(false)
 
 
 func _dispel_fog_of_war() -> void:

@@ -55,8 +55,31 @@ func refused_removal(item: Item, actor: Entity = null) -> void:
 	add("%s could not remove the cursed %s" % [_actor_name(actor), _item_name(item, false)])
 
 
-func attacked(attacker: Entity, target: Entity) -> void:
-	add("%s attacks %s" % [_actor_name(attacker), _actor_name(target)])
+## One line for the attack roll and, on a hit, its damage.
+func attack_result(result: AttackResult, profile: AttackProfile = null) -> void:
+	if not result:
+		return
+	var attacker_name: String = _actor_name(result.attacker)
+	var target_name: String = _actor_name(result.target)
+	var roll: String = _roll_text(result)
+	if not result.hit:
+		add("%s misses %s (%s)" % [attacker_name, target_name, roll])
+		return
+	var weapon: String = _weapon_phrase(profile)
+	if result.critical:
+		add("%s scores a critical hit on %s%s for %d damage (%s)"
+				% [attacker_name, target_name, weapon, result.damage, roll])
+	else:
+		add("%s hits %s%s for %d damage (%s)"
+				% [attacker_name, target_name, weapon, result.damage, roll])
+
+
+func slain(attacker: Entity, target: Entity) -> void:
+	add("%s slays %s" % [_actor_name(attacker), _actor_name(target)])
+
+
+func died(actor: Entity = null) -> void:
+	add("%s dies" % _actor_name(actor))
 
 
 func waited(actor: Entity = null) -> void:
@@ -101,6 +124,23 @@ func _item_name(item: Item, with_article: bool = true) -> String:
 	if item_name.is_empty():
 		return "something"
 	return "the " + item_name if with_article else item_name
+
+
+## The roll is shown as the natural die, the total modifier, the final total and
+## the target's armor class, e.g. [code]d20 14 + 4 = 18 vs AC 12[/code].
+func _roll_text(result: AttackResult) -> String:
+	var bonus: int = result.total - result.natural
+	var bonus_text: String = "+ %d" % bonus
+	if bonus < 0:
+		bonus_text = "- %d" % absi(bonus)
+	return ("d20 %d %s = %d vs AC %d"
+			% [result.natural, bonus_text, result.total, result.target_ac])
+
+
+func _weapon_phrase(profile: AttackProfile) -> String:
+	if not profile or not is_instance_valid(profile.weapon):
+		return ""
+	return " with the " + profile.weapon.get_display_name()
 
 
 func _sentence(text: String) -> String:

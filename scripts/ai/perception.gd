@@ -20,7 +20,7 @@ func visible_entities(observer: Entity) -> Array[Entity]:
 	if not board or not is_instance_valid(observer):
 		return result
 	for target: Entity in board.get_entities():
-		if target == observer:
+		if target == observer or target.is_dead:
 			continue
 		if can_see(observer, target):
 			result.append(target)

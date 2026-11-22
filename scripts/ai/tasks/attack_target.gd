@@ -1,8 +1,7 @@
 @tool
 extends EntityActionTask
 
-## Attacks the current target. Combat is not implemented yet; the action layer
-## reserves the turn and writes a journal entry.
+## Attacks the current target through the action layer.
 
 
 func _generate_name() -> String:

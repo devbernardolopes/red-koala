@@ -24,12 +24,14 @@ func _tick(_delta: float) -> Status:
 		if not candidate is Entity:
 			continue
 		var hostile: Entity = candidate as Entity
+		if hostile.is_dead:
+			continue
 		var distance: int = Board.footprint_distance(board.get_origin(entity),
 				entity.tile_size, board.get_origin(hostile), hostile.tile_size)
 		if not nearest or distance < nearest_distance:
 			nearest = hostile
 			nearest_distance = distance
-	if nearest:
+	if nearest and not nearest.is_dead:
 		blackboard.set_var(BrainBlackboard.TARGET, nearest)
 		blackboard.set_var(BrainBlackboard.LAST_KNOWN_TARGET_POS, board.get_origin(nearest))
 		blackboard.set_var(BrainBlackboard.HAS_LAST_KNOWN_TARGET_POS, true)
