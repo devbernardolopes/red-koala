@@ -62,8 +62,6 @@ func _ready() -> void:
 		push_warning("No FollowCamera!")
 	hud.inventory_selection_changed.connect(_on_inventory_selection_changed)
 	Journal.speaker = current_player_entity
-	if current_player_entity:
-		Journal.entered_dungeon()
 	board.element_registered.connect(_on_element_registered)
 	_load_elements()
 	AudioManager.set_listener_target(current_player_entity)
@@ -92,6 +90,9 @@ func _ready() -> void:
 	# Let the scene finish becoming ready first: brains initialize their
 	# behavior trees against the scene root when it is ready.
 	turn_manager.start.call_deferred()
+	for member: Entity in party:
+		if is_instance_valid(member):
+			Journal.entered_dungeon(member)
 
 
 func _input(event: InputEvent) -> void:

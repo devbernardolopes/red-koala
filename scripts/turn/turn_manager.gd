@@ -189,6 +189,9 @@ func _start_round() -> bool:
 			return false
 	else:
 		_empty_rounds = 0
+	print("ROUND %d passes=%d" % [round_number, _max_passes])
+	for actor: Entity in _order:
+		print("  %s speed=%s energy=%d" % [actor.name, actor.speed, actor.energy])
 	return true
 
 
@@ -229,6 +232,8 @@ func _advance() -> void:
 
 
 func _begin_actor(actor: Entity) -> void:
+	# first line of _begin_actor(actor)
+	print("  pass %d -> %s (energy %d)" % [_pass, actor.name, actor.energy])
 	current_actor = actor
 	actions.begin_turn(actor)
 	if actor.is_playable:
