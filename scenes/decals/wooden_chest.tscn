@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dl60jciov650o"]
+
+[ext_resource type="Script" uid="uid://c3qydl7pwehlw" path="res://scripts/decals/wooden_chest.gd" id="1_1ji0s"]
+
+[node name="WoodenChest" type="Area2D" unique_id=572391818]
+script = ExtResource("1_1ji0s")
+walkable = false
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1574027649]
+color = Color(0.24705882, 0.21176471, 0.08235294, 1)
+polygon = PackedVector2Array(-24, -8, -8, -16, 8, -16, 24, -8, 24, 24, 16, 24, -16, 24, -24, 24)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=921053171]
+color = Color(0.36078432, 0.30588236, 0.09803922, 1)
+polygon = PackedVector2Array(-8, 16, -8, 0, 8, 0, 8, 16)

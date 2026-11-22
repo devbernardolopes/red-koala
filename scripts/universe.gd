@@ -257,11 +257,17 @@ func _on_entity_died(entity: Entity, _source: Entity) -> void:
 		turn_manager.actions.drop_all_on_death(entity)
 	var parent: Node = entity.get_parent()
 	if parent:
+		var cv: CorpseVisual = Helper.HUMANOID_CORPSE.instantiate()
+		#decals_node.add_child(cv)
+		#board.register(cv)
 		var corpse: Corpse = Corpse.create_from(entity)
+		cv.position = entity.position
 		if not decals_node:
 			parent.add_child(corpse)
+			parent.add_child(cv)
 		else:
 			decals_node.add_child(corpse)
+			decals_node.add_child(cv)
 		board.register(corpse)
 	Journal.died(entity)
 	var was_player: bool = entity == current_player_entity

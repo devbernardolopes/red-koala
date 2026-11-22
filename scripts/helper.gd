@@ -92,6 +92,12 @@ const SWORD = preload("uid://fgb6up4u4dbg")
 const GOLD = preload("uid://ciij5gesrk4xp")
 
 #endregion
+const HUMANOID_CORPSE = preload("uid://bslwnv8q4raki")
+
+#region CORPSES
+
+
+#endregion
 
 ## Key = Level, Value = XP.
 const LEVEL_CHART: Dictionary = {

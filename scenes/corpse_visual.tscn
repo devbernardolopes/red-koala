@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bk2ari5o7mxd1"]
+
+[ext_resource type="Script" uid="uid://b50lcogtw0ccs" path="res://scripts/corpse_visual.gd" id="1_eikas"]
+
+[node name="CorpseVisual" type="Node2D" unique_id=1591177761]
+script = ExtResource("1_eikas")

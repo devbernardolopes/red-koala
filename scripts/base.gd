@@ -37,6 +37,7 @@ signal blocks_sight_changed
 var collision: CollisionShape2D = null
 var polygon: Polygon2D = null
 var light: PointLight2D = null
+var create_polygon: bool = true
 
 
 func _ready() -> void:
@@ -51,13 +52,14 @@ func _ready() -> void:
 		add_child(collision)
 	polygon = Helper.find_control(self, "Polygon2D")
 	if not polygon:
-		polygon = Polygon2D.new()
-		polygon.polygon = [(Vector2.UP + Vector2.LEFT) * Helper.HALF_LENGTH, 
-				(Vector2.UP + Vector2.RIGHT) * Helper.HALF_LENGTH, 
-				(Vector2.DOWN + Vector2.RIGHT) * Helper.HALF_LENGTH, 
-				(Vector2.DOWN + Vector2.LEFT) * Helper.HALF_LENGTH] 
-		polygon.color = color
-		add_child(polygon)
+		if create_polygon:
+			polygon = Polygon2D.new()
+			polygon.polygon = [(Vector2.UP + Vector2.LEFT) * Helper.HALF_LENGTH, 
+					(Vector2.UP + Vector2.RIGHT) * Helper.HALF_LENGTH, 
+					(Vector2.DOWN + Vector2.RIGHT) * Helper.HALF_LENGTH, 
+					(Vector2.DOWN + Vector2.LEFT) * Helper.HALF_LENGTH] 
+			polygon.color = color
+			add_child(polygon)
 	light = Helper.find_control(self, "PointLight2D")
 	if not light:
 		light = PointLight2D.new()
