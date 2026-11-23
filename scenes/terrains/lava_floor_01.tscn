@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://ds71up6yy1hv"]
+
+[ext_resource type="Script" uid="uid://b06rmnpgqswiu" path="res://scripts/base.gd" id="1_ddcr4"]
+[ext_resource type="Shader" uid="uid://cw6gkf0xwexdu" path="res://shaders/lava.gdshader" id="2_2xjre"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sl5qb"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bvbay"]
+noise = SubResource("FastNoiseLite_sl5qb")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aunrb"]
+shader = ExtResource("2_2xjre")
+shader_parameter/timeScaleFactor = 0.04
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_bvbay")
+
+[node name="LavaFloor01" type="Area2D" unique_id=1191015399]
+script = ExtResource("1_ddcr4")
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=208854763]
+material = SubResource("ShaderMaterial_aunrb")
+color = Color(0.9411765, 0.23529412, 0.20392157, 1)
+polygon = PackedVector2Array(-32, 32, -32, -32, 32, -32, 32, 32)

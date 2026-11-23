@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://c6gnp6dy86ea"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_q2rq0"]
+[ext_resource type="Resource" uid="uid://ctlhejgko0oa" path="res://resources/items/rings/iron_ring.tres" id="2_84553"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="2_nbr22"]
+[ext_resource type="Resource" uid="uid://bcgw5hqe7c4ok" path="res://resources/properties/phasing.tres" id="3_fr5mj"]
+
+[node name="IronRing" type="Area2D" unique_id=1921974060]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_q2rq0")
+properties = Array[ExtResource("2_nbr22")]([ExtResource("3_fr5mj")])
+data = ExtResource("2_84553")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=588085203]
+color = Color(0.21176471, 0.10980392, 0.101960786, 1)
+polygon = PackedVector2Array(-6.609112, -0.8513489, -5.5412254, -3.444788, -1.956173, -5.122896, 2.4679298, -4.6652317, 6.205532, -2.6057339, 5.8241463, 1.208147, 1.6288757, 2.5048676, -4.549614, 1.5895367)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=259816116]
+color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+polygon = PackedVector2Array(-3.5477848, -0.89751625, -3.1919441, -2.6411362, -1.3059883, -3.5307379, 1.2916508, -3.317233, 4.1027927, -1.8582859, 4.4586334, -0.07908249, 2.7150135, 0.52584743, 0.5799694, 0.95285606, -1.9465008, 1.0596085)

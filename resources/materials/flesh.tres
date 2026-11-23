@@ -1,9 +1,13 @@
 [gd_resource type="Resource" script_class="MaterialData" format=3 uid="uid://b5jfk4kt3deyt"]
 
+[ext_resource type="Resource" uid="uid://cjor08j843nu" path="res://resources/damages/pierce.tres" id="1_7q1vd"]
 [ext_resource type="Script" uid="uid://conaxrapxg6n6" path="res://resources/material_data.gd" id="1_8eac7"]
+[ext_resource type="Resource" uid="uid://dcqgtg14wp4aj" path="res://resources/damages/slash.tres" id="2_g1f3w"]
 
 [resource]
 script = ExtResource("1_8eac7")
+flammable = true
+damage_weakness = Array[Resource]([ExtResource("1_7q1vd"), ExtResource("2_g1f3w")])
 id = &"flesh"
 name = "Flesh"
 metadata/_custom_type_script = "uid://conaxrapxg6n6"

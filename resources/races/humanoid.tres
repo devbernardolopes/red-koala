@@ -3,16 +3,21 @@
 [ext_resource type="Script" uid="uid://c86idpjgqck1t" path="res://resources/race_data.gd" id="1_52x2r"]
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_junc5"]
 [ext_resource type="Resource" uid="uid://bbkb0pcptmc60" path="res://resources/bodyparts/flesh/head.tres" id="2_4i7am"]
+[ext_resource type="Resource" uid="uid://hq5538mtrkmo" path="res://resources/bodyparts/flesh/neck.tres" id="3_8lobo"]
 [ext_resource type="Resource" uid="uid://bqi4yfucp3uln" path="res://resources/bodyparts/flesh/front_torso.tres" id="3_f0sgn"]
 [ext_resource type="Resource" uid="uid://bj8sffjobhaoe" path="res://resources/bodyparts/flesh/back_torso.tres" id="4_ukk1q"]
 [ext_resource type="Resource" uid="uid://h6s3b72dukmt" path="res://resources/bodyparts/flesh/left_hand.tres" id="5_8lobo"]
 [ext_resource type="Resource" uid="uid://do7mb8vthvo56" path="res://resources/bodyparts/flesh/right_hand.tres" id="6_8o15j"]
 [ext_resource type="Resource" uid="uid://bidonue681ry6" path="res://resources/diets/omnivore.tres" id="7_f0sgn"]
+[ext_resource type="Resource" uid="uid://d0ahyovs484h4" path="res://resources/bodyparts/flesh/left_finger.tres" id="7_jbbho"]
 [ext_resource type="PackedScene" uid="uid://bslwnv8q4raki" path="res://scenes/corpses/humanoid_corpse.tscn" id="7_ukk1q"]
+[ext_resource type="Resource" uid="uid://bpt5swh7par4j" path="res://resources/bodyparts/flesh/right_finger.tres" id="9_ukhdj"]
+[ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="10_yfkeh"]
+[ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="11_yydwb"]
 
 [resource]
 script = ExtResource("1_52x2r")
-body = Array[ExtResource("1_junc5")]([ExtResource("2_4i7am"), ExtResource("3_f0sgn"), ExtResource("4_ukk1q"), ExtResource("5_8lobo"), ExtResource("6_8o15j")])
+body = Array[ExtResource("1_junc5")]([ExtResource("2_4i7am"), ExtResource("3_8lobo"), ExtResource("3_f0sgn"), ExtResource("4_ukk1q"), ExtResource("5_8lobo"), ExtResource("7_jbbho"), ExtResource("6_8o15j"), ExtResource("9_ukhdj"), ExtResource("10_yfkeh"), ExtResource("11_yydwb")])
 diet = ExtResource("7_f0sgn")
 corpse_visual = ExtResource("7_ukk1q")
 id = &"humanoid"

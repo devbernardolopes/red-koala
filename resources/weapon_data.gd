@@ -10,3 +10,4 @@ extends ItemData
 ## Ranged weapons use Dexterity. Ranged attacks are not implemented yet.
 @export var ranged: bool = false
 @export var category: Helper.WeaponCategory = Helper.WeaponCategory.LIGHT
+@export var damage_type: DamageData = null

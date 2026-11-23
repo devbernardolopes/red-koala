@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AnatomyData" format=3 uid="uid://bpt5swh7par4j"]
+
+[ext_resource type="Resource" uid="uid://b5jfk4kt3deyt" path="res://resources/materials/flesh.tres" id="1_pmckn"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="2_ae76t"]
+
+[resource]
+script = ExtResource("2_ae76t")
+side = 1
+material = ExtResource("1_pmckn")
+equipped_offset = Vector2(16, 16)
+id = &"right_finger"
+name = "Right Finger"
+metadata/_custom_type_script = "uid://dovglatpiuiwq"

@@ -1,29 +1,29 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://4v704a00bu6d"]
 
-[ext_resource type="Script" path="res://scripts/hud/character_panel.gd" id="1_character"]
+[ext_resource type="Script" uid="uid://cnldkygejvp48" path="res://scripts/hud/character_panel.gd" id="1_character"]
 
-[node name="CharacterPanel" type="PanelContainer"]
+[node name="CharacterPanel" type="PanelContainer" unique_id=1684857]
 custom_minimum_size = Vector2(340, 0)
 mouse_filter = 2
 theme_type_variation = &"HudPanel"
 script = ExtResource("1_character")
 
-[node name="Layout" type="VBoxContainer" parent="."]
+[node name="Layout" type="VBoxContainer" parent="." unique_id=337587736]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 0
 
-[node name="Header" type="PanelContainer" parent="Layout"]
+[node name="Header" type="PanelContainer" parent="Layout" unique_id=741655240]
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"HudHeaderBar"
 
-[node name="HeaderRow" type="HBoxContainer" parent="Layout/Header"]
+[node name="HeaderRow" type="HBoxContainer" parent="Layout/Header" unique_id=2116126883]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="TitleLabel" type="Label" parent="Layout/Header/HeaderRow"]
+[node name="TitleLabel" type="Label" parent="Layout/Header/HeaderRow" unique_id=869320449]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -31,35 +31,35 @@ theme_type_variation = &"HudTitle"
 text = "CHARACTER"
 vertical_alignment = 1
 
-[node name="Indicator" type="Label" parent="Layout/Header/HeaderRow"]
+[node name="Indicator" type="Label" parent="Layout/Header/HeaderRow" unique_id=836587295]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HudCount"
 text = "-"
 vertical_alignment = 1
 
-[node name="Body" type="ScrollContainer" parent="Layout"]
+[node name="Body" type="ScrollContainer" parent="Layout" unique_id=1801455246]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 mouse_filter = 2
 horizontal_scroll_mode = 0
 
-[node name="BodyMargin" type="MarginContainer" parent="Layout/Body"]
+[node name="BodyMargin" type="MarginContainer" parent="Layout/Body" unique_id=511553610]
 layout_mode = 2
-mouse_filter = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="Content" type="VBoxContainer" parent="Layout/Body/BodyMargin"]
+[node name="Content" type="VBoxContainer" parent="Layout/Body/BodyMargin" unique_id=1594349777]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="NameLabel" type="Label" parent="Layout/Body/BodyMargin/Content"]
+[node name="NameLabel" type="Label" parent="Layout/Body/BodyMargin/Content" unique_id=2125573271]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HudCharacterName"
@@ -67,46 +67,56 @@ text = "Someone"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="InfoRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+[node name="InfoRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=820108116]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="ClassLabel" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow"]
+[node name="ClassLabel" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow" unique_id=1676200515]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HudCharacterStat"
 text = "Class"
 
-[node name="ClassDivider" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow"]
+[node name="ClassDivider" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow" unique_id=578423758]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="RaceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow"]
+[node name="RaceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow" unique_id=1336315200]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HudCharacterStat"
 text = "Race"
 
-[node name="RaceDivider" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow"]
+[node name="RaceDivider" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow" unique_id=1874804452]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="LevelLabel" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow"]
+[node name="LevelLabel" type="Label" parent="Layout/Body/BodyMargin/Content/InfoRow" unique_id=1040464511]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HudCharacterStat"
 text = "Level 1"
 
-[node name="AbilitiesRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+[node name="XpRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=901504396]
+layout_mode = 2
+alignment = 1
+
+[node name="CurrentXpLabel" type="Label" parent="Layout/Body/BodyMargin/Content/XpRow" unique_id=264185601]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudCharacterStat"
+text = "XP: 0"
+
+[node name="AbilitiesRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=212276637]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 2
 
-[node name="StrengthLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="StrengthLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=752231284]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -114,12 +124,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "STR 10"
 horizontal_alignment = 1
 
-[node name="StrengthDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="StrengthDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=370415310]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="DexterityLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="DexterityLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=315905720]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -127,12 +137,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "DEX 10"
 horizontal_alignment = 1
 
-[node name="DexterityDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="DexterityDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=2020299020]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="ConstitutionLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="ConstitutionLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=522750956]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -140,12 +150,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "CON 10"
 horizontal_alignment = 1
 
-[node name="ConstitutionDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="ConstitutionDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=572557206]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="WisdomLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="WisdomLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=1756152357]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -153,12 +163,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "WIS 10"
 horizontal_alignment = 1
 
-[node name="WisdomDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="WisdomDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=1090083663]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="IntelligenceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="IntelligenceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=200009512]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -166,12 +176,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "INT 10"
 horizontal_alignment = 1
 
-[node name="IntelligenceDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="IntelligenceDivider" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=49736251]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="CharismaLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow"]
+[node name="CharismaLabel" type="Label" parent="Layout/Body/BodyMargin/Content/AbilitiesRow" unique_id=919954686]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -179,12 +189,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "CHA 10"
 horizontal_alignment = 1
 
-[node name="VitalsRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+[node name="VitalsRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=560418497]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="HealthLabel" type="Label" parent="Layout/Body/BodyMargin/Content/VitalsRow"]
+[node name="HealthLabel" type="Label" parent="Layout/Body/BodyMargin/Content/VitalsRow" unique_id=1999886530]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -192,12 +202,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "Health: 1/1"
 horizontal_alignment = 1
 
-[node name="VitalsDivider" type="Label" parent="Layout/Body/BodyMargin/Content/VitalsRow"]
+[node name="VitalsDivider" type="Label" parent="Layout/Body/BodyMargin/Content/VitalsRow" unique_id=211631536]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="ManaLabel" type="Label" parent="Layout/Body/BodyMargin/Content/VitalsRow"]
+[node name="ManaLabel" type="Label" parent="Layout/Body/BodyMargin/Content/VitalsRow" unique_id=1353884558]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -205,12 +215,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "Mana: 1/1"
 horizontal_alignment = 1
 
-[node name="CombatRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+[node name="CombatRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=199027843]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="AttackLabel" type="Label" parent="Layout/Body/BodyMargin/Content/CombatRow"]
+[node name="AttackLabel" type="Label" parent="Layout/Body/BodyMargin/Content/CombatRow" unique_id=1604982947]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -218,12 +228,12 @@ theme_type_variation = &"HudCharacterStat"
 text = "ATK: —"
 horizontal_alignment = 1
 
-[node name="CombatDivider" type="Label" parent="Layout/Body/BodyMargin/Content/CombatRow"]
+[node name="CombatDivider" type="Label" parent="Layout/Body/BodyMargin/Content/CombatRow" unique_id=1832361]
 layout_mode = 2
 theme_type_variation = &"HudCharacterDivider"
 text = "|"
 
-[node name="DefenseLabel" type="Label" parent="Layout/Body/BodyMargin/Content/CombatRow"]
+[node name="DefenseLabel" type="Label" parent="Layout/Body/BodyMargin/Content/CombatRow" unique_id=1553697997]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -231,7 +241,7 @@ theme_type_variation = &"HudCharacterStat"
 text = "DEF: —"
 horizontal_alignment = 1
 
-[node name="Properties" type="VBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+[node name="Properties" type="VBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=534558411]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2

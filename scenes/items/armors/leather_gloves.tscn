@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://duasdvtpste4a"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_i18oh"]
+[ext_resource type="Resource" uid="uid://ccetedflk0ows" path="res://resources/items/armors/leather_gloves.tres" id="2_whsuq"]
+
+[node name="LeatherGloves" type="Area2D" unique_id=695206935]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_i18oh")
+data = ExtResource("2_whsuq")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=632072719]
+color = Color(0.2509804, 0.26666668, 0.09019608, 1)
+polygon = PackedVector2Array(-24, 0, -24, -8, -16, -16, -16, 0, -24, 8)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=1706436473]
+color = Color(0.2509804, 0.26666668, 0.09019608, 1)
+polygon = PackedVector2Array(16, -16, 24, -8, 24, 8, 16, 0)

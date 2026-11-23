@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ConsumableData" format=3 uid="uid://b5iamfwdc80dn"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_sm0iv"]
+[ext_resource type="Script" uid="uid://uyhbi88n7yht" path="res://resources/consumable_data.gd" id="2_k37ih"]
+[ext_resource type="Resource" uid="uid://k44nlgao53mq" path="res://resources/materials/plant.tres" id="2_nlfi3"]
+
+[resource]
+script = ExtResource("2_k37ih")
+weight = 0.2
+material = ExtResource("2_nlfi3")
+id = &"carrot"
+name = "Carrot"
+metadata/_custom_type_script = "uid://uyhbi88n7yht"

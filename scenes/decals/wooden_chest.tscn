@@ -5,6 +5,8 @@
 [node name="WoodenChest" type="Area2D" unique_id=572391818]
 script = ExtResource("1_1ji0s")
 walkable = false
+breakable = true
+locked = true
 metadata/_custom_type_script = "uid://b06rmnpgqswiu"
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1574027649]

@@ -21,6 +21,8 @@ signal blocks_sight_changed
 			return
 		blocks_sight = v
 		blocks_sight_changed.emit()
+@export var breakable: bool = false
+@export var locked: bool = false
 @export var pushable: bool = false
 ## Whether this node is concealed (not visible for an entity even if no fog of
 ## war tile obscures it).
@@ -53,13 +55,14 @@ func _ready() -> void:
 	polygon = Helper.find_control(self, "Polygon2D")
 	if not polygon:
 		if create_polygon:
-			polygon = Polygon2D.new()
-			polygon.polygon = [(Vector2.UP + Vector2.LEFT) * Helper.HALF_LENGTH, 
-					(Vector2.UP + Vector2.RIGHT) * Helper.HALF_LENGTH, 
-					(Vector2.DOWN + Vector2.RIGHT) * Helper.HALF_LENGTH, 
-					(Vector2.DOWN + Vector2.LEFT) * Helper.HALF_LENGTH] 
-			polygon.color = color
-			add_child(polygon)
+			if not Engine.is_editor_hint():
+				polygon = Polygon2D.new()
+				polygon.polygon = [(Vector2.UP + Vector2.LEFT) * Helper.HALF_LENGTH, 
+						(Vector2.UP + Vector2.RIGHT) * Helper.HALF_LENGTH, 
+						(Vector2.DOWN + Vector2.RIGHT) * Helper.HALF_LENGTH, 
+						(Vector2.DOWN + Vector2.LEFT) * Helper.HALF_LENGTH] 
+				polygon.color = color
+				add_child(polygon)
 	light = Helper.find_control(self, "PointLight2D")
 	if not light:
 		light = PointLight2D.new()

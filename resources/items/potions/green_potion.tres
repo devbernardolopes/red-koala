@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_hgpax")
+weight = 0.6
 material = ExtResource("2_6r0rk")
 id = &"green_potion"
 name = "Green Potion"

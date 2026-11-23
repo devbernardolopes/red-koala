@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MaterialData" format=3 uid="uid://b7ivk2maem7x0"]
+
+[ext_resource type="Script" uid="uid://conaxrapxg6n6" path="res://resources/material_data.gd" id="1_n15ar"]
+[ext_resource type="Resource" uid="uid://3fe4y4lv7jpn" path="res://resources/damages/bludgeon.tres" id="1_y5if5"]
+
+[resource]
+script = ExtResource("1_n15ar")
+damage_weakness = Array[Resource]([ExtResource("1_y5if5")])
+id = &"bone"
+name = "Bone"
+metadata/_custom_type_script = "uid://conaxrapxg6n6"

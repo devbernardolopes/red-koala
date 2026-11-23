@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("3_ygue1")
+weight = 0.1
 material = ExtResource("2_u1ahj")
 id = &"gold"
 name = "Gold"

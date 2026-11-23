@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AnatomyData" format=3 uid="uid://1qppwvmo7jvj"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_q7hm0"]
+
+[resource]
+script = ExtResource("1_q7hm0")
+side = -1
+equipped_offset = Vector2(-16, 0)
+id = &"offhand"
+name = "Offhand"
+metadata/_custom_type_script = "uid://dovglatpiuiwq"

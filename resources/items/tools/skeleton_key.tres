@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ConsumableData" format=3 uid="uid://bu14nw45j8k6m"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_5g24h"]
+[ext_resource type="Script" uid="uid://uyhbi88n7yht" path="res://resources/consumable_data.gd" id="2_6suvc"]
+[ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="2_nr0a2"]
+[ext_resource type="Resource" uid="uid://b7ivk2maem7x0" path="res://resources/materials/bone.tres" id="3_nr0a2"]
+
+[resource]
+script = ExtResource("2_6suvc")
+weight = 0.1
+material = ExtResource("3_nr0a2")
+equipped_on = Array[ExtResource("1_5g24h")]([ExtResource("2_nr0a2")])
+id = &"skeleton_key"
+name = "Skeleton Key"
+metadata/_custom_type_script = "uid://uyhbi88n7yht"

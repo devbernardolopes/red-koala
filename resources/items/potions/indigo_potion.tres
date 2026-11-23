@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("2_ukt07")
+weight = 0.6
 material = ExtResource("2_rapmy")
 id = &"indigo_potion"
 name = "Indigo Potion"

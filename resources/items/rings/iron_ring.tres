@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://ctlhejgko0oa"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_ih6mu"]
+[ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_6p11t"]
+[ext_resource type="Resource" uid="uid://d0ahyovs484h4" path="res://resources/bodyparts/flesh/left_finger.tres" id="2_w71ie"]
+[ext_resource type="Resource" uid="uid://bpt5swh7par4j" path="res://resources/bodyparts/flesh/right_finger.tres" id="3_e0uif"]
+[ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="4_k5xjh"]
+
+[resource]
+script = ExtResource("2_6p11t")
+weight = 0.1
+material = ExtResource("4_k5xjh")
+equipped_on = Array[ExtResource("1_ih6mu")]([ExtResource("2_w71ie"), ExtResource("3_e0uif")])
+metadata/_custom_type_script = "uid://dtsnprxxyisjd"

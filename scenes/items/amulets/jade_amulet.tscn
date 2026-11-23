@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://cub2bnerb05qq"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_fckcr"]
+[ext_resource type="Resource" uid="uid://s86oykrovhbt" path="res://resources/items/amulets/jade_amulet.tres" id="2_dh2uf"]
+[ext_resource type="Shader" uid="uid://lhhe0vpnmjkj" path="res://shaders/shine_sweep.gdshader" id="3_8bdvn"]
+[ext_resource type="Texture2D" uid="uid://ct5io32p8p2b1" path="res://resources/textures/shine_gradient_texture_2d.tres" id="4_jmm68"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m7uww"]
+shader = ExtResource("3_8bdvn")
+shader_parameter/shine_color = Color(0.40392157, 1, 0, 1)
+shader_parameter/progress = 0.55
+shader_parameter/width = 0.16
+shader_parameter/angle = 0.6
+shader_parameter/intensity = 1.1
+shader_parameter/bands = 1.0
+shader_parameter/band_gap = 0.12
+shader_parameter/band_falloff = 0.45
+shader_parameter/hardness = 0.0
+shader_parameter/tail_color = Color(1, 1, 1, 1)
+shader_parameter/auto_speed = 0.5610000266475
+shader_parameter/auto_pause = 1.0
+
+[node name="JadeAmulet" type="Area2D" unique_id=1338760632]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_fckcr")
+data = ExtResource("2_dh2uf")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1452094958]
+color = Color(0.5529412, 0.23529412, 0.39215687, 1)
+polygon = PackedVector2Array(-4.9146824, 3.325655, -6.296874, 6.825246, -5.0617237, 11.824662, -0.3857994, 13.030403, 4.790066, 11.530579, 5.76054, 6.8546543, 4.113674, 3.0021634, -0.12557411, 0)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=1227028647]
+material = SubResource("ShaderMaterial_m7uww")
+color = Color(0.34901962, 1, 0.34509805, 1)
+texture = ExtResource("4_jmm68")
+texture_offset = Vector2(32, 32)
+polygon = PackedVector2Array(-4.5911903, 3.4726965, -0.12112427, 1.3847055, 3.8784084, 3.2080219, 5.1723747, 7.47223, 3.6137333, 11.618804, -0.12112427, 12.324604, -3.8559818, 11.559987, -5.767524, 7.0605135)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Polygon2D" unique_id=1400867527]
+color = Color(0.49411765, 0.26666668, 0.2, 1)
+polygon = PackedVector2Array(-1.268055, -0.14452648, -2.7678795, -2.056068, -3.0325546, -4.2028756, -2.1208963, -1.6737595, -0.5622549, -0.43861008, 0.46703625, -0.40920162, 1.2890978, -2.4258232, 2.5256205, -4.026426, 1.9962702, -2.9089093, 0.40821934, 0.3848238)

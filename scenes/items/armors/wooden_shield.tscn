@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b0bpgos4yqenf"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_a0emg"]
+[ext_resource type="Resource" uid="uid://fwtxttjvlxu1" path="res://resources/items/armors/wooden_shield.tres" id="2_rdk13"]
+[ext_resource type="Texture2D" uid="uid://bl8ydod7lqru0" path="res://resources/textures/wooden_shield_gradient_texture_2d.tres" id="3_ls2a1"]
+
+[node name="WoodenShield" type="Area2D" unique_id=1822166103]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_a0emg")
+data = ExtResource("2_rdk13")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1173606515]
+color = Color(0.3254902, 0.22745098, 0.16862746, 1)
+texture = ExtResource("3_ls2a1")
+texture_offset = Vector2(16, 16)
+polygon = PackedVector2Array(-16, 8, -16, -8, -8, -16, 8, -16, 16, -8, 16, 8, 8, 16, -8, 16)

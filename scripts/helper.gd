@@ -66,10 +66,15 @@ enum MoveMode {
 const LENGTH: int = 64
 @warning_ignore("integer_division")
 const HALF_LENGTH: int = LENGTH / 2
+@warning_ignore("integer_division")
+const QUARTER_LENGTH: int = HALF_LENGTH / 2
 const MARGIN_1: int = 2
 @warning_ignore("integer_division")
 const MARGIN_2: int = LENGTH / 4
 const RADIAL_LIGHT = preload("res://resources/lights/radial_light.tres")
+
+const EQUIPPED_OFFSET_RIGHT: Vector2 = Vector2(QUARTER_LENGTH, 0.0)
+const EQUIPPED_OFFSET_LEFT: Vector2 = Vector2(-QUARTER_LENGTH, 0.0)
 
 #region SOUNDS
 ## Crate on goal.
@@ -121,6 +126,26 @@ const LEVEL_CHART: Dictionary = {
 	18: 400000,
 	19: 450000,
 	20: 500000,
+	21: 550000,
+	22: 600000,
+	23: 650000,
+	24: 700000,
+	25: 750000,
+	26: 800000,
+	27: 850000,
+	28: 900000,
+	29: 950000,
+	30: 1000000,
+	31: 1100000,
+	32: 1200000,
+	33: 1300000,
+	34: 1400000,
+	35: 1500000,
+	36: 1600000,
+	37: 1700000,
+	38: 1800000,
+	39: 1900000,
+	40: 2000000,
 }
 
 

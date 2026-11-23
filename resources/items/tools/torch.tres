@@ -2,14 +2,13 @@
 
 [ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="1_5eovj"]
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_ayygc"]
-[ext_resource type="Resource" uid="uid://h6s3b72dukmt" path="res://resources/bodyparts/flesh/left_hand.tres" id="2_cwydv"]
-[ext_resource type="Resource" uid="uid://do7mb8vthvo56" path="res://resources/bodyparts/flesh/right_hand.tres" id="3_k3kox"]
+[ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="2_a857i"]
 [ext_resource type="Resource" uid="uid://cq70dywas23ju" path="res://resources/materials/wood.tres" id="4_ple34"]
 
 [resource]
 script = ExtResource("1_5eovj")
 material = ExtResource("4_ple34")
-equipped_on = Array[ExtResource("1_ayygc")]([ExtResource("2_cwydv"), ExtResource("3_k3kox")])
+equipped_on = Array[ExtResource("1_ayygc")]([ExtResource("2_a857i")])
 id = &"torch"
 name = "Torch"
 metadata/_custom_type_script = "uid://dtsnprxxyisjd"

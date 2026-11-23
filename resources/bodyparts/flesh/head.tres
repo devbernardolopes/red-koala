@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_p2bxs")
 material = ExtResource("1_ud3ur")
+equipped_offset = Vector2(0, -24)
 id = &"head"
 name = "Head"
 metadata/_custom_type_script = "uid://dovglatpiuiwq"

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c3bil0qiery7a"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_a7yyn"]
+[ext_resource type="Resource" uid="uid://bu14nw45j8k6m" path="res://resources/items/tools/skeleton_key.tres" id="2_d0ai6"]
+
+[node name="SkeletonKey" type="Area2D" unique_id=215339866]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_a7yyn")
+data = ExtResource("2_d0ai6")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=435949476]
+color = Color(0.89492244, 0.89492244, 0.8949224, 1)
+polygon = PackedVector2Array(-7.666979, 4.1836586, -6.6336174, 0.3085518, -1.3376389, -1.1984339, 2.4944115, -6.92498, 6.713972, -5.762448, 5.508383, -0.55258274, 2.4082985, -2.8776464, 0.21240425, -1.8012285, -3.7488155, 5.130907)

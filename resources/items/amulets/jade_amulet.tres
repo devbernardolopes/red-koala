@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://s86oykrovhbt"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_l7hnk"]
+[ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_b8la8"]
+[ext_resource type="Resource" uid="uid://hq5538mtrkmo" path="res://resources/bodyparts/flesh/neck.tres" id="2_ghgs0"]
+[ext_resource type="Resource" uid="uid://dflm6ih6qwfsq" path="res://resources/materials/gemstone.tres" id="2_j1x48"]
+
+[resource]
+script = ExtResource("2_b8la8")
+weight = 0.2
+material = ExtResource("2_j1x48")
+equipped_on = Array[ExtResource("1_l7hnk")]([ExtResource("2_ghgs0")])
+id = &"jade_amulet"
+name = "Jade Amulet"
+metadata/_custom_type_script = "uid://dtsnprxxyisjd"

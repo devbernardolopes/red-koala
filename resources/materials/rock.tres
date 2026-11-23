@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="MaterialData" format=3 uid="uid://dvgdaww7c0qj2"]
+
+[ext_resource type="Script" uid="uid://conaxrapxg6n6" path="res://resources/material_data.gd" id="1_d8f8l"]
+
+[resource]
+script = ExtResource("1_d8f8l")
+id = &"rock"
+name = "Rock"
+metadata/_custom_type_script = "uid://conaxrapxg6n6"

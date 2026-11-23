@@ -23,7 +23,6 @@ enum EquipResult {
 @export var entity_class: ClassData = null
 ## Optional name used by the journal; falls back to the node name when empty.
 @export var display_name: String = ""
-#@export var entity_race: RaceData = null
 @export_category("Abilities")
 @export_range(1, 30) var strength: int = 10
 @export_range(1, 30) var dexterity: int = 10
@@ -47,7 +46,10 @@ enum EquipResult {
 ## is per entity even though [RaceData.body] is a shared resource.
 var equipment: Dictionary[AnatomyData, Item] = {}
 ## Items that this entity will auto-take when entering the same tile.
-@export var auto_take: Array[Item] = []
+@export var auto_take: Array[ItemData] = []
+## These are properties that can be added via equipped items or spells or other
+## stuff.
+@export var added_properties: Array[PropertyData] = []
 @export var is_invisible: bool = false:
 	set(v):
 		is_invisible = v
@@ -62,6 +64,10 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 		_toggle_flying(v)
 @export var can_see_invisible: bool = false
 @export_category("Mechanics")
+## TODO: Must implement a facing mechanic flipping the entity's visuals left and
+## right when needed and also having effects in the field of view if the field
+## of view is not a square or a circle (this field of view specifics is not 
+## implemented yet).
 #@export var facing: 
 ## This should be relative to the turn-based mechanic. Albeit I am not sure if
 ## it should be called `energy` instead.
@@ -120,6 +126,7 @@ func _ready() -> void:
 	_toggle_invisible(is_invisible)
 	_toggle_phasing(is_phasing)
 	_toggle_flying(is_flying)
+	_update_properties()
 	_init_values()
 
 
@@ -278,14 +285,48 @@ func equip(item: Item) -> EquipResult:
 				continue
 			equipment[bp] = item
 			item.is_equipped = true
-			item.position = Vector2.ZERO
+			item.position = Vector2.ZERO + bp.equipped_offset
 			polygon.add_child(item)
 			result = EquipResult.EQUIPPED
 			break
 		if result == EquipResult.INVALID:
 			result = EquipResult.NO_BODY_PART
 	inventory_changed.emit()
+	_update_properties()
+	_sort_equipped_items()
 	return result
+
+
+func _update_properties() -> void:
+	if not data:
+		return
+	is_flying = false
+	is_phasing = false
+	is_invisible = false
+	for property in (data as EntityData).properties:
+		if property.id == &"flight":
+			is_flying = true
+		elif property.id == &"phasing":
+			is_phasing = true
+		elif property.id == &"invisibility":
+			is_invisible = true
+	for value: Variant in equipment.values():
+		if value is Item:
+			for property in value.properties:
+				if property.id == &"flight":
+					is_flying = true
+				elif property.id == &"phasing":
+					is_phasing = true
+				elif property.id == &"invisibility":
+					is_invisible = true
+
+
+## TODO: Must implement this function that will sort the equipped items
+## visually so that items equipped on some bodyparts such as hands will be
+## rendered on top of other items.
+func _sort_equipped_items() -> void:
+	if not equipment or equipment.is_empty():
+		return
 
 
 ## Clears the slot holding [param item] regardless of its mystic modifier.

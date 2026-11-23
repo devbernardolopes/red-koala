@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AnatomyData" format=3 uid="uid://chy4a6y5hfqn3"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="2_ba07b"]
+
+[resource]
+script = ExtResource("2_ba07b")
+side = 1
+equipped_offset = Vector2(16, 0)
+id = &"main_hand"
+name = "Main Hand"
+metadata/_custom_type_script = "uid://dovglatpiuiwq"

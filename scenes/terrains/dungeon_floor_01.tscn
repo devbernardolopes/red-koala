@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://rr65s2iaqp46"]
+
+[ext_resource type="Script" uid="uid://b06rmnpgqswiu" path="res://scripts/base.gd" id="1_15f3b"]
+
+[node name="DungeonFloor01" type="Area2D" unique_id=1191015399]
+script = ExtResource("1_15f3b")
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=208854763]
+color = Color(0.18039216, 0.19215687, 0.32156864, 1)
+polygon = PackedVector2Array(-32, 32, -32, -32, 32, -32, 32, 32)

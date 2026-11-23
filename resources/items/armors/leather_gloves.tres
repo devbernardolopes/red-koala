@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ArmorData" format=3 uid="uid://ccetedflk0ows"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_kixq3"]
+[ext_resource type="Script" uid="uid://c41diincm70lm" path="res://resources/armor_data.gd" id="2_8rj7k"]
+[ext_resource type="Resource" uid="uid://h6s3b72dukmt" path="res://resources/bodyparts/flesh/left_hand.tres" id="2_pnr3l"]
+[ext_resource type="Resource" uid="uid://do7mb8vthvo56" path="res://resources/bodyparts/flesh/right_hand.tres" id="3_nrv5l"]
+[ext_resource type="Resource" uid="uid://bki8i8pu8bkhb" path="res://resources/materials/leather.tres" id="4_iqc7c"]
+
+[resource]
+script = ExtResource("2_8rj7k")
+weight = 0.5
+material = ExtResource("4_iqc7c")
+equipped_on = Array[ExtResource("1_kixq3")]([ExtResource("2_pnr3l"), ExtResource("3_nrv5l")])
+id = &"leather_gloves"
+name = "Leather Gloves"
+metadata/_custom_type_script = "uid://c41diincm70lm"

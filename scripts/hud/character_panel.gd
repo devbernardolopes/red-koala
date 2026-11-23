@@ -25,6 +25,7 @@ const EMPTY_VALUE: String = "—"
 @onready var _class_label: Label = %ClassLabel
 @onready var _race_label: Label = %RaceLabel
 @onready var _level_label: Label = %LevelLabel
+@onready var _current_xp_label: Label = %CurrentXpLabel
 @onready var _strength_label: Label = %StrengthLabel
 @onready var _dexterity_label: Label = %DexterityLabel
 @onready var _constitution_label: Label = %ConstitutionLabel
@@ -79,6 +80,7 @@ func refresh() -> void:
 	_class_label.text = _data_name(entity.entity_class)
 	_race_label.text = _data_name(_get_race(entity))
 	_level_label.text = "Level %d" % entity.level
+	_current_xp_label.text = "XP: %d" % entity.xp
 	_strength_label.text = "STR %d" % entity.strength
 	_dexterity_label.text = "DEX %d" % entity.dexterity
 	_constitution_label.text = "CON %d" % entity.constitution
@@ -119,6 +121,7 @@ func _show_placeholder() -> void:
 	_class_label.text = EMPTY_VALUE
 	_race_label.text = EMPTY_VALUE
 	_level_label.text = EMPTY_VALUE
+	_current_xp_label.text = "XP: " + EMPTY_VALUE
 	_strength_label.text = "STR " + EMPTY_VALUE
 	_dexterity_label.text = "DEX " + EMPTY_VALUE
 	_constitution_label.text = "CON " + EMPTY_VALUE
@@ -132,12 +135,22 @@ func _show_placeholder() -> void:
 	_clear_properties()
 	_properties.visible = false
 
+func remove_duplicates_ordered(array: Array) -> Array:
+	var seen := {}
+	var output := []
+	for element in array:
+		if not element in seen:
+			seen[element] = true
+			output.append(element)
+	return output
+
 
 func _refresh_properties(entity: Entity) -> void:
 	_clear_properties()
 	var properties: Array[PropertyData] = []
 	if entity.data is EntityData:
 		properties = (entity.data as EntityData).properties
+	properties.append_array(entity.added_properties)
 	_properties.visible = not properties.is_empty()
 	for property: PropertyData in properties:
 		var label: Label = Label.new()

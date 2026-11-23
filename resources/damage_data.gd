@@ -1,0 +1,2 @@
+class_name DamageData
+extends BaseData

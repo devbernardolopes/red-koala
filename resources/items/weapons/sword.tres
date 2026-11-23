@@ -1,19 +1,19 @@
 [gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://df7tq8w5dfy8o"]
 
+[ext_resource type="Resource" uid="uid://dcqgtg14wp4aj" path="res://resources/damages/slash.tres" id="1_70pmq"]
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_d5g5k"]
-[ext_resource type="Resource" uid="uid://h6s3b72dukmt" path="res://resources/bodyparts/flesh/left_hand.tres" id="2_70pmq"]
-[ext_resource type="Resource" uid="uid://do7mb8vthvo56" path="res://resources/bodyparts/flesh/right_hand.tres" id="3_2wr2f"]
+[ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="3_d5g5k"]
 [ext_resource type="Resource" uid="uid://bsn1hv5pao1ua" path="res://resources/materials/steel.tres" id="4_00v6f"]
 [ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="5_w0s0x"]
 
 [resource]
 script = ExtResource("5_w0s0x")
-damage_dice = 1
 damage_sides = 6
 category = 1
+damage_type = ExtResource("1_70pmq")
 weight = 10.0
 material = ExtResource("4_00v6f")
-equipped_on = Array[ExtResource("1_d5g5k")]([ExtResource("2_70pmq"), ExtResource("3_2wr2f")])
+equipped_on = Array[ExtResource("1_d5g5k")]([ExtResource("3_d5g5k")])
 id = &"sword"
 name = "Sword"
 metadata/_custom_type_script = "uid://dtsnprxxyisjd"

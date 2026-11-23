@@ -4,3 +4,4 @@ extends BaseData
 @export var side: Helper.AnatomySide = Helper.AnatomySide.CENTER
 @export var position: Helper.AnatomyPosition = Helper.AnatomyPosition.CENTER
 @export var material: MaterialData = null
+@export var equipped_offset: Vector2 = Vector2.ZERO

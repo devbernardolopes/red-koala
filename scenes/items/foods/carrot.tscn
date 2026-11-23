@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://banr31rrpp572"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_bftep"]
+[ext_resource type="Resource" uid="uid://b5iamfwdc80dn" path="res://resources/items/foods/carrot.tres" id="2_j8u3x"]
+
+[sub_resource type="Gradient" id="Gradient_jaxdh"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_m7uww"]
+gradient = SubResource("Gradient_jaxdh")
+fill = 1
+fill_from = Vector2(0.39908257, 0.44036698)
+
+[node name="Carrot" type="Area2D" unique_id=1075783353]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_bftep")
+data = ExtResource("2_j8u3x")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=772405682]
+color = Color(1, 0.42352942, 0.12156863, 1)
+texture = SubResource("GradientTexture2D_m7uww")
+polygon = PackedVector2Array(-8, 8, -8, 0, 8, -8, 0, 8)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=1673513865]
+color = Color(0.18431373, 0.57254905, 0.18039216, 1)
+polygon = PackedVector2Array(-6.7921944, 6.9670115, -11.676371, 7.8990126, -16.09947, 10.404131, -10.776093, 9.542996, -13.202927, 12.987535, -8.2318325, 9.582139)

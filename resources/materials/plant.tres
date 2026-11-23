@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_xe5ym")
+flammable = true
 id = &"plant"
 name = "Plant"
 metadata/_custom_type_script = "uid://conaxrapxg6n6"

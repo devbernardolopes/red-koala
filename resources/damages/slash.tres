@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BaseData" format=3 uid="uid://dcqgtg14wp4aj"]
+
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_6mykv"]
+
+[resource]
+script = ExtResource("1_6mykv")
+id = &"slash"
+name = "Slash"
+metadata/_custom_type_script = "uid://cagxxxea2d3c8"
