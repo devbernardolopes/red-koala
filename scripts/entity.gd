@@ -19,6 +19,9 @@ enum EquipResult {
 	INVALID,
 }
 
+## Kilograms an entity can carry per point of Strength.
+const CARRY_KG_PER_STRENGTH: float = 7.5
+
 @export_category("Basic")
 @export var entity_class: ClassData = null
 ## Optional name used by the journal; falls back to the node name when empty.
@@ -227,6 +230,34 @@ func get_armor_class() -> int:
 
 func get_proficiency_bonus() -> int:
 	return Combat.proficiency_bonus(level)
+
+
+## Extra Strength granted by items and other effects. Nothing feeds it yet;
+## carry capacity and Strength-based rules read it once they exist.
+func get_strength_bonus() -> int:
+	return 0
+
+
+## Kilograms this entity can carry before being encumbered.
+func get_carry_capacity() -> float:
+	return float(strength + get_strength_bonus()) * CARRY_KG_PER_STRENGTH
+
+
+## Total weight in kilograms of every carried item. Equipped items count even
+## when they are not listed in [member inventory].
+func get_carried_weight() -> float:
+	var total: float = 0.0
+	var counted: Dictionary[Item, bool] = {}
+	var items: Array[Item] = []
+	items.append_array(inventory)
+	items.append_array(get_equipped_items())
+	for item: Item in items:
+		if not item or counted.has(item):
+			continue
+		counted[item] = true
+		if item.data is ItemData:
+			total += (item.data as ItemData).weight
+	return total
 
 
 func _toggle_invisible(toggle: bool) -> void:

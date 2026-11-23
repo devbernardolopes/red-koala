@@ -28,6 +28,14 @@ const ROW_SCENE: PackedScene = preload("res://scenes/hud/item_row.tscn")
 ## Height of the scrollable body in pixels. The header is added on top.
 @export var body_height: float = 132.0
 
+## Whether the optional footer under the body is shown. The inventory uses it
+## for the carried weight; the other panels leave it off.
+@export var show_footer: bool = false:
+	set(v):
+		show_footer = v
+		if is_node_ready():
+			_apply_collapsed()
+
 ## Whether rows can be selected and navigated. Journal-style panels turn this
 ## off so no selection marker is drawn.
 @export var selectable: bool = true:
@@ -40,6 +48,7 @@ const ROW_SCENE: PackedScene = preload("res://scenes/hud/item_row.tscn")
 @onready var _count_label: Label = %CountLabel
 @onready var _indicator: Label = %Indicator
 @onready var _body: ScrollContainer = %Body
+@onready var _footer: Label = %FooterLabel
 @onready var _rows_container: VBoxContainer = %Rows
 
 var _rows: Array[Dictionary] = []
@@ -67,6 +76,14 @@ func set_rows(rows: Array[Dictionary], selected_meta: Variant = null) -> void:
 
 func get_rows() -> Array[Dictionary]:
 	return _rows
+
+
+## Sets the optional footer text. The footer only appears when
+## [member show_footer] is on, the panel is expanded and the text is not empty.
+func set_footer_text(text: String) -> void:
+	_footer.text = text
+	if is_node_ready():
+		_apply_collapsed()
 
 
 func get_selected_index() -> int:
@@ -189,6 +206,7 @@ func _apply_selection() -> void:
 
 func _apply_collapsed() -> void:
 	_body.visible = not _collapsed
+	_footer.visible = show_footer and not _collapsed and not _footer.text.is_empty()
 	_indicator.text = "+" if _collapsed else "-"
 
 

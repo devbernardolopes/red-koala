@@ -27,6 +27,9 @@ var wall_proxies: Array[Wall] = []
 var current_filter: Control = null
 var filter_list: Array[Control] = []
 var _input_disabled: bool = false
+## Entity whose [signal Entity.stats_changed] currently drives the inventory
+## footer. Tracked so switching the active player reconnects exactly once.
+var _stats_entity: Entity = null
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: Node2D = $FogOfWar
@@ -79,6 +82,7 @@ func _ready() -> void:
 	_update_inventory()
 	_update_ground()
 	_update_character()
+	_connect_stats(current_player_entity)
 	_dispel_fog_of_war()
 	for entity in party:
 		entity.is_playable = true
@@ -227,6 +231,29 @@ func _on_inventory_changed(entity: Entity) -> void:
 		_update_character()
 
 
+## Keeps the inventory footer up to date when the active entity's stats change,
+## such as a future Strength buff changing the carry capacity.
+func _connect_stats(entity: Entity) -> void:
+	if _stats_entity == entity:
+		return
+	_disconnect_stats()
+	if not is_instance_valid(entity):
+		return
+	_stats_entity = entity
+	entity.stats_changed.connect(_on_active_stats_changed)
+
+
+func _disconnect_stats() -> void:
+	if is_instance_valid(_stats_entity):
+		if _stats_entity.stats_changed.is_connected(_on_active_stats_changed):
+			_stats_entity.stats_changed.disconnect(_on_active_stats_changed)
+	_stats_entity = null
+
+
+func _on_active_stats_changed() -> void:
+	_update_inventory()
+
+
 func _on_inventory_selection_changed(item: Item) -> void:
 	if not current_player_entity:
 		return
@@ -255,6 +282,8 @@ func _on_entity_died(entity: Entity, _source: Entity) -> void:
 	if not is_instance_valid(entity) or entity.has_meta(&"death_handled"):
 		return
 	entity.set_meta(&"death_handled", true)
+	if entity == _stats_entity:
+		_disconnect_stats()
 	if turn_manager and turn_manager.actions:
 		turn_manager.actions.drop_all_on_death(entity)
 	var parent: Node = entity.get_parent()
@@ -343,6 +372,7 @@ func set_active_player(entity: Entity) -> void:
 	if not entity:
 		return
 	current_player_entity = entity
+	_connect_stats(entity)
 	_update_inventory()
 	_update_ground()
 	_update_character()

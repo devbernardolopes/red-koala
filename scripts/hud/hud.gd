@@ -73,6 +73,11 @@ func set_inventory(items: Array[Item], current_item: Item = null,
 	for group: Dictionary in _group_items(equipped):
 		rows.append(_make_group_row(group))
 	inventory_panel.set_rows(rows, current_item)
+	var footer: String = ""
+	if is_instance_valid(entity):
+		footer = "Weight: %.1f / %.1f kg" % [
+			entity.get_carried_weight(), entity.get_carry_capacity()]
+	inventory_panel.set_footer_text(footer)
 
 
 ## Replaces the ground rows, keeping the current selection when that item is
