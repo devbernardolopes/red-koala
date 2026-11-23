@@ -249,6 +249,60 @@ func get_equipped_items() -> Array[Item]:
 	return result
 
 
+## Every property granted to this entity, deduplicated by [member BaseData.id].
+## The order of precedence is [member EntityData.properties], the properties of
+## every equipped item and finally [member added_properties]. Always returns a
+## new array, so callers may modify their copy without touching the shared data
+## resources.
+func get_properties() -> Array[PropertyData]:
+	var result: Array[PropertyData] = []
+	var seen: Dictionary[StringName, bool] = {}
+	if data is EntityData:
+		_collect_properties((data as EntityData).properties, result, seen)
+	for item: Item in get_equipped_items():
+		_collect_properties(item.properties, result, seen)
+	_collect_properties(added_properties, result, seen)
+	return result
+
+
+## Appends the properties of [param source] that have not been seen yet.
+func _collect_properties(
+		source: Array[PropertyData],
+		result: Array[PropertyData],
+		seen: Dictionary[StringName, bool]) -> void:
+	for property: PropertyData in source:
+		if not property or seen.has(property.id):
+			continue
+		seen[property.id] = true
+		result.append(property)
+
+
+## Whether any of this entity's properties has [param property_id].
+func has_property_id(property_id: StringName) -> bool:
+	for property: PropertyData in get_properties():
+		if property.id == property_id:
+			return true
+	return false
+
+
+## Grants [param property] to this entity at runtime, such as through a spell.
+func add_property(property: PropertyData) -> void:
+	if not property or added_properties.has(property):
+		return
+	added_properties.append(property)
+	_update_properties()
+	stats_changed.emit()
+
+
+## Revokes a property previously granted through [method add_property].
+func remove_property(property: PropertyData) -> void:
+	if not property or not added_properties.has(property):
+		return
+	added_properties.erase(property)
+	_update_properties()
+	stats_changed.emit()
+
+
 ## Also acts as the unequip action.
 ## If an item is [Helper.MysticModifier.CURSED] then it can't be unequiped.
 func equip(item: Item) -> EquipResult:
@@ -291,34 +345,23 @@ func equip(item: Item) -> EquipResult:
 			break
 		if result == EquipResult.INVALID:
 			result = EquipResult.NO_BODY_PART
-	inventory_changed.emit()
 	_update_properties()
+	inventory_changed.emit()
 	_sort_equipped_items()
 	return result
 
 
 func _update_properties() -> void:
-	if not data:
-		return
 	is_flying = false
 	is_phasing = false
 	is_invisible = false
-	for property in (data as EntityData).properties:
+	for property: PropertyData in get_properties():
 		if property.id == &"flight":
 			is_flying = true
 		elif property.id == &"phasing":
 			is_phasing = true
 		elif property.id == &"invisibility":
 			is_invisible = true
-	for value: Variant in equipment.values():
-		if value is Item:
-			for property in value.properties:
-				if property.id == &"flight":
-					is_flying = true
-				elif property.id == &"phasing":
-					is_phasing = true
-				elif property.id == &"invisibility":
-					is_invisible = true
 
 
 ## TODO: Must implement this function that will sort the equipped items

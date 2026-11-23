@@ -4,10 +4,11 @@ extends PanelContainer
 ## Collapsible panel showing the active playable entity's sheet.
 ##
 ## Unlike [HudPanel] the body is a fixed layout of stat cells rather than a list
-## of rows. Only the properties section is variable-length: it lists the
-## [PropertyData] resources of the entity's data and is hidden when there are
-## none. The helper flags such as [member Entity.is_phasing] are deliberately
-## ignored; they drive gameplay and visuals, not the character sheet.
+## of rows. Only the properties section is variable-length: it lists
+## [method Entity.get_properties] (the entity's data, equipped items and added
+## properties) and is hidden when there are none. The helper flags such as
+## [member Entity.is_phasing] are deliberately ignored; they drive gameplay and
+## visuals, not the character sheet.
 
 ## Placeholder shown when there is no value to display.
 const EMPTY_VALUE: String = "—"
@@ -147,10 +148,7 @@ func remove_duplicates_ordered(array: Array) -> Array:
 
 func _refresh_properties(entity: Entity) -> void:
 	_clear_properties()
-	var properties: Array[PropertyData] = []
-	if entity.data is EntityData:
-		properties = (entity.data as EntityData).properties
-	properties.append_array(entity.added_properties)
+	var properties: Array[PropertyData] = entity.get_properties()
 	_properties.visible = not properties.is_empty()
 	for property: PropertyData in properties:
 		var label: Label = Label.new()
