@@ -245,6 +245,8 @@ func _connect_entity(entity: Entity) -> void:
 		return
 	entity.set_meta(&"death_connected", true)
 	entity.died.connect(func(source: Entity) -> void: _on_entity_died(entity, source))
+	entity.leveled_up.connect(
+			func(new_level: int) -> void: Journal.leveled_up(entity, new_level))
 
 
 ## Single death path: drop the loot, leave a corpse, update the party and the

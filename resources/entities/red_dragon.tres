@@ -9,11 +9,10 @@
 
 [resource]
 script = ExtResource("1_s57hb")
-base_hit_points = 100
-base_mana_points = 100
 race = ExtResource("3_rbh1c")
 resistances = Array[ExtResource("3_on2qt")]([ExtResource("4_r7mt5")])
 properties = Array[ExtResource("1_58y1a")]([ExtResource("2_rbh1c")])
+xp_reward = 150
 id = &"red_dragon"
 name = "Red Dragon"
 metadata/_custom_type_script = "uid://b3qjjrx38oqgu"

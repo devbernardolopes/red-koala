@@ -103,6 +103,7 @@ var brain: Node = null
 signal inventory_changed
 signal damaged(amount: int, source: Entity)
 signal died(source: Entity)
+signal leveled_up(new_level: int)
 signal stats_changed
 
 
@@ -135,6 +136,39 @@ func _init_values() -> void:
 	hit_points = max_hit_points
 	max_mana_points = (entity_class as ClassData).base_mana_points
 	mana_points = max_mana_points
+
+
+## Adds [param amount] experience and applies every level-up it unlocks.
+## Returns how many levels were gained.
+func gain_xp(amount: int) -> int:
+	if amount <= 0:
+		return 0
+	xp += amount
+	var gained: int = 0
+	while level < Helper.level_for_xp(xp):
+		_level_up()
+		gained += 1
+	stats_changed.emit()
+	return gained
+
+
+## Rises one level, rolling the class's hit and mana dice. The Constitution
+## modifier is added to the hit points; the Wisdom modifier to the mana.
+func _level_up() -> void:
+	level += 1
+	if entity_class:
+		var gained_hit_points: int = maxi(1, Dice.roll(
+				entity_class.hit_die_count,
+				entity_class.hit_die_sides) + get_ability_modifier(&"CON"))
+		max_hit_points += gained_hit_points
+		hit_points += gained_hit_points
+		if entity_class.mana_die_sides > 0:
+			var gained_mana: int = maxi(0, Dice.roll(
+					entity_class.mana_die_count,
+					entity_class.mana_die_sides) + get_ability_modifier(&"WIS"))
+			max_mana_points += gained_mana
+			mana_points += gained_mana
+	leveled_up.emit(level)
 
 
 func get_move_mode() -> Helper.MoveMode:

@@ -149,6 +149,16 @@ const LEVEL_CHART: Dictionary = {
 }
 
 
+## Highest level whose threshold in [constant LEVEL_CHART] is at most
+## [param xp]. Never exceeds the chart's maximum level.
+static func level_for_xp(xp: int) -> int:
+	var best: int = 1
+	for level: int in LEVEL_CHART:
+		if LEVEL_CHART[level] <= xp and level > best:
+			best = level
+	return best
+
+
 ## Whether [param a] considers [param b] an enemy. Neutral entities never
 ## initiate hostilities, but they can still be attacked by a foe.
 static func are_hostile(a: Entity, b: Entity) -> bool:

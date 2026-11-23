@@ -175,9 +175,26 @@ func attack(entity: Entity, target: Entity,
 		result.killed = target.is_dead
 	if result.killed:
 		Journal.slain(entity, target)
+		award_kill_xp(entity, target)
 	_acted = true
 	last_cost = TurnManager.ACTION_COST
 	return true
+
+
+## Awards [param victim]'s experience to the [param killer] that landed the
+## killing blow. Ranged and spell kills must call this same method.
+func award_kill_xp(killer: Entity, victim: Entity) -> void:
+	if not is_instance_valid(killer) or killer.is_dead:
+		return
+	if not is_instance_valid(victim) or killer == victim:
+		return
+	if not (victim.data is EntityData):
+		return
+	var reward: int = (victim.data as EntityData).xp_reward
+	if reward <= 0:
+		return
+	Journal.gained_xp(killer, reward)
+	killer.gain_xp(reward)
 
 
 ## Player-facing movement: bump into a visible living hostile to attack it,

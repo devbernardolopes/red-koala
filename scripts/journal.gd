@@ -78,6 +78,14 @@ func slain(attacker: Entity, target: Entity) -> void:
 	add("%s slays %s" % [_actor_name(attacker), _actor_name(target)])
 
 
+func gained_xp(actor: Entity, amount: int) -> void:
+	add("%s gains %d XP" % [_actor_name(actor), amount])
+
+
+func leveled_up(actor: Entity, level: int) -> void:
+	add("%s reaches level %d" % [_actor_name(actor), level])
+
+
 func died(actor: Entity = null) -> void:
 	add("%s dies" % _actor_name(actor))
 

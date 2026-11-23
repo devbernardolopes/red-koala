@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("4_7lsrg")
 race = ExtResource("2_2ulxn")
+xp_reward = 10
 id = &"bandit"
 name = "Bandit"
 metadata/_custom_type_script = "uid://b3qjjrx38oqgu"
