@@ -76,6 +76,7 @@ func move(entity: Entity, direction: Vector2i) -> bool:
 	if not board.can_occupy(entity, move_to, mode):
 		return false
 	_move_element(entity, dir)
+	_auto_take(entity)
 	_acted = true
 	return true
 
@@ -87,13 +88,45 @@ func take(entity: Entity, item: Item) -> bool:
 	var origin: Vector2i = board.get_origin(entity)
 	if not board.get_elements_at(origin).has(item):
 		return false
+	if not _transfer_item(entity, item):
+		return false
+	_acted = true
+	_after_item_change()
+	return true
+
+
+## Shared pickup: moves [param item] from the board into [param entity]'s
+## inventory and logs it. The caller owns the action cost, so auto-take during a
+## move can reuse this without spending a second action.
+func _transfer_item(entity: Entity, item: Item) -> bool:
+	if not is_instance_valid(entity) or not item:
+		return false
 	if not entity.take(item):
 		return false
 	board.unregister(item)
 	Journal.took(item, entity)
-	_acted = true
-	_after_item_change()
 	return true
+
+
+## Picks up every item under the entity whose data is in [member Entity.auto_take].
+## Part of a move, so it costs no extra action and ignores the carry limit:
+## encumbrance then applies through the normal inventory signals.
+func _auto_take(entity: Entity) -> void:
+	if not is_instance_valid(entity) or not board:
+		return
+	var taken: bool = false
+	for element: Base in board.get_elements_at(board.get_origin(entity)):
+		if not element is Item:
+			continue
+		var item: Item = element as Item
+		if item.is_equipped or not item.data:
+			continue
+		if not entity.auto_take.has(item.data):
+			continue
+		if _transfer_item(entity, item):
+			taken = true
+	if taken:
+		_after_item_change()
 
 
 ## Drops an item onto the entity's tile.
@@ -263,6 +296,7 @@ func _push(entity: Entity, pushable: Base, dir: Vector2i, move_to: Vector2i) -> 
 	# while the push is still in progress.
 	_move_element(crate, dir)
 	_move_element(entity, dir)
+	_auto_take(entity)
 	_acted = true
 	return true
 
