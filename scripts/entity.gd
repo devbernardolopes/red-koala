@@ -85,6 +85,10 @@ var energy: int = 0
 ## change.
 var encumbrance_level: Encumbrance.Level = Encumbrance.Level.NONE
 var _updating_encumbrance: bool = false
+## Rounds accumulated towards the next natural regeneration tick. While full the
+## counter stays at zero; while inhibited it neither advances nor resets.
+var hp_regen_progress: int = 0
+var mana_regen_progress: int = 0
 ## Set once hit points reach zero. Dead entities are ignored by perception and
 ## cannot act or be attacked.
 var is_dead: bool = false
@@ -218,6 +222,61 @@ func take_damage(amount: int, source: Entity = null) -> int:
 		is_dead = true
 		died.emit(source)
 	return dealt
+
+
+## Restores [param amount] hit points, clamped to the maximum. Returns how many
+## points were actually applied and emits [signal stats_changed] only when any.
+func heal(amount: int) -> int:
+	if amount <= 0 or is_dead:
+		return 0
+	var previous: int = hit_points
+	hit_points = mini(hit_points + amount, max_hit_points)
+	var applied: int = hit_points - previous
+	if applied > 0:
+		stats_changed.emit()
+	return applied
+
+
+## Restores [param amount] mana points, clamped to the maximum. Returns how many
+## points were actually applied and emits [signal stats_changed] only when any.
+func restore_mana(amount: int) -> int:
+	if amount <= 0 or is_dead:
+		return 0
+	var previous: int = mana_points
+	mana_points = mini(mana_points + amount, max_mana_points)
+	var applied: int = mana_points - previous
+	if applied > 0:
+		stats_changed.emit()
+	return applied
+
+
+## Whether natural regeneration may run. Inhibitors such as phasing stop it;
+## future conditions (poison, hunger) extend this method.
+func can_regenerate() -> bool:
+	return not is_dead and not is_phasing
+
+
+## Advances natural regeneration by one game round. While inhibited the counters
+## neither advance nor reset; while a pool is full its counter stays at zero.
+func tick_regeneration() -> void:
+	if not can_regenerate():
+		return
+	if hit_points < max_hit_points:
+		hp_regen_progress += 1
+		var hp_interval: int = Combat.regen_interval(get_ability_modifier(&"CON"))
+		if hp_regen_progress >= hp_interval:
+			hp_regen_progress = 0
+			heal(Combat.regen_amount(level))
+	else:
+		hp_regen_progress = 0
+	if mana_points < max_mana_points:
+		mana_regen_progress += 1
+		var mana_interval: int = Combat.regen_interval(get_ability_modifier(&"WIS"))
+		if mana_regen_progress >= mana_interval:
+			mana_regen_progress = 0
+			restore_mana(Combat.regen_amount(level))
+	else:
+		mana_regen_progress = 0
 
 
 ## Ability modifier for [param code] ([code]STR[/code], [code]DEX[/code],

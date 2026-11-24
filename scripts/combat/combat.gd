@@ -8,8 +8,28 @@ extends RefCounted
 ## to hit points and the board.
 
 
+## Rounds between natural regeneration ticks at a +0 ability modifier. Higher
+## modifiers shorten the interval, lower ones lengthen it.
+const REGEN_BASE_INTERVAL: int = 20
+const REGEN_MIN_INTERVAL: int = 5
+const REGEN_MAX_INTERVAL: int = 30
+
+
 static func ability_modifier(score: int) -> int:
 	return floori((score - 10) / 2.0)
+
+
+## Rounds between natural regeneration ticks for [param modifier], clamped so
+## regeneration can neither become instant nor effectively stop.
+static func regen_interval(modifier: int) -> int:
+	return clampi(REGEN_BASE_INTERVAL - modifier,
+			REGEN_MIN_INTERVAL, REGEN_MAX_INTERVAL)
+
+
+## Points restored by one natural regeneration tick at [param level].
+static func regen_amount(level: int) -> int:
+	@warning_ignore("integer_division")
+	return 1 + level / 5
 
 
 static func proficiency_bonus(level: int) -> int:

@@ -192,6 +192,7 @@ func _start_round() -> bool:
 	for actor: Entity in _order:
 		actor.energy = mini(actor.energy + roundi(actor.get_effective_speed()),
 				MAX_ENERGY)
+		actor.tick_regeneration()
 		max_energy = maxi(max_energy, actor.energy)
 	_max_passes = maxi(1, floori(float(max_energy) / ACTION_COST))
 	_pass = 0
