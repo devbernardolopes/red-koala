@@ -3,6 +3,18 @@ extends Node2D
 
 const LEVELS_DIR: String = "res://resources/levels/"
 const WALL_SCENE = preload("res://scenes/wall.tscn")
+## Direction actions, in the order [method _action_for_event] checks them.
+const MOVE_ACTIONS: Array[StringName] = [
+	&"up", &"up_right", &"right", &"down_right",
+	&"down", &"down_left", &"left", &"up_left",
+]
+## Actions that end a held move when pressed, either because they consume the
+## turn (switch, wait, take, drop, equip) or because the HUD uses them.
+const INTERRUPT_ACTIONS: Array[StringName] = [
+	&"switch_player_entity", &"wait", &"take", &"drop", &"equip",
+	&"toggle_inventory", &"toggle_ground", &"toggle_journal",
+	&"toggle_entity", &"toggle_grimoire",
+]
 
 @export var current_player_entity: Entity = null:
 	set(v):
@@ -27,6 +39,8 @@ var wall_proxies: Array[Wall] = []
 var current_filter: Control = null
 var filter_list: Array[Control] = []
 var _input_disabled: bool = false
+## Direction the player is holding down, if any. Driven from [method _process].
+var held_move: HeldMove = null
 ## Entity whose [signal Entity.stats_changed] currently drives the inventory
 ## footer. Tracked so switching the active player reconnects exactly once.
 var _stats_entity: Entity = null
@@ -44,6 +58,7 @@ signal no_player_left
 
 
 func _ready() -> void:
+	held_move = HeldMove.new()
 	if not decals_node:
 		decals_node = find_child("Decals")
 	if not goals_node:
@@ -131,9 +146,57 @@ func _input(event: InputEvent) -> void:
 		turn_manager.instant = not turn_manager.instant
 
 
+## Repeats a held direction once per action. The first press is handled in
+## [method _unhandled_input]; this only drives the repeats.
+func _process(delta: float) -> void:
+	if not held_move or not held_move.active:
+		return
+	var actor: Entity = held_move.actor
+	if (_input_disabled
+			or not Input.is_action_pressed(held_move.action)
+			or not is_instance_valid(actor)
+			or actor.is_dead):
+		_cancel_held_move()
+		return
+	if not turn_manager or not turn_manager.is_player_turn():
+		# CPU actors are acting. Keep the hold and let the cooldown run down so
+		# the same entity can continue as soon as its turn comes back.
+		held_move.cooldown = maxf(0.0, held_move.cooldown - delta)
+		return
+	if turn_manager.get_current_actor() != actor:
+		# The held actor ran out of energy and another party member is up. It
+		# must never drive somebody else's turn.
+		_cancel_held_move()
+		return
+	held_move.cooldown -= delta
+	if held_move.cooldown > 0.0:
+		return
+	var dir: Vector2i = _direction_from_action(held_move.action)
+	if dir == Vector2i.ZERO:
+		_cancel_held_move()
+		return
+	# TODO: Cancel here when a new hostile comes into view (interrupt).
+	turn_manager.actions.bump(actor, dir)
+	# The action layer resets this flag when the turn resolves, so read it now.
+	if not turn_manager.actions.has_acted():
+		_cancel_held_move()
+		return
+	var killed: bool = turn_manager.actions.last_attack_killed
+	turn_manager.on_player_action()
+	if killed:
+		# Do not auto-walk into the loot the kill just dropped.
+		_cancel_held_move()
+		return
+	held_move.cooldown = HeldMove.REPEAT_INTERVAL
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if _input_disabled:
 		return
+	# Any direction (which starts its own hold below) or turn/HUD action ends
+	# the current hold before it is handled.
+	if _hold_interrupted_by(event):
+		_cancel_held_move()
 	if hud.handle_input(event):
 		get_viewport().set_input_as_handled()
 		return
@@ -171,29 +234,65 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	
-	var direction: Vector2 = Vector2.ZERO
-	if event.is_action_pressed("up"):
-		direction = Vector2.UP
-	elif event.is_action_pressed("up_right"):
-		direction = Vector2.UP + Vector2.RIGHT
-	elif event.is_action_pressed("down"):
-		direction = Vector2.DOWN
-	elif event.is_action_pressed("down_right"):
-		direction = Vector2.DOWN + Vector2.RIGHT
-	elif event.is_action_pressed("left"):
-		direction = Vector2.LEFT
-	elif event.is_action_pressed("down_left"):
-		direction = Vector2.DOWN + Vector2.LEFT
-	elif event.is_action_pressed("right"):
-		direction = Vector2.RIGHT
-	elif event.is_action_pressed("up_left"):
-		direction = Vector2.UP + Vector2.LEFT
-	if direction == Vector2.ZERO:
+	var move_action: StringName = _action_for_event(event)
+	if move_action == &"":
 		return
-	var dir: Vector2i = Vector2i(int(direction.x), int(direction.y))
-	turn_manager.actions.bump(current_player_entity, dir)
+	# Capture the actor before acting: resolving the turn may switch the active
+	# player, but the hold belongs to whoever performed this first step.
+	var actor: Entity = current_player_entity
+	turn_manager.actions.bump(actor, _direction_from_action(move_action))
+	# Read the flag before resolving the turn, which resets it.
+	if not turn_manager.actions.has_acted():
+		return
+	var killed: bool = turn_manager.actions.last_attack_killed
 	turn_manager.on_player_action()
+	if not killed:
+		held_move.start(move_action, actor)
 	get_viewport().set_input_as_handled()
+
+
+## The direction action [param event] presses, or an empty name.
+func _action_for_event(event: InputEvent) -> StringName:
+	for action: StringName in MOVE_ACTIONS:
+		if event.is_action_pressed(action):
+			return action
+	return &""
+
+
+func _direction_from_action(action: StringName) -> Vector2i:
+	match action:
+		&"up":
+			return Vector2i.UP
+		&"up_right":
+			return Vector2i(1, -1)
+		&"right":
+			return Vector2i.RIGHT
+		&"down_right":
+			return Vector2i(1, 1)
+		&"down":
+			return Vector2i.DOWN
+		&"down_left":
+			return Vector2i(-1, 1)
+		&"left":
+			return Vector2i.LEFT
+		&"up_left":
+			return Vector2i(-1, -1)
+	return Vector2i.ZERO
+
+
+func _hold_interrupted_by(event: InputEvent) -> bool:
+	for action: StringName in MOVE_ACTIONS:
+		if event.is_action_pressed(action):
+			return true
+	for action: StringName in INTERRUPT_ACTIONS:
+		if event.is_action_pressed(action):
+			return true
+	return false
+
+
+func _cancel_held_move() -> void:
+	if held_move:
+		held_move.cancel()
 
 
 func _update_inventory() -> void:

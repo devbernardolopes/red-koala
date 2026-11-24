@@ -17,6 +17,9 @@ var perception: Perception = null
 ## Energy spent by the most recent action. Actions may override this when
 ## variable costs are introduced.
 var last_cost: int = TurnManager.ACTION_COST
+## Whether the most recent attack killed its target. Reset in [method begin_turn]
+## so callers that repeat an action can stop before walking into the loot.
+var last_attack_killed: bool = false
 
 var _actor: Entity = null
 var _acted: bool = false
@@ -26,6 +29,7 @@ func begin_turn(actor: Entity) -> void:
 	_actor = actor
 	_acted = false
 	last_cost = TurnManager.ACTION_COST
+	last_attack_killed = false
 
 
 ## Ends the current action opportunity. Returns whether anything happened, so
@@ -210,6 +214,7 @@ func attack(entity: Entity, target: Entity,
 	if result.hit:
 		target.take_damage(result.damage, entity)
 		result.killed = target.is_dead
+	last_attack_killed = result.killed
 	if result.killed:
 		Journal.slain(entity, target)
 		award_kill_xp(entity, target)
