@@ -88,6 +88,7 @@ func _ready() -> void:
 		entity.is_playable = true
 		entity.team = Helper.EntityTeam.FRIEND
 		entity.inventory_changed.connect(_on_inventory_changed.bind(entity))
+		entity.encumbrance_changed.connect(_on_encumbrance_changed.bind(entity))
 	follow_camera.target = current_player_entity
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
 	turn_manager.setup(self)
@@ -229,6 +230,11 @@ func _on_inventory_changed(entity: Entity) -> void:
 	if entity == current_player_entity:
 		_update_inventory()
 		_update_character()
+
+
+## Journal note for a party member crossing an encumbrance band.
+func _on_encumbrance_changed(level: Encumbrance.Level, entity: Entity) -> void:
+	Journal.encumbrance_changed(entity, level)
 
 
 ## Keeps the inventory footer up to date when the active entity's stats change,

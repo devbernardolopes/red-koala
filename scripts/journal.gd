@@ -86,6 +86,17 @@ func leveled_up(actor: Entity, level: int) -> void:
 	add("%s reaches level %d" % [_actor_name(actor), level])
 
 
+func too_heavy(actor: Entity = null) -> void:
+	add("%s is too heavily laden to move" % _actor_name(actor))
+
+
+func encumbrance_changed(actor: Entity, level: Encumbrance.Level) -> void:
+	if level == Encumbrance.Level.NONE:
+		add("%s is no longer encumbered" % _actor_name(actor))
+		return
+	add("%s is %s" % [_actor_name(actor), Encumbrance.display_name(level).to_lower()])
+
+
 func died(actor: Entity = null) -> void:
 	add("%s dies" % _actor_name(actor))
 

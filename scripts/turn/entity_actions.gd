@@ -49,6 +49,10 @@ func move(entity: Entity, direction: Vector2i) -> bool:
 			int(direction.y > 0) - int(direction.y < 0))
 	if dir == Vector2i.ZERO:
 		return false
+	if Encumbrance.blocks_movement(entity.encumbrance_level):
+		if entity.is_playable:
+			Journal.too_heavy(entity)
+		return false
 	var mode: Helper.MoveMode = entity.get_move_mode()
 	var move_to: Vector2i = board.get_origin(entity) + dir
 	# Diagonal movement must not cut corners, exactly like Board.can_step and

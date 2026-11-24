@@ -81,6 +81,10 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 ## [member speed] at the start of every round; the turn manager spends one
 ## action's cost per action taken.
 var energy: int = 0
+## Cached encumbrance band, recomputed whenever the inventory or the stats
+## change.
+var encumbrance_level: Encumbrance.Level = Encumbrance.Level.NONE
+var _updating_encumbrance: bool = false
 ## Set once hit points reach zero. Dead entities are ignored by perception and
 ## cannot act or be attacked.
 var is_dead: bool = false
@@ -107,6 +111,7 @@ signal inventory_changed
 signal damaged(amount: int, source: Entity)
 signal died(source: Entity)
 signal leveled_up(new_level: int)
+signal encumbrance_changed(level: Encumbrance.Level)
 signal stats_changed
 
 
@@ -114,6 +119,9 @@ func _ready() -> void:
 	super._ready()
 	collision_layer = PhysicsLayer.HERO
 	collision_mask = PhysicsLayer.WALLS | PhysicsLayer.CRATES | PhysicsLayer.HERO
+	inventory_changed.connect(_update_encumbrance)
+	stats_changed.connect(_update_encumbrance)
+	_update_encumbrance()
 	if is_playable and not visible_notifier:
 		visible_notifier = Helper.find_control(self, "VisibleOnScreenNotifier2D")
 		if not visible_notifier:
@@ -180,6 +188,13 @@ func get_move_mode() -> Helper.MoveMode:
 	if is_flying:
 		return Helper.MoveMode.FLY
 	return Helper.MoveMode.WALK
+
+
+## Speed after encumbrance and, later, any other multiplier such as haste or
+## slow. The exported [member speed] stays the base value; this is the single
+## place every speed modifier is applied.
+func get_effective_speed() -> float:
+	return speed * Encumbrance.speed_multiplier(encumbrance_level)
 
 
 func get_display_name() -> String:
@@ -427,6 +442,21 @@ func _update_properties() -> void:
 			is_phasing = true
 		elif property.id == &"invisibility":
 			is_invisible = true
+
+
+## Recomputes the encumbrance band and reports a change only when it moves.
+## Called from [signal inventory_changed] and [signal stats_changed]; the guard
+## keeps a listener that changes either signal from looping back in.
+func _update_encumbrance() -> void:
+	if _updating_encumbrance:
+		return
+	_updating_encumbrance = true
+	var _level: Encumbrance.Level = Encumbrance.level_for(self)
+	_updating_encumbrance = false
+	if _level == encumbrance_level:
+		return
+	encumbrance_level = _level
+	encumbrance_changed.emit(_level)
 
 
 ## TODO: Must implement this function that will sort the equipped items

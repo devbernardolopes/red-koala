@@ -40,7 +40,8 @@ static func armor_class(entity: Entity) -> int:
 		dexterity = 0
 	elif has_medium_armor:
 		dexterity = mini(dexterity, 2)
-	return 10 + defense + dexterity
+	return (10 + defense + dexterity
+			- Encumbrance.defense_penalty(entity.encumbrance_level))
 
 
 ## The first equipped weapon in [member RaceData.body] order, or an unarmed
@@ -73,13 +74,14 @@ static func attack_profile(entity: Entity) -> AttackProfile:
 
 
 ## Total attack modifier: ability modifier plus proficiency plus the weapon's
-## own bonus.
+## own bonus, reduced by any encumbrance penalty.
 static func attack_bonus(entity: Entity, profile: AttackProfile) -> int:
 	if not is_instance_valid(entity) or not profile:
 		return 0
 	return (entity.get_ability_modifier(profile.ability) 
 			+ entity.get_proficiency_bonus() 
-			+ profile.attack_bonus)
+			+ profile.attack_bonus
+			- Encumbrance.attack_penalty(entity.encumbrance_level))
 
 
 ## Rolls the attack and, on a hit, the damage. Never applies the result.

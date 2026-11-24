@@ -190,7 +190,8 @@ func _start_round() -> bool:
 	round_number += 1
 	var max_energy: int = 0
 	for actor: Entity in _order:
-		actor.energy = mini(actor.energy + roundi(actor.speed), MAX_ENERGY)
+		actor.energy = mini(actor.energy + roundi(actor.get_effective_speed()),
+				MAX_ENERGY)
 		max_energy = maxi(max_energy, actor.energy)
 	_max_passes = maxi(1, floori(float(max_energy) / ACTION_COST))
 	_pass = 0
@@ -205,7 +206,8 @@ func _start_round() -> bool:
 		_empty_rounds = 0
 	print("ROUND %d passes=%d" % [round_number, _max_passes])
 	for actor: Entity in _order:
-		print("  %s speed=%s energy=%d" % [actor.name, actor.speed, actor.energy])
+		print("  %s speed=%s energy=%d"
+				% [actor.name, actor.get_effective_speed(), actor.energy])
 	return true
 
 
@@ -382,8 +384,10 @@ func _is_visible_to_player(actor: Entity) -> bool:
 func _compare_actors(a: Entity, b: Entity) -> bool:
 	if a == b:
 		return false
-	if not is_equal_approx(a.speed, b.speed):
-		return a.speed > b.speed
+	var a_speed: float = a.get_effective_speed()
+	var b_speed: float = b.get_effective_speed()
+	if not is_equal_approx(a_speed, b_speed):
+		return a_speed > b_speed
 	# Ties go to the entity that was active when the game started, then to the
 	# order the entities appear in the scene.
 	if a == _preferred_actor:

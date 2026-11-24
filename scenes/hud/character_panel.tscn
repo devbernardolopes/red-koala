@@ -111,6 +111,18 @@ layout_mode = 2
 theme_type_variation = &"HudCharacterStat"
 text = "XP: 0"
 
+[node name="EncumbranceRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+layout_mode = 2
+alignment = 1
+
+[node name="EncumbranceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/EncumbranceRow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"HudCharacterProperty"
+text = "Burdened"
+horizontal_alignment = 1
+
 [node name="AbilitiesRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=212276637]
 layout_mode = 2
 mouse_filter = 2
