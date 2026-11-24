@@ -118,16 +118,33 @@ func _build_memory_layer() -> void:
 
 
 func _connect_dirty_signals() -> void:
-	if not _board.element_moved.is_connected(mark_dirty):
-		_board.element_moved.connect(mark_dirty)
-	if not _board.tile_changed.is_connected(mark_dirty):
-		_board.tile_changed.connect(mark_dirty)
-	if not _board.element_registered.is_connected(mark_dirty):
-		_board.element_registered.connect(mark_dirty)
-	if not _board.element_unregistered.is_connected(mark_dirty):
-		_board.element_unregistered.connect(mark_dirty)
+	if not _board.element_moved.is_connected(_on_board_element_moved):
+		_board.element_moved.connect(_on_board_element_moved)
+	if not _board.tile_changed.is_connected(_on_board_tile_changed):
+		_board.tile_changed.connect(_on_board_tile_changed)
+	if not _board.element_registered.is_connected(_on_board_element_registered):
+		_board.element_registered.connect(_on_board_element_registered)
+	if not _board.element_unregistered.is_connected(_on_board_element_unregistered):
+		_board.element_unregistered.connect(_on_board_element_unregistered)
 	if not _universe.player_entity_changed.is_connected(mark_dirty):
 		_universe.player_entity_changed.connect(mark_dirty)
+
+
+func _on_board_element_moved(_element: Base, _from_origin: Vector2i,
+		_to_origin: Vector2i) -> void:
+	mark_dirty()
+
+
+func _on_board_tile_changed(_tile: Vector2i) -> void:
+	mark_dirty()
+
+
+func _on_board_element_registered(_element: Base) -> void:
+	mark_dirty()
+
+
+func _on_board_element_unregistered(_element: Base) -> void:
+	mark_dirty()
 
 
 func _explore_observer_square(observer: Entity,
