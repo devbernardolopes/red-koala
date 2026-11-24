@@ -19,6 +19,10 @@ const EMPTY_VALUE: String = "—"
 		if is_node_ready():
 			_title_label.text = v.to_upper()
 
+## Whether the panel starts collapsed. Only the initial state; toggling at
+## runtime does not change it.
+@export var start_collapsed: bool = false
+
 @onready var _title_label: Label = %TitleLabel
 @onready var _indicator: Label = %Indicator
 @onready var _body: ScrollContainer = %Body
@@ -46,6 +50,7 @@ var _collapsed: bool = false
 
 func _ready() -> void:
 	_title_label.text = title.to_upper()
+	_collapsed = start_collapsed
 	_apply_collapsed()
 	refresh()
 
@@ -115,6 +120,8 @@ func is_collapsed() -> bool:
 	return _collapsed
 
 
+## TODO: Share the collapse handling with [HudPanel]; both duplicate the flag,
+## the indicator and the body visibility.
 func _apply_collapsed() -> void:
 	_body.visible = not _collapsed
 	_indicator.text = "+" if _collapsed else "-"

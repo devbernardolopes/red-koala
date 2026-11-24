@@ -28,6 +28,10 @@ const ROW_SCENE: PackedScene = preload("res://scenes/hud/item_row.tscn")
 ## Height of the scrollable body in pixels. The header is added on top.
 @export var body_height: float = 132.0
 
+## Whether the panel starts collapsed. Only the initial state; toggling at
+## runtime does not change it.
+@export var start_collapsed: bool = false
+
 ## Whether the optional footer under the body is shown. The inventory uses it
 ## for the carried weight; the other panels leave it off.
 @export var show_footer: bool = false:
@@ -61,6 +65,7 @@ var _focused: bool = false
 func _ready() -> void:
 	_title_label.text = title.to_upper()
 	_body.custom_minimum_size.y = body_height
+	_collapsed = start_collapsed
 	_apply_collapsed()
 	_apply_focus()
 	_update_header()
