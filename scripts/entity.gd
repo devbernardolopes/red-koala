@@ -140,8 +140,7 @@ func _ready() -> void:
 		if not entity_class and is_playable:
 			push_warning(name, " = No entity class!")
 	_toggle_invisible(is_invisible)
-	_toggle_phasing(is_phasing)
-	_toggle_flying(is_flying)
+	_refresh_hover()
 	_update_properties()
 	_init_values()
 
@@ -222,6 +221,7 @@ func take_damage(amount: int, source: Entity = null) -> int:
 	stats_changed.emit()
 	if hit_points == 0:
 		is_dead = true
+		_refresh_hover()
 		died.emit(source)
 	return dealt
 
@@ -346,25 +346,27 @@ func _toggle_invisible(toggle: bool) -> void:
 
 
 func _toggle_phasing(_toggle: bool) -> void:
-	_update_hover()
+	_refresh_hover()
 
 
 func _toggle_flying(_toggle: bool) -> void:
-	_update_hover()
+	_refresh_hover()
 
 
-## The animator owns the wobble tween. Phasing takes priority over flying, so
-## both flags feed one channel and switching between them never stacks offsets.
-func _update_hover() -> void:
+## The animator owns one hover channel. Phasing wins over flying, and a living
+## entity with neither breathes idly; the dead simply stop.
+func _refresh_hover() -> void:
 	var animator: VisualAnimator = get_visual()
 	if not animator:
 		return
-	if is_phasing:
+	if is_dead:
+		animator.set_hover(VisualAnimator.Hover.NONE)
+	elif is_phasing:
 		animator.set_hover(VisualAnimator.Hover.PHASING)
 	elif is_flying:
 		animator.set_hover(VisualAnimator.Hover.FLYING)
 	else:
-		animator.set_hover(VisualAnimator.Hover.NONE)
+		animator.set_hover(VisualAnimator.Hover.IDLE)
 
 ## The item worn on [param part], or [code]null[/code] when the slot is empty.
 func get_equipped_item(part: AnatomyData) -> Item:

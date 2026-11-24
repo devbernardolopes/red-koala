@@ -209,6 +209,10 @@ func attack(entity: Entity, target: Entity,
 		return false
 	if not board.can_reach_adjacent_attack(entity, target):
 		return false
+	# Visual only and non-blocking: the lunge must never delay the turn.
+	var animator: VisualAnimator = entity.get_visual()
+	if animator:
+		animator.play_attack(Vector2(board.get_origin(target) - board.get_origin(entity)))
 	var result: AttackResult = Combat.resolve_attack(entity, target, _profile)
 	Journal.attack_result(result, _profile)
 	if result.hit:
