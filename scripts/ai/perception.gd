@@ -83,6 +83,22 @@ func visible_tiles(observer: Entity) -> Array[Vector2i]:
 	return result
 
 
+## Tiles lit by [param observer], including the first sight-blocking tile.
+func lit_tiles(observer: Entity) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	if not board or not is_instance_valid(observer):
+		return result
+	var origin: Vector2i = board.get_origin(observer)
+	var center: Vector2i = Board.footprint_center(origin, observer.tile_size)
+	var size: int = maxi(observer.fov, 1)
+	for x: int in range(center.x - size, center.x + size + 1):
+		for y: int in range(center.y - size, center.y + size + 1):
+			var tile: Vector2i = Vector2i(x, y)
+			if board.has_line_of_sight(center, tile):
+				result.append(tile)
+	return result
+
+
 func _distance(observer: Entity, target: Entity) -> int:
 	return Board.footprint_distance(board.get_origin(observer), observer.tile_size,
 			board.get_origin(target), target.tile_size)

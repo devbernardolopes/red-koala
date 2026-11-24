@@ -46,7 +46,7 @@ var held_move: HeldMove = null
 var _stats_entity: Entity = null
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
-@onready var fog_of_war: Node2D = $FogOfWar
+@onready var fog_of_war: FogOfWar = $FogOfWar
 @onready var filters: CanvasLayer = $Filters
 @onready var board: Board = $Board
 @onready var board_debug_overlay: Node2D = $Board/BoardDebugOverlay
@@ -83,6 +83,8 @@ func _ready() -> void:
 	board.element_registered.connect(_on_element_registered)
 	board.element_moved.connect(_on_element_moved)
 	_load_elements()
+	if fog_of_war:
+		fog_of_war.setup(self, board)
 	AudioManager.set_listener_target(current_player_entity)
 	if fog_of_war:
 		fog_of_war.visible = true
@@ -100,6 +102,8 @@ func _ready() -> void:
 	_update_character()
 	_connect_stats(current_player_entity)
 	_dispel_fog_of_war()
+	if fog_of_war:
+		fog_of_war.refresh()
 	for entity in party:
 		entity.is_playable = true
 		entity.team = Helper.EntityTeam.FRIEND
@@ -451,21 +455,8 @@ func _disable_input() -> void:
 
 
 func _dispel_fog_of_war() -> void:
-	if not current_player_entity:
-		return
-	if not fog_of_war:
-		return
-	var fog_layer: TileMapLayer = Helper.find_control(fog_of_war, "TileMapLayer", &"FogFull")
-	if not fog_layer:
-		return
-	var center_pos: Vector2i = board.get_origin(current_player_entity)
-	for i in range(center_pos.x - current_player_entity.fov, center_pos.x + current_player_entity.fov + 1):
-		for j in range(center_pos.y - current_player_entity.fov, center_pos.y + current_player_entity.fov + 1):
-			fog_layer.set_cell(Vector2i(i, j))
-	#var fl_x: int = fog_layer.get_used_rect().size.x
-	#var fl_y: int = fog_layer.get_used_rect().size.y
-	#print(fog_layer.get_used_rect().position.x)
-	
+	if fog_of_war:
+		fog_of_war.mark_dirty()
 
 func _take_item() -> void:
 	if not current_player_entity:
