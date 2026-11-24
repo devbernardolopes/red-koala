@@ -5,6 +5,10 @@ extends Node2D
 	set(value):
 		memory_opacity = clampf(value, 0.0, 1.0)
 		_apply_memory_opacity()
+@export var hide_unseen_entities: bool = true:
+	set(value):
+		hide_unseen_entities = value
+		mark_dirty()
 
 var _universe: Universe = null
 var _board: Board = null
@@ -17,6 +21,7 @@ var _fog_source_id: int = -1
 var _fog_atlas_coords: Vector2i = Vector2i.ZERO
 var _fog_alternative: int = 0
 var _dirty: bool = false
+var _reveal_all: bool = false
 
 
 func _process(_delta: float) -> void:
@@ -48,9 +53,11 @@ func refresh() -> void:
 		return
 	var new_visible: Dictionary[Vector2i, bool] = {}
 	var newly_explored: Dictionary[Vector2i, bool] = {}
+	var observers: Array[Entity] = []
 	for observer: Entity in _universe.party:
 		if not is_instance_valid(observer) or observer.is_dead:
 			continue
+		observers.append(observer)
 		for tile: Vector2i in _perception.lit_tiles(observer):
 			new_visible[tile] = true
 		_explore_observer_square(observer, newly_explored)
@@ -64,6 +71,7 @@ func refresh() -> void:
 	for tile: Vector2i in changed_tiles:
 		_update_memory_tile(tile, new_visible)
 	_visible = new_visible
+	_update_entity_visibility(observers)
 
 
 func is_tile_visible(tile: Vector2i) -> bool:
@@ -89,6 +97,12 @@ func set_explored_tiles(tiles: Array[Vector2i]) -> void:
 		changed_tiles[tile] = true
 	for tile: Vector2i in changed_tiles:
 		_update_memory_tile(tile, _visible)
+
+
+func set_reveal_all(enabled: bool) -> void:
+	_reveal_all = enabled
+	_update_entity_visibility([])
+	mark_dirty()
 
 
 func _capture_fog_tile() -> void:
@@ -139,12 +153,53 @@ func _on_board_tile_changed(_tile: Vector2i) -> void:
 	mark_dirty()
 
 
-func _on_board_element_registered(_element: Base) -> void:
+func _on_board_element_registered(element: Base) -> void:
+	if element is Entity:
+		var entity: Entity = element as Entity
+		if (hide_unseen_entities and not _reveal_all and not entity.is_playable
+				and not _universe.party.has(entity) and entity.visible):
+			entity.visible = false
 	mark_dirty()
 
 
 func _on_board_element_unregistered(_element: Base) -> void:
 	mark_dirty()
+
+
+func _update_entity_visibility(observers: Array[Entity]) -> void:
+	if not _board or not _universe or not _perception:
+		return
+	var largest_fov: int = 0
+	for observer: Entity in observers:
+		largest_fov = maxi(largest_fov, observer.fov)
+	for entity: Entity in _board.get_entities():
+		if (not is_instance_valid(entity) or entity.is_queued_for_deletion()
+				or entity.is_dead):
+			continue
+		var should_show: bool = (
+				_reveal_all
+				or not hide_unseen_entities
+				or entity.is_playable
+				or _universe.party.has(entity))
+		if not should_show and _is_within_party_fov(entity, observers, largest_fov):
+			for observer: Entity in observers:
+				if _perception.can_see(observer, entity):
+					should_show = true
+					break
+		if entity.visible != should_show:
+			entity.visible = should_show
+
+
+func _is_within_party_fov(entity: Entity, observers: Array[Entity], largest_fov: int) -> bool:
+	if observers.is_empty():
+		return false
+	var entity_origin: Vector2i = _board.get_origin(entity)
+	for observer: Entity in observers:
+		if Board.footprint_distance(
+				_board.get_origin(observer), observer.tile_size,
+				entity_origin, entity.tile_size) <= largest_fov:
+			return true
+	return false
 
 
 func _explore_observer_square(observer: Entity,

@@ -214,6 +214,7 @@ func attack(entity: Entity, target: Entity,
 	if animator:
 		animator.play_attack(Vector2(board.get_origin(target) - board.get_origin(entity)))
 	var result: AttackResult = Combat.resolve_attack(entity, target, _profile)
+	# TODO: Hide journal events caused by entities outside the party's view.
 	Journal.attack_result(result, _profile)
 	if result.hit:
 		target.take_damage(result.damage, entity)
