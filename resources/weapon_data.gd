@@ -9,5 +9,7 @@ extends ItemData
 @export var finesse: bool = false
 ## Ranged weapons use Dexterity. Ranged attacks are not implemented yet.
 @export var ranged: bool = false
-@export var category: Helper.WeaponCategory = Helper.WeaponCategory.LIGHT
+## Category here indicates which skill is needed to wield this weapon without 
+## penalty.
+@export var category: SkillData = null
 @export var damage_type: DamageData = null

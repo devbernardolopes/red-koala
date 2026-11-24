@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://u4a8bqbiqlhi"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_6m701"]
+
+[resource]
+script = ExtResource("1_6m701")
+id = &"warning"
+name = "Warning"
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

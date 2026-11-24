@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="ClassData" format=3 uid="uid://bivp8il2c2p27"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_4jgyq"]
+[ext_resource type="Resource" uid="uid://n8jk12gqyvcs" path="res://resources/abilities/charisma.tres" id="2_1qixq"]
+[ext_resource type="Resource" uid="uid://1q2bf3f7jmwx" path="res://resources/abilities/dexterity.tres" id="3_80ex3"]
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="4_1qixq"]
+[ext_resource type="Resource" uid="uid://ux22355ctfb2" path="res://resources/abilities/intelligence.tres" id="4_0748j"]
+[ext_resource type="Script" uid="uid://lh1ytw61wdfy" path="res://resources/feat_data.gd" id="5_80ex3"]
+[ext_resource type="Resource" uid="uid://c6teq3hmvn38v" path="res://resources/resistances/shock.tres" id="6_0748j"]
+[ext_resource type="Resource" uid="uid://cvtxns1trg6pu" path="res://resources/properties/see_invisible.tres" id="6_xb1ks"]
+[ext_resource type="Resource" uid="uid://cmu62orbqe7ps" path="res://resources/resistances/drain.tres" id="7_h4cc0"]
+[ext_resource type="Resource" uid="uid://vihq1887xpw0" path="res://resources/properties/quickness.tres" id="7_lvhyh"]
+[ext_resource type="Resource" uid="uid://bhxm6k6akoric" path="res://resources/properties/free_action.tres" id="8_x8d58"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="12_et10g"]
+[ext_resource type="Resource" uid="uid://catrqh2j0fg12" path="res://resources/skills/abjuration.tres" id="13_tvm0x"]
+[ext_resource type="Resource" uid="uid://cqfkep3hjwc1q" path="res://resources/skills/bartering.tres" id="14_1p7wo"]
+[ext_resource type="Resource" uid="uid://b2n4lucelt77p" path="res://resources/skills/disc.tres" id="15_itxvv"]
+[ext_resource type="Resource" uid="uid://bttek7ie02s6x" path="res://resources/skills/divination.tres" id="16_wjs04"]
+[ext_resource type="Resource" uid="uid://cjpqr8k74k6ox" path="res://resources/skills/enchantment.tres" id="17_1cgq6"]
+[ext_resource type="Resource" uid="uid://bhym46nj5uns1" path="res://resources/skills/light_armor.tres" id="18_qskxv"]
+[ext_resource type="Resource" uid="uid://c4ix1d1j7tolg" path="res://resources/skills/light_blade.tres" id="19_jpxnv"]
+[ext_resource type="Resource" uid="uid://u6phsry7eviq" path="res://resources/skills/literacy.tres" id="20_y1xrc"]
+[ext_resource type="Resource" uid="uid://bedfqch1kwex1" path="res://resources/skills/mace.tres" id="21_4s3hl"]
+[ext_resource type="Resource" uid="uid://drn3tx8xk7yw7" path="res://resources/skills/music.tres" id="22_qskxv"]
+[ext_resource type="Resource" uid="uid://cswlaj1jtq4j0" path="res://resources/skills/swimming.tres" id="23_jpxnv"]
+[ext_resource type="Resource" uid="uid://tjeknujwwm4" path="res://resources/skills/whip.tres" id="24_y1xrc"]
+
+[sub_resource type="Resource" id="Resource_qb6bc"]
+script = ExtResource("5_80ex3")
+level = 2
+property = ExtResource("6_xb1ks")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_h4vd0"]
+script = ExtResource("5_80ex3")
+level = 4
+property = ExtResource("7_lvhyh")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_7bkr8"]
+script = ExtResource("5_80ex3")
+level = 8
+property = ExtResource("8_x8d58")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_uf01r"]
+script = ExtResource("5_80ex3")
+level = 12
+resistance = ExtResource("6_0748j")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_ewi85"]
+script = ExtResource("5_80ex3")
+level = 16
+resistance = ExtResource("7_h4cc0")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[resource]
+script = ExtResource("4_1qixq")
+distribution = Array[ExtResource("1_4jgyq")]([ExtResource("2_1qixq"), ExtResource("3_80ex3"), ExtResource("4_0748j")])
+base_hit_points = 11
+base_mana_points = 3
+mana_die_count = 1
+mana_die_sides = 2
+feats = Array[ExtResource("5_80ex3")]([SubResource("Resource_qb6bc"), SubResource("Resource_h4vd0"), SubResource("Resource_7bkr8"), SubResource("Resource_uf01r"), SubResource("Resource_ewi85")])
+skills = Array[ExtResource("12_et10g")]([ExtResource("13_tvm0x"), ExtResource("14_1p7wo"), ExtResource("15_itxvv"), ExtResource("16_wjs04"), ExtResource("17_1cgq6"), ExtResource("18_qskxv"), ExtResource("19_jpxnv"), ExtResource("20_y1xrc"), ExtResource("21_4s3hl"), ExtResource("22_qskxv"), ExtResource("23_jpxnv"), ExtResource("24_y1xrc")])
+id = &"jester"
+name = "Jester"
+description = "Draft harlequins, always carrying a trick up their sleeves. Eclectic and eccentric; they are unassuming masters of chaos, adept in many bewildering talents."
+metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

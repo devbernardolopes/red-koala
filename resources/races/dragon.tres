@@ -3,10 +3,12 @@
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_dr2ak"]
 [ext_resource type="Script" uid="uid://c86idpjgqck1t" path="res://resources/race_data.gd" id="1_q3od7"]
 [ext_resource type="Resource" uid="uid://bidonue681ry6" path="res://resources/diets/omnivore.tres" id="2_uxk2i"]
+[ext_resource type="PackedScene" uid="uid://bslwnv8q4raki" path="res://scenes/corpses/humanoid_corpse.tscn" id="2_wb154"]
 
 [resource]
 script = ExtResource("1_q3od7")
 diet = ExtResource("2_uxk2i")
+corpse_visual = ExtResource("2_wb154")
 id = &"dragon"
 name = "Dragon"
 metadata/_custom_type_script = "uid://c86idpjgqck1t"

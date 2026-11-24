@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://tjeknujwwm4"]
+
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="1_7634i"]
+
+[resource]
+script = ExtResource("1_7634i")
+category = 2
+id = &"whip"
+name = "Whip"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

@@ -13,3 +13,8 @@ extends BaseData
 ## Zero mana die sides means the class gains no mana when levelling up.
 @export var mana_die_count: int = 0
 @export var mana_die_sides: int = 0
+## Resistances and properties that an entity of this class acquires at certain
+## levels.
+@export var feats: Array[FeatData] = []
+## Skills an entity of this class starts with.
+@export var skills: Array[SkillData] = []

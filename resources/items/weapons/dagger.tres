@@ -1,17 +1,21 @@
 [gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://c46tg0hk0ohue"]
 
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_ipa8w"]
+[ext_resource type="Resource" uid="uid://c4ix1d1j7tolg" path="res://resources/skills/light_blade.tres" id="1_juk7o"]
 [ext_resource type="Resource" uid="uid://cjor08j843nu" path="res://resources/damages/pierce.tres" id="1_nx348"]
 [ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="3_ipa8w"]
-[ext_resource type="Resource" uid="uid://bsn1hv5pao1ua" path="res://resources/materials/steel.tres" id="4_yi6c3"]
+[ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="4_ipa8w"]
 [ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="5_bxp4a"]
 
 [resource]
 script = ExtResource("5_bxp4a")
+ranged = true
+category = ExtResource("1_juk7o")
 damage_type = ExtResource("1_nx348")
 weight = 4.0
-material = ExtResource("4_yi6c3")
+material = ExtResource("4_ipa8w")
 equipped_on = Array[ExtResource("1_ipa8w")]([ExtResource("3_ipa8w")])
+rarity = 0.02
 id = &"dagger"
 name = "Dagger"
 metadata/_custom_type_script = "uid://dtsnprxxyisjd"

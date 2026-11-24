@@ -1,0 +1,28 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://c082n2y65n2an"]
+
+[ext_resource type="Script" uid="uid://bkbvnivl4cpv0" path="res://scripts/ai/tasks/wander_step.gd" id="1_m2qgp"]
+[ext_resource type="Script" uid="uid://cr7u0c76yxiis" path="res://scripts/ai/tasks/wait_turn.gd" id="5_tv8vw"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_6v4jx"]
+
+[sub_resource type="BTAction" id="BTAction_f8pna"]
+script = ExtResource("1_m2qgp")
+
+[sub_resource type="BTAction" id="BTAction_hoe0h"]
+script = ExtResource("1_m2qgp")
+
+[sub_resource type="BTAction" id="BTAction_evimd"]
+script = ExtResource("5_tv8vw")
+
+[sub_resource type="BTAction" id="BTAction_62dvd"]
+script = ExtResource("1_m2qgp")
+
+[sub_resource type="BTRandomSelector" id="BTRandomSelector_g5pax"]
+children = [SubResource("BTAction_evimd"), SubResource("BTAction_62dvd")]
+
+[sub_resource type="BTSequence" id="BTSequence_root"]
+children = [SubResource("BTAction_f8pna"), SubResource("BTAction_hoe0h"), SubResource("BTRandomSelector_g5pax")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_6v4jx")
+root_task = SubResource("BTSequence_root")

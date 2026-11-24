@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://b3steabdtc56e"]
+
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="1_7rc7x"]
+
+[resource]
+script = ExtResource("1_7rc7x")
+category = 3
+id = &"necromancy"
+name = "Necromancy"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

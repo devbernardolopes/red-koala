@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://c4ix1d1j7tolg"]
+
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="1_cckoc"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="2_0l2lr"]
+
+[resource]
+script = ExtResource("2_0l2lr")
+category = 2
+id = &"light_blade"
+name = "Light Blade"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

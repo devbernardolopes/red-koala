@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://vihq1887xpw0"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_eop13"]
+
+[resource]
+script = ExtResource("1_eop13")
+id = &"quickness"
+name = "Quickness"
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_w5fpl"]
 [ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="2_b8hm1"]
-[ext_resource type="Resource" uid="uid://dot46qba5gf2j" path="res://resources/races/humanoid.tres" id="2_cnxgt"]
+[ext_resource type="Resource" uid="uid://dot46qba5gf2j" path="res://resources/races/human.tres" id="2_cnxgt"]
 [ext_resource type="Script" uid="uid://b3qjjrx38oqgu" path="res://resources/entity_data.gd" id="3_cnxgt"]
 
 [resource]

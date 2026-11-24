@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_xhfyb")
-id = &"sickness"
-name = "Sickness"
+id = &"sleep"
+name = "Sleep"
 metadata/_custom_type_script = "uid://bkurooso73yqq"

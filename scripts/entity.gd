@@ -23,6 +23,7 @@ enum EquipResult {
 const CARRY_KG_PER_STRENGTH: float = 7.5
 
 @export_category("Basic")
+#@export var entity_race: RaceData = null
 @export var entity_class: ClassData = null
 ## Optional name used by the journal; falls back to the node name when empty.
 @export var display_name: String = ""
@@ -135,10 +136,11 @@ func _ready() -> void:
 	if not data:
 		push_warning(name, " = No data!")
 		return
-	if not data.race:
-		push_warning(name, " = No race!")
-	if not entity_class:
-		push_warning(name, " = No entity class!")
+	if not Engine.is_editor_hint():
+		if not data.race:
+			push_warning(name, " = No race!")
+		if not entity_class and is_playable:
+			push_warning(name, " = No entity class!")
 	_toggle_invisible(is_invisible)
 	_toggle_phasing(is_phasing)
 	_toggle_flying(is_flying)
@@ -147,6 +149,8 @@ func _ready() -> void:
 
 
 func _init_values() -> void:
+	if not entity_class:
+		return
 	max_hit_points = (entity_class as ClassData).base_hit_points
 	hit_points = max_hit_points
 	max_mana_points = (entity_class as ClassData).base_mana_points

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://c0ngufyypthls"]
+
+[ext_resource type="Resource" uid="uid://b0uyofyllt80t" path="res://resources/skills/heavy_blade.tres" id="1_skrlq"]
+[ext_resource type="Resource" uid="uid://dcqgtg14wp4aj" path="res://resources/damages/slash.tres" id="2_n84ty"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="3_h76jp"]
+[ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="4_qtmbp"]
+[ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="5_xjxco"]
+[ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="6_rf1c0"]
+
+[resource]
+script = ExtResource("6_rf1c0")
+damage_sides = 8
+category = ExtResource("1_skrlq")
+damage_type = ExtResource("2_n84ty")
+weight = 2.0
+material = ExtResource("5_xjxco")
+equipped_on = Array[ExtResource("3_h76jp")]([ExtResource("4_qtmbp")])
+id = &"long_sword"
+name = "Long Sword"
+description = "A straight, double-edged, and often cruciform blade."
+metadata/_custom_type_script = "uid://dtsnprxxyisjd"

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://fgb6up4u4dbg"]
 
 [ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_i5ed0"]
-[ext_resource type="Resource" uid="uid://df7tq8w5dfy8o" path="res://resources/items/weapons/sword.tres" id="2_i5ed0"]
+[ext_resource type="Resource" uid="uid://df7tq8w5dfy8o" path="res://resources/items/weapons/short_sword.tres" id="2_i5ed0"]
 
 [node name="Sword" type="Area2D" unique_id=1953011227]
 collision_layer = 16

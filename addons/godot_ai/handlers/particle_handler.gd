@@ -836,10 +836,8 @@ func _resolve_particle(params: Dictionary, for_write: bool = false) -> Dictionar
 		return resolved
 	var node: Node = resolved.node
 	var node_path: String = resolved.path
-	var is_particle := (node is GPUParticles3D 
-			or node is GPUParticles2D 
-			or node is CPUParticles3D 
-			or node is CPUParticles2D)
+	var is_particle := node is GPUParticles3D or node is GPUParticles2D \
+		or node is CPUParticles3D or node is CPUParticles2D
 	if not is_particle:
 		return ErrorCodes.make(
 			ErrorCodes.WRONG_TYPE,

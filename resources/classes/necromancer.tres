@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ClassData" format=3 uid="uid://dhe1ewdox8ew"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_gjpcb"]
+[ext_resource type="Script" uid="uid://lh1ytw61wdfy" path="res://resources/feat_data.gd" id="2_baysp"]
+[ext_resource type="Resource" uid="uid://clxwq0fc1bmfd" path="res://resources/abilities/constitution.tres" id="2_lhblg"]
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="3_tqi3b"]
+[ext_resource type="Resource" uid="uid://1q2bf3f7jmwx" path="res://resources/abilities/dexterity.tres" id="3_tsqll"]
+[ext_resource type="Resource" uid="uid://ux22355ctfb2" path="res://resources/abilities/intelligence.tres" id="4_0n1ss"]
+[ext_resource type="Resource" uid="uid://bdcm6tj5p44y7" path="res://resources/properties/vitality.tres" id="6_0n1ss"]
+[ext_resource type="Resource" uid="uid://bjxn4vjd6r8ge" path="res://resources/properties/clairvoyance.tres" id="7_1qwao"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="9_1qwao"]
+
+[sub_resource type="Resource" id="Resource_lhblg"]
+script = ExtResource("2_baysp")
+level = 8
+property = ExtResource("6_0n1ss")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_tsqll"]
+script = ExtResource("2_baysp")
+level = 14
+property = ExtResource("7_1qwao")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[resource]
+script = ExtResource("3_tqi3b")
+distribution = Array[ExtResource("1_gjpcb")]([ExtResource("2_lhblg"), ExtResource("3_tsqll"), ExtResource("4_0n1ss")])
+base_hit_points = 10
+base_mana_points = 6
+mana_die_count = 1
+mana_die_sides = 2
+feats = Array[ExtResource("2_baysp")]([SubResource("Resource_lhblg"), SubResource("Resource_tsqll")])
+id = &"necromancer"
+name = "Necromancer"
+description = "Obsessed with blurring the line between life and death, these meddlers of dark forces prefer to associate with cadavers over the living. To some, the rituals are grotesque, but they see pure majesty in the manipulation of the natural order."
+metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

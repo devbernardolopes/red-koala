@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ResistanceData" format=3 uid="uid://bwsp0xgv7seaq"]
+
+[ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="1_pdeyh"]
+
+[resource]
+script = ExtResource("1_pdeyh")
+id = &"magical"
+name = "Magical"
+metadata/_custom_type_script = "uid://bkurooso73yqq"

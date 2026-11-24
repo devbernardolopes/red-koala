@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://di5xgpwlmvow"]
+
+[ext_resource type="Resource" uid="uid://dosr0yik83snb" path="res://resources/skills/medium_blade.tres" id="1_kcqlr"]
+[ext_resource type="Resource" uid="uid://cjor08j843nu" path="res://resources/damages/pierce.tres" id="2_wfwhp"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="3_scqkb"]
+[ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="4_nysj1"]
+[ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="5_agfil"]
+[ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="6_fomab"]
+
+[resource]
+script = ExtResource("6_fomab")
+damage_sides = 6
+attack_bonus = 2
+category = ExtResource("1_kcqlr")
+damage_type = ExtResource("2_wfwhp")
+weight = 1.5
+material = ExtResource("5_agfil")
+equipped_on = Array[ExtResource("3_scqkb")]([ExtResource("4_nysj1")])
+id = &"rapier"
+name = "Rapier"
+description = "A thin and agile sword meant almost exclusively for thrusting."
+metadata/_custom_type_script = "uid://dtsnprxxyisjd"

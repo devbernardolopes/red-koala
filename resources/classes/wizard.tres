@@ -2,19 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_yqji3"]
 [ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="2_7ji3j"]
-[ext_resource type="Resource" uid="uid://ux22355ctfb2" path="res://resources/abilities/intelligence.tres" id="2_28vhv"]
-[ext_resource type="Resource" uid="uid://n8jk12gqyvcs" path="res://resources/abilities/charisma.tres" id="3_fgffe"]
-[ext_resource type="Resource" uid="uid://1q2bf3f7jmwx" path="res://resources/abilities/dexterity.tres" id="4_oqwrl"]
+[ext_resource type="Script" uid="uid://lh1ytw61wdfy" path="res://resources/feat_data.gd" id="5_i4enn"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="9_y7nby"]
 
 [resource]
 script = ExtResource("2_7ji3j")
-distribution = Array[ExtResource("1_yqji3")]([ExtResource("2_28vhv"), ExtResource("3_fgffe"), ExtResource("4_oqwrl")])
-base_hit_points = 10
-base_mana_points = 6
-hit_die_sides = 4
-mana_die_count = 1
-mana_die_sides = 6
-id = &"wizard"
-name = "Wizard"
-description = "Powerful sorceres, lords of arcane knowledge, and vanguards of psychic warfare. They are unrivaled in their mastery of nearly all schools of magic, augmmented by a wide array of mystical devices."
 metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

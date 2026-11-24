@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ResistanceData" format=3 uid="uid://b82r78mft5ehj"]
+
+[ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="1_6hlaq"]
+
+[resource]
+script = ExtResource("1_6hlaq")
+id = &"disintegrate"
+name = "Disintegrate"
+metadata/_custom_type_script = "uid://bkurooso73yqq"

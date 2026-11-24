@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://dosr0yik83snb"]
+
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="2_raeh3"]
+
+[resource]
+script = ExtResource("2_raeh3")
+category = 2
+id = &"medium_blade"
+name = "Medium Blade"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://fadmlp8jski7"]
+
+[ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_qbefn"]
+[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="2_6q0mn"]
+[ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_nf5tq"]
+[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold_piece.tres" id="3_pg7jj"]
+
+[node name="MaleHuman" type="Area2D" unique_id=47279794]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_qbefn")
+display_name = "Male Human"
+auto_take = Array[ExtResource("2_nf5tq")]([ExtResource("3_pg7jj")])
+data = ExtResource("2_6q0mn")
+walkable = false
+metadata/_custom_type_script = "uid://tdfdon0mic37"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=658290084]
+color = Color(0.93333334, 0.59607846, 0.47843137, 1)
+polygon = PackedVector2Array(-16, 24, -16, 8, -8, 0, -8, -8, -16, 0, -24, 8, -24, 0, -8, -16, -8, -24, 8, -24, 8, -16, 24, 0, 24, 8, 16, 0, 8, -8, 8, 0, 16, 8, 16, 24, 8, 24, 8, 16, 0, 8, -8, 16, -8, 24)

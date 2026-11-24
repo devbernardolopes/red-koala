@@ -4,13 +4,12 @@
 [ext_resource type="Script" uid="uid://4yl6uf22wpu4" path="res://scripts/universe.gd" id="1_uc3kj"]
 [ext_resource type="PackedScene" uid="uid://dv7m0vn1ffgeq" path="res://scenes/goal.tscn" id="1_xq63u"]
 [ext_resource type="PackedScene" uid="uid://s141b0fe5fug" path="res://scenes/decals/teleport_pad.tscn" id="2_3yicu"]
-[ext_resource type="PackedScene" uid="uid://bwjgakp7xo0j0" path="res://scenes/entities/barbarian.tscn" id="2_pol6k"]
 [ext_resource type="PackedScene" uid="uid://mmghofrx4gy1" path="res://scenes/crate.tscn" id="2_uc3kj"]
 [ext_resource type="PackedScene" uid="uid://fgb6up4u4dbg" path="res://scenes/items/weapons/sword.tscn" id="4_7viwd"]
 [ext_resource type="PackedScene" uid="uid://rr65s2iaqp46" path="res://scenes/terrains/dungeon_floor_01.tscn" id="5_hf2e2"]
 [ext_resource type="PackedScene" uid="uid://d12xchcrktinl" path="res://scenes/door.tscn" id="5_qbb8e"]
 [ext_resource type="PackedScene" uid="uid://tcihe7kj34wp" path="res://scenes/items/tools/torch.tscn" id="5_yanup"]
-[ext_resource type="PackedScene" uid="uid://ciij5gesrk4xp" path="res://scenes/items/currencies/gold.tscn" id="6_7f6e7"]
+[ext_resource type="PackedScene" uid="uid://ciij5gesrk4xp" path="res://scenes/items/currencies/gold_piece.tscn" id="6_7f6e7"]
 [ext_resource type="PackedScene" uid="uid://cct7u075uxb35" path="res://scenes/decals/fountain.tscn" id="6_exv6n"]
 [ext_resource type="PackedScene" uid="uid://ds71up6yy1hv" path="res://scenes/terrains/lava_floor_01.tscn" id="6_f6jyf"]
 [ext_resource type="Shader" uid="uid://cpebok8t5oej6" path="res://shaders/lightweight_crt.gdshader" id="6_jegdv"]
@@ -21,30 +20,25 @@
 [ext_resource type="Script" uid="uid://wplsifd11k2q" path="res://scripts/follow_camera.gd" id="9_5fwve"]
 [ext_resource type="PackedScene" uid="uid://k6sv27fuxovo" path="res://scenes/items/armors/studded_leather_vest.tscn" id="10_5qg6o"]
 [ext_resource type="PackedScene" uid="uid://ol86bjru6tta" path="res://scenes/items/potions/green_potion.tscn" id="11_pbo0o"]
-[ext_resource type="PackedScene" uid="uid://dunrntu6tlcxj" path="res://scenes/entities/dragon.tscn" id="12_fbuf2"]
 [ext_resource type="PackedScene" uid="uid://eu8g6y7aca3x" path="res://scenes/items/potions/indigo_potion.tscn" id="12_v7xte"]
 [ext_resource type="Shader" uid="uid://cus4kgcwegtc8" path="res://shaders/simple_crt_vhs.gdshader" id="12_yanup"]
 [ext_resource type="Shader" uid="uid://saevj778gi1u" path="res://shaders/vhs_and_crt_monitor.gdshader" id="13_h8wxb"]
 [ext_resource type="Script" uid="uid://2fpq55evhl33" path="res://scripts/board.gd" id="14_board"]
 [ext_resource type="Script" uid="uid://dwgj8n4pla4e0" path="res://scripts/board_debug_overlay.gd" id="15_overlay"]
-[ext_resource type="PackedScene" uid="uid://cnvcmedluxbp1" path="res://scenes/entities/wizard.tscn" id="15_tqeu6"]
-[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="16_5qg6o"]
 [ext_resource type="PackedScene" uid="uid://d06hs660053wm" path="res://scenes/items/weapons/dagger.tscn" id="16_neukn"]
-[ext_resource type="Resource" uid="uid://c00jtj6a4k20s" path="res://resources/classes/wizard.tres" id="17_1dpui"]
-[ext_resource type="PackedScene" path="res://scenes/hud/hud.tscn" id="18_hud"]
+[ext_resource type="PackedScene" uid="uid://b7ag8l0jgfq01" path="res://scenes/hud/hud.tscn" id="18_hud"]
 [ext_resource type="PackedScene" uid="uid://b0bpgos4yqenf" path="res://scenes/items/armors/wooden_shield.tscn" id="19_esvp2"]
 [ext_resource type="PackedScene" uid="uid://c3bil0qiery7a" path="res://scenes/items/tools/skeleton_key.tscn" id="20_esvp2"]
 [ext_resource type="PackedScene" uid="uid://banr31rrpp572" path="res://scenes/items/foods/carrot.tscn" id="21_v3ip7"]
-[ext_resource type="PackedScene" uid="uid://t5l8m4hry5bc" path="res://scenes/entities/bandit.tscn" id="22_ij8xa"]
 [ext_resource type="PackedScene" uid="uid://cub2bnerb05qq" path="res://scenes/items/amulets/jade_amulet.tscn" id="23_7v1hq"]
 [ext_resource type="Script" uid="uid://d1ife4iw162dq" path="res://scripts/turn/turn_manager.gd" id="23_turn"]
-[ext_resource type="Resource" uid="uid://c55rpmn7rytdq" path="res://resources/entities/bandit.tres" id="24_4c3kv"]
 [ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="24_qb6bc"]
 [ext_resource type="Resource" uid="uid://uvscf4jugu68" path="res://resources/properties/flight.tres" id="25_qb6bc"]
 [ext_resource type="PackedScene" uid="uid://c6gnp6dy86ea" path="res://scenes/items/rings/iron_ring.tscn" id="26_h4vd0"]
 [ext_resource type="PackedScene" uid="uid://duasdvtpste4a" path="res://scenes/items/armors/leather_gloves.tscn" id="27_ewi85"]
-[ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="38_uf01r"]
-[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold.tres" id="39_ewi85"]
+[ext_resource type="PackedScene" uid="uid://fadmlp8jski7" path="res://scenes/entities/male_human.tscn" id="32_f6jyf"]
+[ext_resource type="Resource" uid="uid://bivp8il2c2p27" path="res://resources/classes/jester.tres" id="33_7v1hq"]
+[ext_resource type="PackedScene" uid="uid://iquxwb1emkb1" path="res://scenes/entities/dragons/baby_red_dragon.tscn" id="34_7v1hq"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_esvp2"]
 scenes/1/scene = ExtResource("5_hf2e2")
@@ -116,8 +110,8 @@ shader_parameter/vignette_opacity = 0.5
 
 [node name="Universe" type="Node2D" unique_id=1458528269 node_paths=PackedStringArray("current_player_entity", "party")]
 script = ExtResource("1_uc3kj")
-current_player_entity = NodePath("Entities/Barbarian")
-party = [NodePath("Entities/Barbarian")]
+current_player_entity = NodePath("Entities/MaleHuman")
+party = [NodePath("Entities/MaleHuman")]
 
 [node name="Board" type="Node" parent="." unique_id=1430288918]
 script = ExtResource("14_board")
@@ -323,63 +317,26 @@ tile_set = SubResource("TileSet_m7uww")
 
 [node name="Entities" type="Node2D" parent="." unique_id=199588511]
 
-[node name="Dragon" parent="Entities" unique_id=148953585 instance=ExtResource("12_fbuf2")]
-position = Vector2(128, -64)
-entity_class = ExtResource("17_1dpui")
-max_hit_points = 10
-hit_points = 10
-max_mana_points = 6
-mana_points = 6
-is_flying = true
-
-[node name="Wizard" parent="Entities" unique_id=1093125361 node_paths=PackedStringArray("inventory") instance=ExtResource("15_tqeu6")]
-position = Vector2(224, 224)
-xp = 0
-max_hit_points = 10
-hit_points = 10
-max_mana_points = 6
-mana_points = 6
-inventory = [NodePath("../../Items/Sword"), NodePath("../../Items/LeatherVest")]
-can_see_invisible = true
+[node name="MaleHuman" parent="Entities" unique_id=47279794 instance=ExtResource("32_f6jyf")]
+position = Vector2(-608, -672)
+entity_class = ExtResource("33_7v1hq")
+max_hit_points = 11
+hit_points = 11
+max_mana_points = 3
+mana_points = 3
 team = 2
-data = ExtResource("16_5qg6o")
-walkable = false
 
-[node name="Bandit" parent="Entities" unique_id=1169498443 node_paths=PackedStringArray("inventory") instance=ExtResource("22_ij8xa")]
-position = Vector2(1056, 160)
-max_hit_points = 14
-hit_points = 14
-inventory = [NodePath("../../Items/Dagger")]
-data = ExtResource("24_4c3kv")
+[node name="BabyRedDragon" parent="Entities" unique_id=175289423 instance=ExtResource("34_7v1hq")]
+position = Vector2(-544, -672)
 
-[node name="Bandit2" parent="Entities" unique_id=732322922 instance=ExtResource("22_ij8xa")]
-position = Vector2(544, -32)
-max_hit_points = 14
-hit_points = 14
-data = ExtResource("24_4c3kv")
+[node name="BabyRedDragon2" parent="Entities" unique_id=281657432 instance=ExtResource("34_7v1hq")]
+position = Vector2(-480, -672)
 
-[node name="Barbarian" parent="Entities" unique_id=2053302838 instance=ExtResource("2_pol6k")]
-position = Vector2(-480, -736)
-strength = 9
-auto_take = Array[ExtResource("38_uf01r")]([ExtResource("39_ewi85")])
+[node name="BabyRedDragon3" parent="Entities" unique_id=201415128 instance=ExtResource("34_7v1hq")]
+position = Vector2(-416, -672)
 
-[node name="Bandit3" parent="Entities" unique_id=482291595 instance=ExtResource("22_ij8xa")]
-position = Vector2(160, -800.34546)
-max_hit_points = 14
-hit_points = 14
-data = ExtResource("24_4c3kv")
-
-[node name="Bandit4" parent="Entities" unique_id=1279402427 instance=ExtResource("22_ij8xa")]
-position = Vector2(224, -799.96063)
-max_hit_points = 14
-hit_points = 14
-data = ExtResource("24_4c3kv")
-
-[node name="Bandit5" parent="Entities" unique_id=1913552146 instance=ExtResource("22_ij8xa")]
-position = Vector2(224, -736)
-max_hit_points = 14
-hit_points = 14
-data = ExtResource("24_4c3kv")
+[node name="BabyRedDragon4" parent="Entities" unique_id=1171396461 instance=ExtResource("34_7v1hq")]
+position = Vector2(-544, -608)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
 color = Color(0.50140655, 0.5014065, 0.5014065, 1)

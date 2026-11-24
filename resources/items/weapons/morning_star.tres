@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://gg4xok40kld0"]
+
+[ext_resource type="Resource" uid="uid://bedfqch1kwex1" path="res://resources/skills/mace.tres" id="1_670dw"]
+[ext_resource type="Resource" uid="uid://3fe4y4lv7jpn" path="res://resources/damages/bludgeon.tres" id="1_otjxh"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_v6w81"]
+[ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="2_8r6og"]
+[ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="3_670dw"]
+
+[resource]
+script = ExtResource("2_8r6og")
+damage_sides = 8
+damage_bonus = 2
+category = ExtResource("1_670dw")
+damage_type = ExtResource("1_otjxh")
+weight = 6.0
+material = ExtResource("3_670dw")
+rarity = 0.9
+id = &"morning_star"
+name = "Morning Star"
+description = "A mace that is spiked on its head."
+metadata/_custom_type_script = "uid://b2lt5yl2f5k6"

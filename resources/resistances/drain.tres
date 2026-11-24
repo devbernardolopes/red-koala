@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ResistanceData" format=3 uid="uid://cmu62orbqe7ps"]
+
+[ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="1_3ikux"]
+
+[resource]
+script = ExtResource("1_3ikux")
+id = &"drain"
+name = "Drain"
+metadata/_custom_type_script = "uid://bkurooso73yqq"

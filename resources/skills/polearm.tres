@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://bd0d1k2bfj2yh"]
+
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="1_nhb02"]
+
+[resource]
+script = ExtResource("1_nhb02")
+category = 2
+id = &"polearm"
+name = "Polearm"
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"
