@@ -40,6 +40,10 @@ var collision: CollisionShape2D = null
 var polygon: Polygon2D = null
 var light: PointLight2D = null
 var create_polygon: bool = true
+## Lazily created visual-only animator. Null in the editor.
+var visual: VisualAnimator = null
+## Authored light position, so visual offsets can be added without drifting.
+var light_base_position: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -68,7 +72,30 @@ func _ready() -> void:
 		light = PointLight2D.new()
 		light.texture = Helper.RADIAL_LIGHT
 		add_child(light)
+	light_base_position = light.position
 	toggle_light(false)
+
+
+## The visual-only animator, created on first use. Returns null in the editor
+## and for elements without a polygon.
+func get_visual() -> VisualAnimator:
+	if Engine.is_editor_hint():
+		return null
+	if not polygon:
+		return null
+	if not is_instance_valid(visual):
+		visual = VisualAnimator.new()
+		visual.base = self
+		add_child(visual)
+	return visual
+
+
+## World position the camera should follow: the logical position plus the slide
+## offset only, so idle wobble and attacks never shake the camera.
+func get_camera_anchor() -> Vector2:
+	if is_instance_valid(visual):
+		return global_position + visual.slide_offset
+	return global_position
 
 
 func toggle_light(toggle: bool) -> void:

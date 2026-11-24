@@ -318,7 +318,7 @@ tile_set = SubResource("TileSet_m7uww")
 [node name="Entities" type="Node2D" parent="." unique_id=199588511]
 
 [node name="MaleHuman" parent="Entities" unique_id=47279794 instance=ExtResource("32_f6jyf")]
-position = Vector2(-608, -672)
+position = Vector2(160, 96)
 entity_class = ExtResource("33_7v1hq")
 max_hit_points = 11
 hit_points = 11

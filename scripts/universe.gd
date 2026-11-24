@@ -81,6 +81,7 @@ func _ready() -> void:
 	hud.inventory_selection_changed.connect(_on_inventory_selection_changed)
 	Journal.speaker = current_player_entity
 	board.element_registered.connect(_on_element_registered)
+	board.element_moved.connect(_on_element_moved)
 	_load_elements()
 	AudioManager.set_listener_target(current_player_entity)
 	if fog_of_war:
@@ -370,6 +371,17 @@ func _on_inventory_selection_changed(item: Item) -> void:
 func _on_element_registered(element: Base) -> void:
 	if element is Entity:
 		_connect_entity(element as Entity)
+
+
+## Makes the visual lag behind the instant logical move. Elements without a
+## polygon (doors, items, corpses) are left alone.
+func _on_element_moved(element: Base, from_origin: Vector2i, _to_origin: Vector2i) -> void:
+	if not element or not element.polygon:
+		return
+	var animator: VisualAnimator = element.get_visual()
+	if not animator:
+		return
+	animator.slide_from(Board.tile_to_world(from_origin, element.tile_size))
 
 
 func _connect_entity(entity: Entity) -> void:

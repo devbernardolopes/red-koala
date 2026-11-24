@@ -93,8 +93,6 @@ var mana_regen_progress: int = 0
 ## Set once hit points reach zero. Dead entities are ignored by perception and
 ## cannot act or be attacked.
 var is_dead: bool = false
-var phasing_tween: Tween = null
-var flying_tween: Tween = null
 var visible_notifier: VisibleOnScreenNotifier2D = null
 var is_playable: bool = false:
 	set(v):
@@ -347,36 +345,26 @@ func _toggle_invisible(toggle: bool) -> void:
 		polygon.self_modulate.a = 1.0
 
 
-func _toggle_phasing(toggle: bool) -> void:
-	if not polygon:
-		return
-	if toggle:
-		if not phasing_tween:
-			phasing_tween = create_tween()
-			phasing_tween.tween_property(polygon, "position", Vector2(-1, 0), 0.15).set_ease(Tween.EASE_IN)
-			phasing_tween.tween_property(polygon, "position", Vector2(1, 0), 0.15)
-			phasing_tween.set_loops()
-		else:
-			phasing_tween.play()
-	else:
-		if phasing_tween:
-			phasing_tween.stop()
+func _toggle_phasing(_toggle: bool) -> void:
+	_update_hover()
 
 
-func _toggle_flying(toggle: bool) -> void:
-	if not polygon:
+func _toggle_flying(_toggle: bool) -> void:
+	_update_hover()
+
+
+## The animator owns the wobble tween. Phasing takes priority over flying, so
+## both flags feed one channel and switching between them never stacks offsets.
+func _update_hover() -> void:
+	var animator: VisualAnimator = get_visual()
+	if not animator:
 		return
-	if toggle:
-		if not flying_tween:
-			flying_tween = create_tween()
-			flying_tween.tween_property(polygon, "position", Vector2(0, -4.0), 0.15).set_ease(Tween.EASE_IN)
-			flying_tween.tween_property(polygon, "position", Vector2(0, 4.0), 0.15)
-			flying_tween.set_loops()
-		else:
-			flying_tween.play()
+	if is_phasing:
+		animator.set_hover(VisualAnimator.Hover.PHASING)
+	elif is_flying:
+		animator.set_hover(VisualAnimator.Hover.FLYING)
 	else:
-		if flying_tween:
-			flying_tween.stop()
+		animator.set_hover(VisualAnimator.Hover.NONE)
 
 ## The item worn on [param part], or [code]null[/code] when the slot is empty.
 func get_equipped_item(part: AnatomyData) -> Item:
