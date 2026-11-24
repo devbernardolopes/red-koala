@@ -324,19 +324,26 @@ max_hit_points = 11
 hit_points = 11
 max_mana_points = 3
 mana_points = 3
+speed = 25.0
 team = 2
+hit_duration = null
 
 [node name="BabyRedDragon" parent="Entities" unique_id=175289423 instance=ExtResource("34_7v1hq")]
-position = Vector2(-544, -672)
+position = Vector2(544, 160)
+team = 3
+hit_duration = null
 
 [node name="BabyRedDragon2" parent="Entities" unique_id=281657432 instance=ExtResource("34_7v1hq")]
 position = Vector2(-480, -672)
+hit_duration = null
 
 [node name="BabyRedDragon3" parent="Entities" unique_id=201415128 instance=ExtResource("34_7v1hq")]
 position = Vector2(-416, -672)
+hit_duration = null
 
 [node name="BabyRedDragon4" parent="Entities" unique_id=1171396461 instance=ExtResource("34_7v1hq")]
 position = Vector2(-544, -608)
+hit_duration = null
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=283354899]
 color = Color(0.50140655, 0.5014065, 0.5014065, 1)

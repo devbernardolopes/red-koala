@@ -32,6 +32,13 @@ const TILT_ANGLE: float = 0.2
 const ATTACK_OUT_TIME: float = 0.05
 const ATTACK_RETURN_TIME: float = 0.09
 
+## Hit recoil and flash.
+const KNOCK_DISTANCE: float = 5.0
+const KNOCK_OUT_TIME: float = 0.04
+const KNOCK_RETURN_TIME: float = 0.1
+## Optional uniform a hit material can expose to fade itself out.
+const HIT_AMOUNT_PARAMETER: StringName = &"hit_amount"
+
 ## Idle breathing.
 const IDLE_RISE: float = 1.5
 const IDLE_DURATION: float = 0.9
@@ -68,8 +75,16 @@ var tilt: float = 0.0:
 
 var _slide_tween: Tween = null
 var _attack_tween: Tween = null
+var _knock_tween: Tween = null
 var _hover_tween: Tween = null
 var _hover: Hover = Hover.NONE
+var _hit_tween: Tween = null
+## Shared source, its duplicated per-entity copy and the polygon material that
+## was replaced by the flash.
+var _hit_source: ShaderMaterial = null
+var _hit_material: ShaderMaterial = null
+var _saved_material: Material = null
+var _hit_active: bool = false
 
 
 func _ready() -> void:
@@ -110,6 +125,67 @@ func play_attack(direction: Vector2) -> void:
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT))
 	_attack_tween.tween_property(self, "lunge_offset", Vector2.ZERO, ATTACK_RETURN_TIME)
 	_attack_tween.parallel().tween_property(self, "tilt", 0.0, ATTACK_RETURN_TIME)
+
+
+## Recoils away from [param direction] (the damage source). A zero direction
+## only flashes, which is what happens when the source is already gone.
+func play_hit(direction: Vector2) -> void:
+	if not enabled or not _can_play():
+		return
+	_kill_knock_tween()
+	var knock: Vector2 = direction.normalized() * KNOCK_DISTANCE
+	_knock_tween = create_tween()
+	(_knock_tween.tween_property(self, "knock_offset", knock, KNOCK_OUT_TIME)
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT))
+	_knock_tween.tween_property(self, "knock_offset", Vector2.ZERO, KNOCK_RETURN_TIME)
+
+
+## Applies [param material] to the polygon for [param duration], then restores
+## whatever material was there before. The shared resource is duplicated once
+## per entity so parameter tweens never bleed between entities. A second hit
+## restarts the timer without overwriting the saved original.
+func apply_material(material: ShaderMaterial, duration: float) -> void:
+	if not enabled or not material or not _can_play():
+		return
+	if _hit_material == null or _hit_source != material:
+		_hit_source = material
+		_hit_material = material.duplicate() as ShaderMaterial
+	if not _hit_active:
+		_saved_material = base.polygon.material
+		_hit_active = true
+	base.polygon.material = _hit_material
+	if _hit_tween:
+		_hit_tween.kill()
+		_hit_tween = null
+	_hit_tween = create_tween()
+	if _has_hit_amount(_hit_material):
+		_hit_material.set_shader_parameter(HIT_AMOUNT_PARAMETER, 1.0)
+		_hit_tween.tween_method(_set_hit_amount, 1.0, 0.0, duration)
+	else:
+		_hit_tween.tween_interval(duration)
+	_hit_tween.tween_callback(_restore_material)
+
+
+func _set_hit_amount(value: float) -> void:
+	if _hit_material:
+		_hit_material.set_shader_parameter(HIT_AMOUNT_PARAMETER, value)
+
+
+func _has_hit_amount(material: ShaderMaterial) -> bool:
+	if not material or not material.shader:
+		return false
+	for uniform: Dictionary in material.shader.get_shader_uniform_list():
+		if String(uniform.get("name", "")) == String(HIT_AMOUNT_PARAMETER):
+			return true
+	return false
+
+
+func _restore_material() -> void:
+	_hit_tween = null
+	if is_instance_valid(base) and is_instance_valid(base.polygon):
+		base.polygon.material = _saved_material
+	_saved_material = null
+	_hit_active = false
 
 
 ## Switches the looping idle wobble. Phasing takes priority over flying and
@@ -212,6 +288,12 @@ func _kill_attack_tween() -> void:
 	if _attack_tween:
 		_attack_tween.kill()
 		_attack_tween = null
+
+
+func _kill_knock_tween() -> void:
+	if _knock_tween:
+		_knock_tween.kill()
+		_knock_tween = null
 
 
 func _kill_hover_tween() -> void:

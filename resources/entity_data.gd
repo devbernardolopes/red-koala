@@ -8,3 +8,6 @@ extends BaseData
 ## Experience awarded to whoever lands the killing blow on this entity. Heroes
 ## stay at zero: playable entities gain XP by killing, they are not worth XP.
 @export var xp_reward: int = 0
+## Optional per-creature-type hit effect material. Overrides the project default,
+## but a material set directly on [member Entity.hit_material] wins.
+@export var hit_material: ShaderMaterial = null

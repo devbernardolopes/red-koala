@@ -21,6 +21,8 @@ enum EquipResult {
 
 ## Kilograms an entity can carry per point of Strength.
 const CARRY_KG_PER_STRENGTH: float = 7.5
+## Project-wide fallback when neither the entity nor its data sets a material.
+const DEFAULT_HIT_MATERIAL: ShaderMaterial = preload("res://resources/materials/hit_flash.tres")
 
 @export_category("Basic")
 #@export var entity_race: RaceData = null
@@ -77,6 +79,11 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 ## it should be called `energy` instead.
 @export var speed: float = 10.0
 @export var team: Helper.EntityTeam = Helper.EntityTeam.NEUTRAL
+@export_category("Hit effect")
+## Per-entity override for the damage flash. Falls back to
+## [member EntityData.hit_material], then to the project default.
+@export var hit_material: ShaderMaterial = null
+@export var hit_duration: float = 0.25
 
 ## Action points left in the current round. Starts empty and accumulates from
 ## [member speed] at the start of every round; the turn manager spends one
@@ -120,6 +127,8 @@ signal stats_changed
 
 func _ready() -> void:
 	super._ready()
+	if not Engine.is_editor_hint():
+		damaged.connect(_on_damaged)
 	collision_layer = PhysicsLayer.HERO
 	collision_mask = PhysicsLayer.WALLS | PhysicsLayer.CRATES | PhysicsLayer.HERO
 	inventory_changed.connect(_update_encumbrance)
@@ -224,6 +233,33 @@ func take_damage(amount: int, source: Entity = null) -> int:
 		_refresh_hover()
 		died.emit(source)
 	return dealt
+
+
+## Public entry point for code-driven hit effects. An explicit override wins
+## over the inspector material, which wins over the creature type's material,
+## which falls back to the project default.
+func play_hit_effect(material_override: ShaderMaterial = null) -> void:
+	var _material: ShaderMaterial = material_override
+	if not _material:
+		_material = hit_material
+	if not _material and data is EntityData:
+		_material = (data as EntityData).hit_material
+	if not _material:
+		_material = DEFAULT_HIT_MATERIAL
+	var animator: VisualAnimator = get_visual()
+	if animator:
+		animator.apply_material(_material, hit_duration)
+
+
+## Own damage signal: flash first, then recoil away from the attacker if it
+## still exists. A killing blow frees the entity before the flash is seen.
+func _on_damaged(_amount: int, source: Entity) -> void:
+	play_hit_effect()
+	if not is_instance_valid(source):
+		return
+	var animator: VisualAnimator = get_visual()
+	if animator:
+		animator.play_hit(global_position - source.global_position)
 
 
 ## Restores [param amount] hit points, clamped to the maximum. Returns how many
@@ -473,6 +509,9 @@ func equip(item: Item) -> EquipResult:
 			equipment[bp] = item
 			item.is_equipped = true
 			item.position = Vector2.ZERO + bp.equipped_offset
+			# TODO: Equipped item visuals only inherit the hit material when
+			# their Polygon2D uses the parent material; the extra Item node
+			# between it and the entity polygon needs more than one line.
 			polygon.add_child(item)
 			result = EquipResult.EQUIPPED
 			break
