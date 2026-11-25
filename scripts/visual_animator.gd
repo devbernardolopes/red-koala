@@ -7,16 +7,17 @@ extends Node
 ## displacing [member Base.polygon] (and the paired [PointLight2D]) without
 ## touching the element's position, collision or board index. Each channel is
 ## independent so tweens never fight: [member slide_offset] for tile-to-tile
-## movement, [member hover_offset] for attack lunge and idle wobble, and
-## [member tilt] for the attack lean.
+## movement, [member idle_offset], [member flying_offset] and
+## [member phasing_offset] for hovering, [member lunge_offset] for attack
+## lunges, [member knock_offset] for hit recoil, and [member tilt] for the
+## attack lean.
 ##
 ## Created lazily by [method Base.get_visual], never in the editor.
 
 enum Hover {
-	NONE,
+	IDLE,
 	FLYING,
 	PHASING,
-	IDLE,
 }
 
 ## Pixels per second for a normal tile slide, derived from the tile length.
@@ -64,9 +65,17 @@ var knock_offset: Vector2 = Vector2.ZERO:
 	set(v):
 		knock_offset = v
 		_apply()
-var hover_offset: Vector2 = Vector2.ZERO:
+var idle_offset: Vector2 = Vector2.ZERO:
 	set(v):
-		hover_offset = v
+		idle_offset = v
+		_apply()
+var flying_offset: Vector2 = Vector2.ZERO:
+	set(v):
+		flying_offset = v
+		_apply()
+var phasing_offset: Vector2 = Vector2.ZERO:
+	set(v):
+		phasing_offset = v
 		_apply()
 var tilt: float = 0.0:
 	set(v):
@@ -76,8 +85,10 @@ var tilt: float = 0.0:
 var _slide_tween: Tween = null
 var _attack_tween: Tween = null
 var _knock_tween: Tween = null
-var _hover_tween: Tween = null
-var _hover: Hover = Hover.NONE
+## One looping tween and enabled flag per [enum Hover] channel, indexed by its
+## enum value.
+var _hover_tweens: Array[Tween] = [null, null, null]
+var _hover_enabled: Array[bool] = [false, false, false]
 var _hit_tween: Tween = null
 ## Shared source, its duplicated per-entity copy and the polygon material that
 ## was replaced by the flash.
@@ -188,77 +199,87 @@ func _restore_material() -> void:
 	_hit_active = false
 
 
-## Switches the looping idle wobble. Phasing takes priority over flying and
-## flying over idle; the caller decides. [constant Hover.NONE] stops it.
-func set_hover(mode: Hover) -> void:
-	_hover = mode
-	_kill_hover_tween()
-	if mode == Hover.NONE:
-		hover_offset = Vector2.ZERO
+## Enables or disables one looping hover channel. Each channel owns its own
+## offset and tween, so idle, flying and phasing can run simultaneously.
+func set_hover_channel(channel: Hover, _enabled: bool) -> void:
+	var _index: int = int(channel)
+	if _hover_enabled[_index] == _enabled:
 		return
-	if not enabled or not _can_play():
-		hover_offset = Vector2.ZERO
+	_hover_enabled[_index] = _enabled
+	_kill_hover_tween(_index)
+	if not _enabled:
+		_set_hover_offset(_index, Vector2.ZERO)
 		return
-	_start_hover()
+	if not enabled or not is_instance_valid(base) or not is_instance_valid(base.polygon):
+		_set_hover_offset(_index, Vector2.ZERO)
+		return
+	_start_hover(_index)
 
 
-func _start_hover() -> void:
-	_kill_hover_tween()
-	match _hover:
+func _start_hover(channel: int) -> void:
+	_kill_hover_tween(channel)
+	var _tween: Tween = null
+	match channel:
 		Hover.IDLE:
 			# Every entity starts breathing after a random delay, so a group
 			# does not rise and fall in unison.
-			_hover_tween = create_tween()
-			_hover_tween.tween_interval(randf() * IDLE_PERIOD)
-			_hover_tween.tween_callback(_start_idle_loop)
+			_tween = create_tween()
+			_tween.tween_interval(randf() * IDLE_PERIOD)
+			_tween.tween_callback(_start_idle_loop)
 		Hover.FLYING:
-			_hover_tween = create_tween()
-			(_hover_tween.tween_property(self, "hover_offset",
+			_tween = create_tween()
+			(_tween.tween_property(self, "flying_offset",
 					Vector2(0, -IDLE_FLYING_RISE), HOVER_DURATION)
 					.set_ease(Tween.EASE_IN))
-			_hover_tween.tween_property(self, "hover_offset",
+			_tween.tween_property(self, "flying_offset",
 					Vector2(0, IDLE_FLYING_RISE), HOVER_DURATION)
-			_hover_tween.set_loops()
+			_tween.set_loops()
 		Hover.PHASING:
-			_hover_tween = create_tween()
-			(_hover_tween.tween_property(self, "hover_offset",
+			_tween = create_tween()
+			(_tween.tween_property(self, "phasing_offset",
 					Vector2(-PHASING_SWAY, 0), HOVER_DURATION)
 					.set_ease(Tween.EASE_IN))
-			_hover_tween.tween_property(self, "hover_offset",
+			_tween.tween_property(self, "phasing_offset",
 					Vector2(PHASING_SWAY, 0), HOVER_DURATION)
-			_hover_tween.set_loops()
-	if not base.is_visible_in_tree() and _hover_tween:
-		_hover_tween.pause()
+			_tween.set_loops()
+	_hover_tweens[channel] = _tween
+	if _tween and not base.is_visible_in_tree():
+		_tween.pause()
 
 
 func _start_idle_loop() -> void:
-	if _hover != Hover.IDLE or not enabled:
+	if not _hover_enabled[Hover.IDLE] or not enabled:
 		return
-	_hover_tween = create_tween()
-	(_hover_tween.tween_property(self, "hover_offset", Vector2(0, -IDLE_RISE), IDLE_DURATION)
+	var _tween: Tween = create_tween()
+	(_tween.tween_property(self, "idle_offset", Vector2(0, -IDLE_RISE), IDLE_DURATION)
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT))
-	(_hover_tween.tween_property(self, "hover_offset", Vector2.ZERO, IDLE_DURATION)
+	(_tween.tween_property(self, "idle_offset", Vector2.ZERO, IDLE_DURATION)
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT))
-	_hover_tween.set_loops()
+	_tween.set_loops()
+	_hover_tweens[Hover.IDLE] = _tween
 	if not base.is_visible_in_tree():
-		_hover_tween.pause()
+		_tween.pause()
 
 
-## Pauses the idle wobble while hidden so fogged-out entities are cheap, and
-## resumes exactly where it left off when they become visible again.
+## Pauses every active hover tween while hidden so fogged-out entities are
+## cheap, and resumes them exactly where they left off when visible again.
 func _on_visibility_changed() -> void:
 	if not is_instance_valid(base):
 		return
-	if not base.is_visible_in_tree():
-		if _hover_tween:
-			_hover_tween.pause()
-		return
-	if _hover == Hover.NONE or not enabled:
-		return
-	if _hover_tween:
-		_hover_tween.play()
-	else:
-		_start_hover()
+	var _is_visible: bool = base.is_visible_in_tree()
+	for channel: int in _hover_tweens.size():
+		if not _hover_enabled[channel]:
+			continue
+		var _tween: Tween = _hover_tweens[channel]
+		if not _is_visible:
+			if _tween:
+				_tween.pause()
+		elif not enabled:
+			continue
+		elif _tween:
+			_tween.play()
+		else:
+			_start_hover(channel)
 
 
 func _can_play() -> bool:
@@ -270,10 +291,11 @@ func _can_play() -> bool:
 func _apply() -> void:
 	if not is_instance_valid(base) or not is_instance_valid(base.polygon):
 		return
-	base.polygon.position = slide_offset + lunge_offset + knock_offset + hover_offset
+	base.polygon.position = (slide_offset + lunge_offset + knock_offset
+			+ idle_offset + flying_offset + phasing_offset)
 	base.polygon.rotation = tilt
 	# The light is not parented to the polygon, so it needs the slide itself.
-	# Idle and attack offsets intentionally do not move it.
+	# Hover and attack offsets intentionally do not move it.
 	if is_instance_valid(base.light):
 		base.light.position = base.light_base_position + slide_offset
 
@@ -296,7 +318,18 @@ func _kill_knock_tween() -> void:
 		_knock_tween = null
 
 
-func _kill_hover_tween() -> void:
-	if _hover_tween:
-		_hover_tween.kill()
-		_hover_tween = null
+func _kill_hover_tween(channel: int) -> void:
+	var _tween: Tween = _hover_tweens[channel]
+	if _tween:
+		_tween.kill()
+	_hover_tweens[channel] = null
+
+
+func _set_hover_offset(channel: int, value: Vector2) -> void:
+	match channel:
+		Hover.IDLE:
+			idle_offset = value
+		Hover.FLYING:
+			flying_offset = value
+		Hover.PHASING:
+			phasing_offset = value

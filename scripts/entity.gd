@@ -390,20 +390,16 @@ func _toggle_flying(_toggle: bool) -> void:
 	_refresh_hover()
 
 
-## The animator owns one hover channel. Phasing wins over flying, and a living
-## entity with neither breathes idly; the dead simply stop.
+## Idle, flying and phasing are independent hover channels, so all enabled
+## motions run together. The dead stop all three.
 func _refresh_hover() -> void:
 	var animator: VisualAnimator = get_visual()
 	if not animator:
 		return
-	if is_dead:
-		animator.set_hover(VisualAnimator.Hover.NONE)
-	elif is_phasing:
-		animator.set_hover(VisualAnimator.Hover.PHASING)
-	elif is_flying:
-		animator.set_hover(VisualAnimator.Hover.FLYING)
-	else:
-		animator.set_hover(VisualAnimator.Hover.IDLE)
+	var _alive: bool = not is_dead
+	animator.set_hover_channel(VisualAnimator.Hover.IDLE, _alive)
+	animator.set_hover_channel(VisualAnimator.Hover.FLYING, _alive and is_flying)
+	animator.set_hover_channel(VisualAnimator.Hover.PHASING, _alive and is_phasing)
 
 ## The item worn on [param part], or [code]null[/code] when the slot is empty.
 func get_equipped_item(part: AnatomyData) -> Item:
