@@ -37,3 +37,15 @@ func _snap_to_target() -> void:
 	if not target:
 		return
 	global_position = target.get_camera_anchor()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("zoom_in"):
+		_step_zoom(zoom.x + zoom_factor)
+	elif event.is_action_pressed("zoom_out"):
+		_step_zoom(zoom.x - zoom_factor)
+
+
+func _step_zoom(value: float) -> void:
+	var _value: float = clampf(value, max_zoom_out, max_zoom_in)
+	zoom = Vector2(_value, _value)

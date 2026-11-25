@@ -466,6 +466,7 @@ func _on_entity_died(entity: Entity, _source: Entity) -> void:
 		#decals_node.add_child(cv)
 		#board.register(cv)
 		var corpse: Corpse = Corpse.create_from(entity)
+		corpse.corpse_visual = cv
 		cv.position = entity.position
 		if not decals_node:
 			parent.add_child(corpse)
