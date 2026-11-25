@@ -17,6 +17,8 @@ func _ready() -> void:
 	super._ready()
 	collision_layer = 0
 	collision_mask = 0
+	if Engine.is_editor_hint():
+		return
 	delay_timer = Timer.new()
 	delay_timer.one_shot = true
 	delay_timer.wait_time = delay
@@ -53,6 +55,8 @@ func _refresh() -> void:
 
 
 func _reveal_door() -> void:
+	if Engine.is_editor_hint():
+		return
 	if not _all_requirements_met():
 		return
 	_set_wall_visible(false)

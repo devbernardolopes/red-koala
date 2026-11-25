@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://cphf4yc7i8ylg"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_ghpl6"]
+
+[resource]
+script = ExtResource("1_ghpl6")
+id = &"appraisal"
+name = "Appraisal"
+description = "Assess the number of charges in an item when you pick it up."
+metadata/_custom_type_script = "uid://bja1b0sh8xer7"

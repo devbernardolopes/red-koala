@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="SpellData" format=3 uid="uid://byujt6n4lpj05"]
+
+[ext_resource type="Resource" uid="uid://cr7qu0rauogo2" path="res://resources/skills/clerical.tres" id="1_0ul8d"]
+[ext_resource type="Script" uid="uid://b8usc37r16aid" path="res://resources/spell_skill_level.gd" id="1_bqv1g"]
+[ext_resource type="Script" uid="uid://cubeh12efn10j" path="res://resources/spell_data.gd" id="1_vtifo"]
+[ext_resource type="Resource" uid="uid://b0plon1stmu6r" path="res://resources/skill_levels/unskilled.tres" id="2_p5g4r"]
+[ext_resource type="Resource" uid="uid://nc4wktex4aqf" path="res://resources/skill_levels/proficient.tres" id="3_i3xmy"]
+[ext_resource type="Resource" uid="uid://cvftxwf1srm08" path="res://resources/skill_levels/specialist.tres" id="4_5wp7x"]
+[ext_resource type="Resource" uid="uid://bv8681ilgivj1" path="res://resources/skill_levels/expert.tres" id="5_1ctv2"]
+[ext_resource type="Resource" uid="uid://csutf2nggevhm" path="res://resources/skill_levels/master.tres" id="6_ggq07"]
+[ext_resource type="Resource" uid="uid://6i4hrimwe48a" path="res://resources/skill_levels/champion.tres" id="7_a2r0m"]
+
+[sub_resource type="Resource" id="Resource_m2qgp"]
+script = ExtResource("1_bqv1g")
+skill_level = ExtResource("2_p5g4r")
+metadata/_custom_type_script = "uid://b8usc37r16aid"
+
+[sub_resource type="Resource" id="Resource_q4wxq"]
+script = ExtResource("1_bqv1g")
+skill_level = ExtResource("3_i3xmy")
+dice = 5
+metadata/_custom_type_script = "uid://b8usc37r16aid"
+
+[sub_resource type="Resource" id="Resource_f8pna"]
+script = ExtResource("1_bqv1g")
+skill_level = ExtResource("4_5wp7x")
+dice = 10
+metadata/_custom_type_script = "uid://b8usc37r16aid"
+
+[sub_resource type="Resource" id="Resource_hoe0h"]
+script = ExtResource("1_bqv1g")
+skill_level = ExtResource("5_1ctv2")
+dice = 15
+metadata/_custom_type_script = "uid://b8usc37r16aid"
+
+[sub_resource type="Resource" id="Resource_evimd"]
+script = ExtResource("1_bqv1g")
+skill_level = ExtResource("6_ggq07")
+dice = 20
+metadata/_custom_type_script = "uid://b8usc37r16aid"
+
+[sub_resource type="Resource" id="Resource_62dvd"]
+script = ExtResource("1_bqv1g")
+skill_level = ExtResource("7_a2r0m")
+dice = 25
+metadata/_custom_type_script = "uid://b8usc37r16aid"
+
+[resource]
+script = ExtResource("1_vtifo")
+school = ExtResource("1_0ul8d")
+effects = Array[ExtResource("1_bqv1g")]([SubResource("Resource_m2qgp"), SubResource("Resource_q4wxq"), SubResource("Resource_f8pna"), SubResource("Resource_hoe0h"), SubResource("Resource_evimd"), SubResource("Resource_62dvd")])
+id = &"healing"
+name = "Healing"
+metadata/_custom_type_script = "uid://cubeh12efn10j"

@@ -57,6 +57,17 @@ enum Facing {
 	NORTH_WEST,
 }
 
+enum StairsDirection {
+	UP = 0,
+	DOWN = 1,
+}
+
+enum SpellTarget {
+	SELF = 0,
+	AREA = 1,
+	DIRECTION = 2,
+}
+
 enum MoveMode {
 	WALK = 1,
 	FLY = 2,

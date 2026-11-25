@@ -1,0 +1,94 @@
+[gd_resource type="Resource" script_class="ClassData" format=3 uid="uid://drj4uj21d5sjf"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_2mjgr"]
+[ext_resource type="Script" uid="uid://lh1ytw61wdfy" path="res://resources/feat_data.gd" id="2_ags2y"]
+[ext_resource type="Resource" uid="uid://b6quwq4x4s8fq" path="res://resources/properties/telepathy.tres" id="3_1pxlr"]
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="3_6fcqj"]
+[ext_resource type="Resource" uid="uid://brq7b18q0607d" path="res://resources/properties/telekinesis.tres" id="4_rrjd1"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="4_xumpl"]
+[ext_resource type="Resource" uid="uid://yw6f5dbngtct" path="res://resources/resistances/fire.tres" id="5_lcrys"]
+[ext_resource type="Resource" uid="uid://u4a8bqbiqlhi" path="res://resources/properties/warning.tres" id="6_ua7d1"]
+[ext_resource type="Resource" uid="uid://ded5w33xpf2cv" path="res://resources/resistances/cold.tres" id="7_ym84y"]
+[ext_resource type="Resource" uid="uid://bjxn4vjd6r8ge" path="res://resources/properties/clairvoyance.tres" id="8_nym0l"]
+[ext_resource type="Resource" uid="uid://bm7w3qwd74lcc" path="res://resources/resistances/sleep.tres" id="9_ktb80"]
+[ext_resource type="Resource" uid="uid://dpac7j6oilm4r" path="res://resources/properties/clarity.tres" id="10_56os2"]
+[ext_resource type="Resource" uid="uid://dm8fjgjp6ghg4" path="res://resources/resistances/petrify.tres" id="11_ojvp6"]
+[ext_resource type="Resource" uid="uid://d17dp5n4bagfc" path="res://resources/properties/teleport_control.tres" id="12_h2svc"]
+[ext_resource type="Resource" uid="uid://cmu62orbqe7ps" path="res://resources/resistances/drain.tres" id="13_dslqr"]
+
+[sub_resource type="Resource" id="Resource_m2qgp"]
+script = ExtResource("2_ags2y")
+property = ExtResource("3_1pxlr")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_f8pna"]
+script = ExtResource("2_ags2y")
+level = 2
+property = ExtResource("4_rrjd1")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_hoe0h"]
+script = ExtResource("2_ags2y")
+level = 4
+resistance = ExtResource("5_lcrys")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_evimd"]
+script = ExtResource("2_ags2y")
+level = 6
+property = ExtResource("6_ua7d1")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_62dvd"]
+script = ExtResource("2_ags2y")
+level = 8
+resistance = ExtResource("7_ym84y")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_g5pax"]
+script = ExtResource("2_ags2y")
+level = 10
+property = ExtResource("8_nym0l")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_owino"]
+script = ExtResource("2_ags2y")
+level = 12
+resistance = ExtResource("9_ktb80")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_tv8vw"]
+script = ExtResource("2_ags2y")
+level = 14
+property = ExtResource("10_56os2")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_o730d"]
+script = ExtResource("2_ags2y")
+level = 16
+resistance = ExtResource("11_ojvp6")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_qhp5q"]
+script = ExtResource("2_ags2y")
+level = 18
+property = ExtResource("12_h2svc")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_278yk"]
+script = ExtResource("2_ags2y")
+level = 20
+resistance = ExtResource("13_dslqr")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[resource]
+script = ExtResource("3_6fcqj")
+base_hit_points = 10
+base_mana_points = 6
+mana_die_count = 1
+mana_die_sides = 2
+feats = Array[ExtResource("2_ags2y")]([SubResource("Resource_m2qgp"), SubResource("Resource_f8pna"), SubResource("Resource_hoe0h"), SubResource("Resource_evimd"), SubResource("Resource_62dvd"), SubResource("Resource_g5pax"), SubResource("Resource_owino"), SubResource("Resource_tv8vw"), SubResource("Resource_o730d"), SubResource("Resource_qhp5q"), SubResource("Resource_278yk")])
+id = &"mystic"
+name = "Mystic"
+description = "After many years of intense contemplation these soothsayers are ready to venture into the world. Masters of their own mind, they are capable of acts of formidable willpower."
+metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

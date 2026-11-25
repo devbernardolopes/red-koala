@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkillLevelData" format=3 uid="uid://b0plon1stmu6r"]
+
+[ext_resource type="Script" uid="uid://wqob2rw10gfy" path="res://resources/skill_level_data.gd" id="1_x4owq"]
+
+[resource]
+script = ExtResource("1_x4owq")
+value = -1000
+id = &"unskilled"
+name = "Unskilled"
+metadata/_custom_type_script = "uid://wqob2rw10gfy"

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cy2v61fypty18"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_dlxvu"]
+[ext_resource type="Resource" uid="uid://cufifummq0i15" path="res://resources/items/armors/speed_boots.tres" id="2_2dyq8"]
+
+[node name="SpeedBoots" type="Area2D" unique_id=196797950]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_dlxvu")
+data = ExtResource("2_2dyq8")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=176870212]
+color = Color(0.29599833, 0.15999505, 0.021662544, 1)
+polygon = PackedVector2Array(-24, 24, -24, 16, -16, 16, -16, 8, -8, 8, -8, 24)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=1361138034]
+color = Color(0.29599833, 0.15999505, 0.021662544, 1)
+polygon = PackedVector2Array(8, 24, 8, 8, 16, 8, 16, 16, 24, 16, 24, 24)

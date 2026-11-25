@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bwabw8psj03hc"]
+
+[ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_ua74j"]
+[ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_6f4ba"]
+[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold_piece.tres" id="3_jnkt0"]
+[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="4_prg8b"]
+
+[node name="FemaleHuman" type="Area2D" unique_id=47279794]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_ua74j")
+display_name = "Female Human"
+auto_take = Array[ExtResource("2_6f4ba")]([ExtResource("3_jnkt0")])
+data = ExtResource("4_prg8b")
+walkable = false
+metadata/_custom_type_script = "uid://tdfdon0mic37"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=658290084]
+color = Color(0.93333334, 0.59607846, 0.47843137, 1)
+polygon = PackedVector2Array(-16, 24, -6.3857737, -0.05631733, -6.018797, -3.6199112, -8, -8, -16, 0, -16, -8, -4.3989973, -16.540302, -7.146452, -18.931583, -7.6674385, -22.734783, -5.4271965, -26.537985, -0.26943016, -26.850578, 5.2009277, -26.38169, 7.545368, -23.203672, 7.076477, -18.56689, 4.1318474, -16.272953, 16, -8, 16, 0, 8, -8, 5.7744427, -3.3830986, 6.1042366, 0.014850616, 16, 24, 8, 24, 8, 16, 0, 8, -8, 16, -8, 24)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=278186320]
+polygon = PackedVector2Array(-6.582425, -0.026622772, 6.2105274, -0.0045280457, 3.8143196, 1.7915311, 0.3441372, 7.9966884, -0.50870323, 8.055506, -4.0377026, 1.7033062)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Polygon2D" unique_id=1882645204]
+polygon = PackedVector2Array(-5.1155624, -16.1395, -3.771555, -12.974664, -0.05140114, -9.578001, 3.1188164, -12.424727, 4.7483444, -15.98293, 7.518301, -10.063239, 8, -8, 4.3480854, -7.442957, -0.019052505, -8.251686, -4.4508877, -7.4106073, -8, -8, -7.718153, -10.192636)

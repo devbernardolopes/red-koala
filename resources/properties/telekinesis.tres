@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://brq7b18q0607d"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_d0lsc"]
+
+[resource]
+script = ExtResource("1_d0lsc")
+id = &"telekinesis"
+name = "Telekinesis"
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

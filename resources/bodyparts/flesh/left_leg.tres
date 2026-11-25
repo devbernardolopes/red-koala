@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AnatomyData" format=3 uid="uid://2a6ijiu5l7pn"]
+
+[ext_resource type="Resource" uid="uid://b5jfk4kt3deyt" path="res://resources/materials/flesh.tres" id="1_krohg"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="2_swg65"]
+
+[resource]
+script = ExtResource("2_swg65")
+side = -1
+material = ExtResource("1_krohg")
+equipped_offset = Vector2(-16, 0)
+draw_order = 20
+id = &"left_leg"
+name = "Left Leg"
+metadata/_custom_type_script = "uid://dovglatpiuiwq"

@@ -111,11 +111,11 @@ layout_mode = 2
 theme_type_variation = &"HudCharacterStat"
 text = "XP: 0"
 
-[node name="EncumbranceRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content"]
+[node name="EncumbranceRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=1286306568]
 layout_mode = 2
 alignment = 1
 
-[node name="EncumbranceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/EncumbranceRow"]
+[node name="EncumbranceLabel" type="Label" parent="Layout/Body/BodyMargin/Content/EncumbranceRow" unique_id=734681965]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -252,6 +252,15 @@ size_flags_horizontal = 3
 theme_type_variation = &"HudCharacterStat"
 text = "DEF: —"
 horizontal_alignment = 1
+
+[node name="ExtrasRow" type="HBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=1781684813]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="Layout/Body/BodyMargin/Content/ExtrasRow" unique_id=1775549459]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudCharacterStat"
+text = "Speed: 10"
 
 [node name="Properties" type="VBoxContainer" parent="Layout/Body/BodyMargin/Content" unique_id=534558411]
 unique_name_in_owner = true

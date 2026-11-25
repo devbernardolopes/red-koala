@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ArmorData" format=3 uid="uid://bk1mhmwutbrqj"]
+
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_fatjd"]
+[ext_resource type="Resource" uid="uid://bhym46nj5uns1" path="res://resources/skills/light_armor.tres" id="2_6yg2b"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="3_hfdfe"]
+[ext_resource type="Resource" uid="uid://2a6ijiu5l7pn" path="res://resources/bodyparts/flesh/left_leg.tres" id="4_fatjd"]
+[ext_resource type="Resource" uid="uid://dusnsot4djsg6" path="res://resources/bodyparts/flesh/right_leg.tres" id="5_6yg2b"]
+[ext_resource type="Resource" uid="uid://bki8i8pu8bkhb" path="res://resources/materials/leather.tres" id="6_471l1"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="7_2ocoa"]
+[ext_resource type="Script" uid="uid://c41diincm70lm" path="res://resources/armor_data.gd" id="8_81h6x"]
+
+[resource]
+script = ExtResource("8_81h6x")
+category = ExtResource("2_6yg2b")
+weight = 0.8
+material = ExtResource("6_471l1")
+equipped_on = Array[ExtResource("3_hfdfe")]([ExtResource("4_fatjd"), ExtResource("5_6yg2b")])
+requires_all_slots = true
+id = &"leather_leggings"
+name = "Leather Leggings"
+metadata/_custom_type_script = "uid://c41diincm70lm"

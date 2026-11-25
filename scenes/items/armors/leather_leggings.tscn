@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://7hg3xv3x2tlt"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_7dado"]
+[ext_resource type="Resource" uid="uid://bk1mhmwutbrqj" path="res://resources/items/armors/leather_leggings.tres" id="2_7dado"]
+
+[node name="LeatherLeggings" type="Area2D" unique_id=695206935]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_7dado")
+data = ExtResource("2_7dado")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=632072719]
+color = Color(0.2509804, 0.26666668, 0.09019608, 1)
+polygon = PackedVector2Array(-8, 0, 0, 0, 8, 0, 16, 24, 8, 24, 8, 16, 0, 8, -8, 16, -8, 24, -16, 24)

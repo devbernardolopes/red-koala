@@ -38,7 +38,9 @@ const DEFAULT_HIT_MATERIAL: ShaderMaterial = preload("res://resources/materials/
 @export_range(1, 30) var wisdom: int = 10
 @export_range(1, 30) var intelligence: int = 10
 @export_category("Points")
-@export var level: int = 1
+@export_range(1, 40, 1) var level: int = 1:
+	set(v):
+		level = v
 @export var xp: int = 0
 @export var max_hit_points: int = 1
 @export var hit_points: int = 1
@@ -55,7 +57,7 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 ## Items that this entity will auto-take when entering the same tile.
 @export var auto_take: Array[ItemData] = []
 ## These are properties that can be added via equipped items or spells or other
-## stuff.
+## ways.
 @export var added_properties: Array[PropertyData] = []
 @export var is_invisible: bool = false:
 	set(v):
@@ -69,13 +71,10 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 	set(v):
 		is_flying = v
 		_toggle_flying(v)
-@export var can_see_invisible: bool = false
 @export_category("Mechanics")
 ## Logical eight-way facing. Vertical facing preserves the latest visual side.
 @export var facing: Helper.Facing = Helper.Facing.SOUTH
 var _visual_facing_right: bool = true
-## This should be relative to the turn-based mechanic. Albeit I am not sure if
-## it should be called `energy` instead.
 @export var speed: float = 10.0
 @export var team: Helper.EntityTeam = Helper.EntityTeam.NEUTRAL
 @export_category("Hit effect")
@@ -88,6 +87,8 @@ var _visual_facing_right: bool = true
 ## [member speed] at the start of every round; the turn manager spends one
 ## action's cost per action taken.
 var energy: int = 0
+var base_speed: float = 0.0
+var speed_bonus: float = 0.0
 ## Cached encumbrance band, recomputed whenever the inventory or the stats
 ## change.
 var encumbrance_level: Encumbrance.Level = Encumbrance.Level.NONE
@@ -160,6 +161,7 @@ func _init_values() -> void:
 	hit_points = max_hit_points
 	max_mana_points = (entity_class as ClassData).base_mana_points
 	mana_points = max_mana_points
+	base_speed = speed
 
 
 ## Adds [param amount] experience and applies every level-up it unlocks.
@@ -443,6 +445,9 @@ func get_properties() -> Array[PropertyData]:
 		_collect_properties((data as EntityData).properties, result, seen)
 	for item: Item in get_equipped_items():
 		_collect_properties(item.properties, result, seen)
+		if item.data and item.data is ItemData:
+			if (item.data as ItemData).properties and not (item.data as ItemData).properties.is_empty():
+				_collect_properties((item.data as ItemData).properties, result, seen)
 	_collect_properties(added_properties, result, seen)
 	return result
 
@@ -537,6 +542,10 @@ func _update_properties() -> void:
 	is_flying = false
 	is_phasing = false
 	is_invisible = false
+	speed_bonus = 0.0
+	if is_zero_approx(base_speed):
+		base_speed = speed
+	speed = base_speed
 	for property: PropertyData in get_properties():
 		if property.id == &"flight":
 			is_flying = true
@@ -544,6 +553,9 @@ func _update_properties() -> void:
 			is_phasing = true
 		elif property.id == &"invisibility":
 			is_invisible = true
+		elif property.id == &"quickness":
+			speed_bonus = 25.0
+			speed = base_speed + speed_bonus
 
 
 ## Recomputes the encumbrance band and reports a change only when it moves.

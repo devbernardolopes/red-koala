@@ -2,9 +2,47 @@
 
 [ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_yqji3"]
 [ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="2_7ji3j"]
+[ext_resource type="Resource" uid="uid://u4a8bqbiqlhi" path="res://resources/properties/warning.tres" id="3_va2r6"]
+[ext_resource type="Resource" uid="uid://d17dp5n4bagfc" path="res://resources/properties/teleport_control.tres" id="4_wrmgv"]
 [ext_resource type="Script" uid="uid://lh1ytw61wdfy" path="res://resources/feat_data.gd" id="5_i4enn"]
+[ext_resource type="Resource" uid="uid://catrqh2j0fg12" path="res://resources/skills/abjuration.tres" id="7_nan2x"]
+[ext_resource type="Resource" uid="uid://bttek7ie02s6x" path="res://resources/skills/divination.tres" id="8_w455q"]
+[ext_resource type="Resource" uid="uid://cjpqr8k74k6ox" path="res://resources/skills/enchantment.tres" id="9_7nbln"]
 [ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="9_y7nby"]
+[ext_resource type="Resource" uid="uid://qg6b363e8uex" path="res://resources/skills/evocation.tres" id="10_ai1dl"]
+[ext_resource type="Resource" uid="uid://u6phsry7eviq" path="res://resources/skills/literacy.tres" id="11_vm4vi"]
+[ext_resource type="Resource" uid="uid://4wl3o7hks3mk" path="res://resources/skills/transmutation.tres" id="12_hky51"]
+[ext_resource type="Resource" uid="uid://rmbt26dfaaij" path="res://resources/skills/staff.tres" id="13_3rjdo"]
+[ext_resource type="Resource" uid="uid://cr7qu0rauogo2" path="res://resources/skills/clerical.tres" id="14_lwulw"]
+[ext_resource type="Resource" uid="uid://bhym46nj5uns1" path="res://resources/skills/light_armor.tres" id="15_hky51"]
+[ext_resource type="Resource" uid="uid://c4ix1d1j7tolg" path="res://resources/skills/light_blade.tres" id="16_3rjdo"]
+[ext_resource type="Resource" uid="uid://cqfkep3hjwc1q" path="res://resources/skills/bartering.tres" id="17_lwulw"]
+[ext_resource type="Resource" uid="uid://cwsktmhhbff15" path="res://resources/skills/crafting.tres" id="18_cr3hw"]
+[ext_resource type="Resource" uid="uid://bvc7skfi14skq" path="res://resources/skills/club.tres" id="19_k6slf"]
+[ext_resource type="Resource" uid="uid://cxv7fsaywf3mm" path="res://resources/skills/dart.tres" id="20_3thry"]
+[ext_resource type="Resource" uid="uid://cc7jh0vbmdys1" path="res://resources/skills/sling.tres" id="21_4nmuv"]
+
+[sub_resource type="Resource" id="Resource_m2qgp"]
+script = ExtResource("5_i4enn")
+level = 8
+property = ExtResource("3_va2r6")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_f8pna"]
+script = ExtResource("5_i4enn")
+level = 14
+property = ExtResource("4_wrmgv")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
 
 [resource]
 script = ExtResource("2_7ji3j")
+base_hit_points = 10
+base_mana_points = 6
+mana_die_count = 1
+mana_die_sides = 2
+feats = Array[ExtResource("5_i4enn")]([SubResource("Resource_m2qgp"), SubResource("Resource_f8pna")])
+skills = Array[ExtResource("9_y7nby")]([ExtResource("7_nan2x"), ExtResource("8_w455q"), ExtResource("9_7nbln"), ExtResource("10_ai1dl"), ExtResource("11_vm4vi"), ExtResource("12_hky51"), ExtResource("13_3rjdo"), ExtResource("14_lwulw"), ExtResource("15_hky51"), ExtResource("16_3rjdo"), ExtResource("17_lwulw"), ExtResource("18_cr3hw"), ExtResource("19_k6slf"), ExtResource("20_3thry"), ExtResource("21_4nmuv")])
+id = &"wizard"
+name = "Wizard"
+description = "Powerful sorcerers, lords of arcane knowledge and vanguards of psychic warfare. They are unrivalled in their mastery of nearly all schools of magic, augmented by a wide array of mystical devices."
 metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

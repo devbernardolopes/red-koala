@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkillLevelData" format=3 uid="uid://cvftxwf1srm08"]
+
+[ext_resource type="Script" uid="uid://wqob2rw10gfy" path="res://resources/skill_level_data.gd" id="1_usgkn"]
+
+[resource]
+script = ExtResource("1_usgkn")
+value = 200
+id = &"specialist"
+name = "Specialist"
+metadata/_custom_type_script = "uid://wqob2rw10gfy"

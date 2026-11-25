@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bf08ht43aa8bw"]
+
+[ext_resource type="Script" uid="uid://14tv4s742ots" path="res://scripts/item.gd" id="1_q68g8"]
+[ext_resource type="Resource" uid="uid://d1p03rrcp1l8u" path="res://resources/items/weapons/chakram.tres" id="2_6kuig"]
+
+[node name="Chakram" type="Area2D" unique_id=1947916356]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_q68g8")
+data = ExtResource("2_6kuig")
+metadata/_custom_type_script = "uid://14tv4s742ots"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1069106964]
+color = Color(0.37254903, 0.43137255, 0.43137255, 1)
+polygon = PackedVector2Array(-4.875572, -0.051275253, -8.065363, -1.6461716, -4.875572, -2.8250065, -6.4704685, -6.2921724, -2.3098698, -4.073187, -0.2295723, -7.4016647, 1.5040131, -3.7958126, 5.5952644, -6.708232, 4.832489, -2.6863213, 7.952938, -1.9235439, 4.693802, 0.5034714, 7.7449074, 3.1385174, 4.347088, 2.861143, 5.317894, 6.9523983, 1.71204, 4.5947266, -0.2295723, 7.368458, -1.7551231, 4.1093235, -4.875572, 7.021742, -4.390169, 2.861143, -8.065363, 3.3465462)

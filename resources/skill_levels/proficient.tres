@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SkillLevelData" format=3 uid="uid://nc4wktex4aqf"]
+
+[ext_resource type="Script" uid="uid://wqob2rw10gfy" path="res://resources/skill_level_data.gd" id="1_j5qlo"]
+
+[resource]
+script = ExtResource("1_j5qlo")
+id = &"proficient"
+name = "Proficient"
+metadata/_custom_type_script = "uid://wqob2rw10gfy"

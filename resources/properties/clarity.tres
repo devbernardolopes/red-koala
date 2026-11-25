@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://dpac7j6oilm4r"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_gax52"]
+
+[resource]
+script = ExtResource("1_gax52")
+id = &"clarity"
+name = "Clarity"
+description = "Protection against deception, trickery and falsehoods that cloud the mind."
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

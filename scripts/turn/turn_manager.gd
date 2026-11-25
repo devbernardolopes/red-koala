@@ -205,10 +205,10 @@ func _start_round() -> bool:
 			return false
 	else:
 		_empty_rounds = 0
-	print("ROUND %d passes=%d" % [round_number, _max_passes])
-	for actor: Entity in _order:
-		print("  %s speed=%s energy=%d"
-				% [actor.name, actor.get_effective_speed(), actor.energy])
+	#print("ROUND %d passes=%d" % [round_number, _max_passes])
+	#for actor: Entity in _order:
+		#print("  %s speed=%s energy=%d"
+				#% [actor.name, actor.get_effective_speed(), actor.energy])
 	return true
 
 

@@ -41,6 +41,7 @@ const EMPTY_VALUE: String = "—"
 @onready var _mana_label: Label = %ManaLabel
 @onready var _attack_label: Label = %AttackLabel
 @onready var _defense_label: Label = %DefenseLabel
+@onready var _speed_label: Label = %SpeedLabel
 @onready var _encumbrance_label: Label = %EncumbranceLabel
 @onready var _properties: VBoxContainer = %Properties
 
@@ -99,6 +100,7 @@ func refresh() -> void:
 	var profile: AttackProfile = Combat.attack_profile(entity)
 	_attack_label.text = "ATK: %+d" % Combat.attack_bonus(entity, profile)
 	_defense_label.text = "DEF: %d" % entity.get_armor_class()
+	_speed_label.text = "Speed: %0.2f" % entity.speed
 	_encumbrance_label.text = Encumbrance.display_name(entity.encumbrance_level)
 	_encumbrance_label.visible = entity.encumbrance_level != Encumbrance.Level.NONE
 	_refresh_properties(entity)

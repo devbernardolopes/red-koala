@@ -282,4 +282,4 @@ behavior_tree/user_task_dirs=PackedStringArray("res://scripts/ai/tasks")
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-environment/defaults/default_clear_color=Color(0.04473009, 4.9129463e-05, 0.108571775, 1)
+environment/defaults/default_clear_color=Color(0.024035774, 0.19014373, 0.26313588, 1)

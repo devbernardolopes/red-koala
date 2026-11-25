@@ -13,3 +13,4 @@ extends ItemData
 ## penalty.
 @export var category: SkillData = null
 @export var damage_type: DamageData = null
+@export var damage_element: ResistanceData = null

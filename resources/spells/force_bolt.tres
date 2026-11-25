@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SpellData" format=3 uid="uid://cer43x3l8kwg4"]
+
+[ext_resource type="Resource" uid="uid://dfpbqhslgv5xl" path="res://resources/damages/force.tres" id="1_5gq5x"]
+[ext_resource type="Resource" uid="uid://qg6b363e8uex" path="res://resources/skills/evocation.tres" id="2_dccmc"]
+[ext_resource type="Script" uid="uid://cubeh12efn10j" path="res://resources/spell_data.gd" id="3_ivkkl"]
+
+[resource]
+script = ExtResource("3_ivkkl")
+school = ExtResource("2_dccmc")
+damage_type = ExtResource("1_5gq5x")
+id = &"force_bolt"
+name = "Force Bolt"
+description = "Projects a ball of energy that impacts on both monsters and objects."
+metadata/_custom_type_script = "uid://cubeh12efn10j"

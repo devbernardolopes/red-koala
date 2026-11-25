@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SpellData" format=3 uid="uid://whgppot0todb"]
+
+[ext_resource type="Resource" uid="uid://ctibsna4aaqw3" path="res://resources/damages/magical.tres" id="1_trwnf"]
+[ext_resource type="Script" uid="uid://cubeh12efn10j" path="res://resources/spell_data.gd" id="1_ydy68"]
+[ext_resource type="Resource" uid="uid://qg6b363e8uex" path="res://resources/skills/evocation.tres" id="2_iuc3f"]
+
+[resource]
+script = ExtResource("1_ydy68")
+school = ExtResource("2_iuc3f")
+damage_type = ExtResource("1_trwnf")
+id = &"magic_missile"
+name = "Magic Missile"
+metadata/_custom_type_script = "uid://cubeh12efn10j"

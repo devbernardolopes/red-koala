@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://d1p03rrcp1l8u"]
+
+[ext_resource type="Resource" uid="uid://b2n4lucelt77p" path="res://resources/skills/disc.tres" id="1_0lslm"]
+[ext_resource type="Resource" uid="uid://dcqgtg14wp4aj" path="res://resources/damages/slash.tres" id="1_6cc50"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_57dxn"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="2_fhe2v"]
+[ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="3_0lslm"]
+[ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="3_ld4fx"]
+[ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="4_ysktd"]
+
+[resource]
+script = ExtResource("3_ld4fx")
+damage_sides = 8
+ranged = true
+category = ExtResource("1_0lslm")
+damage_type = ExtResource("1_6cc50")
+weight = 0.5
+material = ExtResource("4_ysktd")
+equipped_on = Array[ExtResource("1_57dxn")]([ExtResource("3_0lslm")])
+id = &"chakram"
+name = "Chakram"
+metadata/_custom_type_script = "uid://b2lt5yl2f5k6"

@@ -6,4 +6,5 @@
 script = ExtResource("1_r4tow")
 id = &"clairvoyance"
 name = "Clairvoyance"
+description = "Uncanny awareness of other entities beyond your immediate vicinity."
 metadata/_custom_type_script = "uid://cwd2d08k5cedt"

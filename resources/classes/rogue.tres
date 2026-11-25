@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="ClassData" format=3 uid="uid://defmqp3b5qi8p"]
+
+[ext_resource type="Script" uid="uid://dvjebr1pv3u5n" path="res://resources/ability_data.gd" id="1_w2oik"]
+[ext_resource type="Script" uid="uid://lh1ytw61wdfy" path="res://resources/feat_data.gd" id="2_7qvnp"]
+[ext_resource type="Resource" uid="uid://1q2bf3f7jmwx" path="res://resources/abilities/dexterity.tres" id="2_v41cd"]
+[ext_resource type="Resource" uid="uid://d3rk5e0f0iu46" path="res://resources/abilities/strength.tres" id="3_4gsvf"]
+[ext_resource type="Script" uid="uid://b5q85cmjkxgc5" path="res://resources/class_data.gd" id="3_t4rs2"]
+[ext_resource type="Resource" uid="uid://clxwq0fc1bmfd" path="res://resources/abilities/constitution.tres" id="4_c2bty"]
+[ext_resource type="Script" uid="uid://bja1b0sh8xer7" path="res://resources/skill_data.gd" id="4_v41cd"]
+[ext_resource type="Resource" uid="uid://c83se7ft3vj4p" path="res://resources/properties/stealth.tres" id="6_c75gy"]
+[ext_resource type="Resource" uid="uid://b8030sacll8pt" path="res://resources/properties/searching.tres" id="7_b2bfv"]
+[ext_resource type="Resource" uid="uid://cphf4yc7i8ylg" path="res://resources/properties/appraisal.tres" id="8_ji4iq"]
+[ext_resource type="Resource" uid="uid://cvtxns1trg6pu" path="res://resources/properties/see_invisible.tres" id="9_stfpj"]
+[ext_resource type="Resource" uid="uid://crq4chdp0fepr" path="res://resources/properties/deflection.tres" id="10_dllyv"]
+
+[sub_resource type="Resource" id="Resource_4gsvf"]
+script = ExtResource("2_7qvnp")
+level = 2
+property = ExtResource("6_c75gy")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_c2bty"]
+script = ExtResource("2_7qvnp")
+level = 6
+property = ExtResource("7_b2bfv")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_46qem"]
+script = ExtResource("2_7qvnp")
+level = 10
+property = ExtResource("8_ji4iq")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_1t6h8"]
+script = ExtResource("2_7qvnp")
+level = 14
+property = ExtResource("9_stfpj")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[sub_resource type="Resource" id="Resource_c75gy"]
+script = ExtResource("2_7qvnp")
+level = 18
+property = ExtResource("10_dllyv")
+metadata/_custom_type_script = "uid://lh1ytw61wdfy"
+
+[resource]
+script = ExtResource("3_t4rs2")
+distribution = Array[ExtResource("1_w2oik")]([ExtResource("2_v41cd"), ExtResource("3_4gsvf"), ExtResource("4_c2bty")])
+base_hit_points = 10
+hit_die_sides = 7
+mana_die_count = 1
+mana_die_sides = 1
+feats = Array[ExtResource("2_7qvnp")]([SubResource("Resource_4gsvf"), SubResource("Resource_c2bty"), SubResource("Resource_46qem"), SubResource("Resource_1t6h8"), SubResource("Resource_c75gy")])
+id = &"rogue"
+name = "Rogue"
+description = "Deft miscreants, conniving and quick with their wits. Through trial and error, they have learned that their best chance in avoiding the clutches of death is to stick to the shadows and outmanoeuvre their pursuers."
+metadata/_custom_type_script = "uid://b5q85cmjkxgc5"

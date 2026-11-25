@@ -158,6 +158,8 @@ func _input(event: InputEvent) -> void:
 ## Repeats a held direction once per action. The first press is handled in
 ## [method _unhandled_input]; this only drives the repeats.
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if not held_move or not held_move.active:
 		return
 	if hud and hud.has_attack_confirmation():
@@ -602,87 +604,3 @@ func _load_elements() -> void:
 			item.get_parent().remove_child(item)
 			board.unregister(item)
 			entity.equip(item)
-
-
-## @deprecated It is being used when loading levels from file but there will be
-## no more file loading in the future.
-func _create_element_at(type: Helper.ElementType, pos: Vector2i) -> void:
-	match type:
-		Helper.ElementType.GOAL:
-			var g: Goal = Goal.new()
-			goals_node.add_child(g)
-			board.place(g, pos)
-		Helper.ElementType.CRATE:
-			var c: Crate = Crate.new()
-			crates_node.add_child(c)
-			board.place(c, pos)
-		Helper.ElementType.ENTITY:
-			var e: Entity = Entity.new()
-			add_child(e)
-			board.place(e, pos)
-			current_player_entity = e
-
-
-## @deprecated: There will be no more level loading from files in the future.
-func _load_level(num: int = 0) -> void:
-	var dir: DirAccess = DirAccess.open(LEVELS_DIR)
-	if not dir:
-		return
-	var files: PackedStringArray = dir.get_files()
-	if not files or files.is_empty():
-		return
-	for file in files:
-		if file.get_extension() == "txt":
-			if num and not file.get_basename().ends_with(type_convert(num, TYPE_STRING)):
-				continue
-			var fa: FileAccess = FileAccess.open(LEVELS_DIR + file, FileAccess.READ)
-			if not fa:
-				return
-			_clear_universe()
-			var row: int = 0
-			while not fa.eof_reached():
-				var line: String = fa.get_line()
-				var col: int = 0
-				for c in line:
-					match c:
-						"#":
-							_create_element_at(Helper.ElementType.WALL, Vector2(col, row))
-						"p":
-							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
-						"@":
-							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
-						"P":
-							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
-						"+":
-							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ElementType.ENTITY, Vector2(col, row))
-						"b":
-							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
-						"$":
-							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
-						"B":
-							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
-						"*":
-							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-							_create_element_at(Helper.ElementType.CRATE, Vector2(col, row))
-						".":
-							_create_element_at(Helper.ElementType.GOAL, Vector2(col, row))
-					col += 1
-				row += 1
-			return
-
-
-func _clear_universe() -> void:
-	var children: Array[Node] = find_children("*")
-	if children and not children.is_empty():
-		for child: Node in children:
-			if child.is_in_group(&"Elements"):
-				if child is Base:
-					board.unregister(child as Base)
-				child.queue_free()
-	for w: Wall in wall_proxies:
-		board.unregister(w)
-		w.free()
-	wall_proxies.clear()
