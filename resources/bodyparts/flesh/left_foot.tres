@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AnatomyData" format=3 uid="uid://bfmx0eoljwlo4"]
+
+[ext_resource type="Resource" uid="uid://b5jfk4kt3deyt" path="res://resources/materials/flesh.tres" id="1_rc25j"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="2_eggwm"]
+
+[resource]
+script = ExtResource("2_eggwm")
+side = -1
+material = ExtResource("1_rc25j")
+equipped_offset = Vector2(-16, 32)
+id = &"left_foot"
+name = "Left Foot"
+metadata/_custom_type_script = "uid://dovglatpiuiwq"

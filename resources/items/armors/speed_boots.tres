@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ArmorData" format=3 uid="uid://cufifummq0i15"]
+
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_epxp2"]
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="2_28xs2"]
+[ext_resource type="Resource" uid="uid://bcp2mkh57js88" path="res://resources/skills/medium_armor.tres" id="2_570fn"]
+[ext_resource type="Script" uid="uid://c41diincm70lm" path="res://resources/armor_data.gd" id="3_kuu33"]
+[ext_resource type="Resource" uid="uid://bfmx0eoljwlo4" path="res://resources/bodyparts/flesh/left_foot.tres" id="4_x024k"]
+[ext_resource type="Resource" uid="uid://dxywivmkh8nx3" path="res://resources/bodyparts/flesh/right_foot.tres" id="5_3ui42"]
+[ext_resource type="Resource" uid="uid://bki8i8pu8bkhb" path="res://resources/materials/leather.tres" id="6_eju8d"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="7_3ui42"]
+[ext_resource type="Resource" uid="uid://vihq1887xpw0" path="res://resources/properties/quickness.tres" id="8_eju8d"]
+
+[resource]
+script = ExtResource("3_kuu33")
+category = ExtResource("2_570fn")
+material = ExtResource("6_eju8d")
+equipped_on = Array[ExtResource("2_28xs2")]([ExtResource("4_x024k"), ExtResource("5_3ui42")])
+requires_all_slots = true
+properties = Array[ExtResource("7_3ui42")]([ExtResource("8_eju8d")])
+metadata/_custom_type_script = "uid://c41diincm70lm"

@@ -520,9 +520,9 @@ func _load_elements() -> void:
 				if child is Goal:
 					if not child.walkable:
 						push_warning(child.name, " isn't walkable!")
-				if child is Door:
-					if not child.requires or child.requires.is_empty():
-						push_warning(child.name, " has no requirements!")
+				#if child is Door:
+					#if not child.requires or child.requires.is_empty():
+						#push_warning(child.name, " has no requirements!")
 				if child is TeleportPad:
 					if not child.destination:
 						push_warning(child.name, " has no destination!")

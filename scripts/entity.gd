@@ -25,7 +25,8 @@ const CARRY_KG_PER_STRENGTH: float = 7.5
 const DEFAULT_HIT_MATERIAL: ShaderMaterial = preload("res://resources/materials/hit_flash.tres")
 
 @export_category("Basic")
-#@export var entity_race: RaceData = null
+## Not all entities have a class and the player can eventually control entities
+## without class.
 @export var entity_class: ClassData = null
 ## Optional name used by the journal; falls back to the node name when empty.
 @export var display_name: String = ""

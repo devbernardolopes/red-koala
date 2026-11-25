@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cpu7u7xenm2i3"]
+
+[ext_resource type="Script" uid="uid://b06rmnpgqswiu" path="res://scripts/base.gd" id="1_5o08e"]
+
+[node name="Grass01" type="Area2D" unique_id=1191015399]
+script = ExtResource("1_5o08e")
+metadata/_custom_type_script = "uid://b06rmnpgqswiu"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=208854763]
+color = Color(0.18039216, 0.88235295, 0.32156864, 1)
+polygon = PackedVector2Array(-32, 32, -32, -32, 32, -32, 32, 32)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=906000221]
+color = Color(0.1764706, 0.81960785, 0.11372549, 1)
+polygon = PackedVector2Array(-24, 16, -16, 8, -8, 16, -16, 16)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Polygon2D" unique_id=320521924]
+color = Color(0.1764706, 0.81960785, 0.11372549, 1)
+polygon = PackedVector2Array(8, -8, 8, 8, 16, 8)

@@ -51,9 +51,9 @@ static func armor_class(entity: Entity) -> int:
 			continue
 		var armor: ArmorData = item.data as ArmorData
 		defense += armor.defense
-		if armor.category == Helper.ArmorCategory.HEAVY:
+		if armor.category.id == &"heavy_armor":
 			has_heavy_armor = true
-		elif armor.category == Helper.ArmorCategory.MEDIUM:
+		elif armor.category.id == &"medium_armor":
 			has_medium_armor = true
 	var dexterity: int = ability_modifier(entity.dexterity)
 	if has_heavy_armor:

@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_b8la8"]
 [ext_resource type="Resource" uid="uid://hq5538mtrkmo" path="res://resources/bodyparts/flesh/neck.tres" id="2_ghgs0"]
 [ext_resource type="Resource" uid="uid://dflm6ih6qwfsq" path="res://resources/materials/gemstone.tres" id="2_j1x48"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="4_ghgs0"]
 
 [resource]
 script = ExtResource("2_b8la8")

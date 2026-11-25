@@ -1,14 +1,19 @@
 [gd_resource type="Resource" script_class="ArmorData" format=3 uid="uid://ckyi4fynx7la7"]
 
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_svv37"]
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_u3gnm"]
+[ext_resource type="Resource" uid="uid://cjor08j843nu" path="res://resources/damages/pierce.tres" id="2_1d150"]
 [ext_resource type="Resource" uid="uid://bqi4yfucp3uln" path="res://resources/bodyparts/flesh/front_torso.tres" id="2_u3gnm"]
 [ext_resource type="Resource" uid="uid://bki8i8pu8bkhb" path="res://resources/materials/leather.tres" id="3_pdt0a"]
+[ext_resource type="Resource" uid="uid://bcp2mkh57js88" path="res://resources/skills/medium_armor.tres" id="3_ubtsa"]
 [ext_resource type="Script" uid="uid://c41diincm70lm" path="res://resources/armor_data.gd" id="4_1d150"]
 
 [resource]
 script = ExtResource("4_1d150")
-defense = 2
-weight = 5.0
+defense = 3
+category = ExtResource("3_ubtsa")
+bonus_against = Array[ExtResource("1_u3gnm")]([ExtResource("2_1d150")])
+weight = 10.0
 material = ExtResource("3_pdt0a")
 equipped_on = Array[ExtResource("1_svv37")]([ExtResource("2_u3gnm")])
 id = &"studded_leather_vest"

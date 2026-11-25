@@ -7,7 +7,7 @@
 script = ExtResource("2_rpw4l")
 side = -1
 material = ExtResource("1_cxkkq")
-equipped_offset = Vector2(-16, 16)
+equipped_offset = Vector2(-16, 0)
 id = &"left_finger"
 name = "Left Finger"
 metadata/_custom_type_script = "uid://dovglatpiuiwq"

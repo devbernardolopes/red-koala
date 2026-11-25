@@ -30,7 +30,7 @@ func _ready() -> void:
 
 func _all_requirements_met() -> bool:
 	if requires.is_empty():
-		return false
+		return true
 	for goal in requires:
 		if not is_instance_valid(goal) or not goal.is_crated():
 			return false

@@ -14,10 +14,12 @@
 [ext_resource type="Resource" uid="uid://bpt5swh7par4j" path="res://resources/bodyparts/flesh/right_finger.tres" id="9_ukhdj"]
 [ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="10_yfkeh"]
 [ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="11_yydwb"]
+[ext_resource type="Resource" uid="uid://bfmx0eoljwlo4" path="res://resources/bodyparts/flesh/left_foot.tres" id="12_2gpv8"]
+[ext_resource type="Resource" uid="uid://dxywivmkh8nx3" path="res://resources/bodyparts/flesh/right_foot.tres" id="13_srgjj"]
 
 [resource]
 script = ExtResource("1_52x2r")
-body = Array[ExtResource("1_junc5")]([ExtResource("2_4i7am"), ExtResource("3_8lobo"), ExtResource("3_f0sgn"), ExtResource("4_ukk1q"), ExtResource("5_8lobo"), ExtResource("7_jbbho"), ExtResource("6_8o15j"), ExtResource("9_ukhdj"), ExtResource("10_yfkeh"), ExtResource("11_yydwb")])
+body = Array[ExtResource("1_junc5")]([ExtResource("2_4i7am"), ExtResource("3_8lobo"), ExtResource("3_f0sgn"), ExtResource("4_ukk1q"), ExtResource("5_8lobo"), ExtResource("7_jbbho"), ExtResource("6_8o15j"), ExtResource("9_ukhdj"), ExtResource("10_yfkeh"), ExtResource("11_yydwb"), ExtResource("12_2gpv8"), ExtResource("13_srgjj")])
 diet = ExtResource("7_f0sgn")
 corpse_visual = ExtResource("7_ukk1q")
 id = &"human"

@@ -2,12 +2,16 @@
 
 [ext_resource type="Script" uid="uid://c41diincm70lm" path="res://resources/armor_data.gd" id="1_17nom"]
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_dj2w6"]
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_vnfwi"]
 [ext_resource type="Resource" uid="uid://bqi4yfucp3uln" path="res://resources/bodyparts/flesh/front_torso.tres" id="2_nlwev"]
+[ext_resource type="Resource" uid="uid://bhym46nj5uns1" path="res://resources/skills/light_armor.tres" id="2_wffbc"]
 [ext_resource type="Resource" uid="uid://bki8i8pu8bkhb" path="res://resources/materials/leather.tres" id="3_nlwev"]
 
 [resource]
 script = ExtResource("1_17nom")
-weight = 4.0
+defense = 2
+category = ExtResource("2_wffbc")
+weight = 7.5
 material = ExtResource("3_nlwev")
 equipped_on = Array[ExtResource("1_dj2w6")]([ExtResource("2_nlwev")])
 id = &"leather_vest"

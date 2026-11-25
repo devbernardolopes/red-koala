@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DamageData" format=3 uid="uid://ctibsna4aaqw3"]
+
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_5f4di"]
+
+[resource]
+script = ExtResource("1_5f4di")
+id = &"magical"
+name = "Magical"
+metadata/_custom_type_script = "uid://cagxxxea2d3c8"

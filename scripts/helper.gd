@@ -7,18 +7,6 @@ enum DiceAdvantage {
 	ADVANTAGE = 1,
 }
 
-enum ArmorCategory {
-	LIGHT = 0,
-	MEDIUM = 1,
-	HEAVY = 2,
-}
-
-enum WeaponCategory {
-	LIGHT = 0,
-	MEDIUM = 1,
-	HEAVY = 2,
-}
-
 enum AnatomySide {
 	LEFT = -1, 
 	CENTER = 0,
