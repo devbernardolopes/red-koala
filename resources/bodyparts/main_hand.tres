@@ -6,6 +6,7 @@
 script = ExtResource("2_ba07b")
 side = 1
 equipped_offset = Vector2(16, 0)
+draw_order = 40
 id = &"main_hand"
 name = "Main Hand"
 metadata/_custom_type_script = "uid://dovglatpiuiwq"

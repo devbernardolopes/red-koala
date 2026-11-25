@@ -8,5 +8,6 @@ script = ExtResource("2_3tr0q")
 position = -1
 material = ExtResource("1_0aq60")
 id = &"back_torso"
-name = "Front Torso"
+name = "Back Torso"
+draw_order = -10
 metadata/_custom_type_script = "uid://dovglatpiuiwq"

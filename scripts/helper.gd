@@ -45,6 +45,18 @@ enum EntityTeam {
 	FOE = 3,
 }
 
+## Eight logical directions. Visuals only distinguish their horizontal side.
+enum Facing {
+	NORTH,
+	NORTH_EAST,
+	EAST,
+	SOUTH_EAST,
+	SOUTH,
+	SOUTH_WEST,
+	WEST,
+	NORTH_WEST,
+}
+
 enum MoveMode {
 	WALK = 1,
 	FLY = 2,
@@ -154,6 +166,27 @@ static func are_hostile(a: Entity, b: Entity) -> bool:
 		return false
 	return ((a.team == EntityTeam.FOE and b.team == EntityTeam.FRIEND) 
 			or (a.team == EntityTeam.FRIEND and b.team == EntityTeam.FOE))
+
+
+static func facing_from_direction(direction: Vector2i) -> Facing:
+	var dir: Vector2i = Vector2i(signi(direction.x), signi(direction.y))
+	match dir:
+		Vector2i.UP:
+			return Facing.NORTH
+		Vector2i(1, -1):
+			return Facing.NORTH_EAST
+		Vector2i.RIGHT:
+			return Facing.EAST
+		Vector2i(1, 1):
+			return Facing.SOUTH_EAST
+		Vector2i.DOWN:
+			return Facing.SOUTH
+		Vector2i(-1, 1):
+			return Facing.SOUTH_WEST
+		Vector2i.LEFT:
+			return Facing.WEST
+		_:
+			return Facing.NORTH_WEST
 
 
 static func has_property(target: Node, property: String) -> bool:

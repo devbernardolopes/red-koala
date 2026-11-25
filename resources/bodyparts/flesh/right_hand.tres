@@ -8,6 +8,7 @@ script = ExtResource("2_dtjyq")
 side = 1
 material = ExtResource("1_jdbia")
 equipped_offset = Vector2(16, 0)
+draw_order = 20
 id = &"right_hand"
 name = "Right Hand"
 metadata/_custom_type_script = "uid://dovglatpiuiwq"

@@ -1,14 +1,18 @@
 [gd_resource type="Resource" script_class="ArmorData" format=3 uid="uid://fwtxttjvlxu1"]
 
+[ext_resource type="Script" uid="uid://cagxxxea2d3c8" path="res://resources/damage_data.gd" id="1_n0idk"]
 [ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_v2uim"]
 [ext_resource type="Script" uid="uid://c41diincm70lm" path="res://resources/armor_data.gd" id="2_2hxc7"]
+[ext_resource type="Resource" uid="uid://bhym46nj5uns1" path="res://resources/skills/light_armor.tres" id="2_c0pjj"]
 [ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="2_d8f6c"]
 [ext_resource type="Resource" uid="uid://cq70dywas23ju" path="res://resources/materials/wood.tres" id="3_iq77e"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="6_l1h62"]
 
 [resource]
 script = ExtResource("2_2hxc7")
 defense = 2
-weight = 8.0
+category = ExtResource("2_c0pjj")
+weight = 1.5
 material = ExtResource("3_iq77e")
 equipped_on = Array[ExtResource("1_v2uim")]([ExtResource("2_d8f6c")])
 id = &"wooden_shield"

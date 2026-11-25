@@ -29,16 +29,20 @@ const MOVE_ACTIONS: Array[StringName] = [
 @onready var ground_panel: HudPanel = %GroundPanel
 @onready var character_panel: HudCharacterPanel = %CharacterPanel
 @onready var grimoire_panel: HudPanel = %GrimoirePanel
+@onready var action_panel: HudPanel = %ActionPanel
 
 var _inventory_items: Array[Item] = []
 var _ground_items: Array[Item] = []
 var _focused_panel: HudPanel = null
+var _previous_focused_panel: HudPanel = null
+var _action_open: bool = false
 
 
 func _ready() -> void:
 	journal_panel.selectable = false
 	grimoire_panel.selectable = false
 	grimoire_panel.set_rows([])
+	action_panel.visible = false
 	inventory_panel.selection_changed.connect(_on_inventory_selection_changed)
 	Journal.entry_added.connect(_on_journal_entry_added)
 	Journal.cleared.connect(_on_journal_cleared)
@@ -62,7 +66,10 @@ func set_inventory(items: Array[Item], current_item: Item = null,
 			continue
 		if not _inventory_items.has(item) or equipped.has(item):
 			continue
-		rows.append(_make_equipped_row(item, body_part.name))
+		var slot_names: Array[String] = []
+		for slot: AnatomyData in entity.get_item_slots(item):
+			slot_names.append(slot.name)
+		rows.append(_make_equipped_row(item, " + ".join(slot_names)))
 		equipped.append(item)
 	# An equipped item missing from the anatomy still deserves a row, even if
 	# that state should not happen.
@@ -111,6 +118,34 @@ func get_selected_inventory_item() -> Item:
 	return inventory_panel.get_selected_meta() as Item
 
 
+func show_attack_confirmation() -> void:
+	_action_open = true
+	_previous_focused_panel = _focused_panel
+	action_panel.visible = true
+	action_panel.set_rows([
+		{"text": "Yes", "meta": true, "items": [true], "dim": false},
+		{"text": "No", "meta": false, "items": [false], "dim": false},
+	], false)
+	_set_focus(action_panel)
+
+
+func has_attack_confirmation() -> bool:
+	return _action_open
+
+
+func get_attack_confirmation() -> bool:
+	return bool(action_panel.get_selected_meta())
+
+
+func dismiss_attack_confirmation() -> void:
+	if not _action_open:
+		return
+	_action_open = false
+	action_panel.visible = false
+	_set_focus(_previous_focused_panel if _previous_focused_panel else inventory_panel)
+	_previous_focused_panel = null
+
+
 ## Consumes HUD-related input. Returns [code]true[/code] when the event must not
 ## reach gameplay.
 func handle_input(event: InputEvent) -> bool:
@@ -131,6 +166,14 @@ func handle_input(event: InputEvent) -> bool:
 		return true
 	if not Input.is_action_pressed(&"inventory_modifier"):
 		return false
+	if _action_open:
+		for action: StringName in MOVE_ACTIONS:
+			if event.is_action_pressed(action):
+				if action == &"up":
+					action_panel.select_previous()
+				elif action == &"down":
+					action_panel.select_next()
+				return true
 	for action: StringName in MOVE_ACTIONS:
 		if event.is_action_pressed(action):
 			_handle_navigation(action)
@@ -155,6 +198,7 @@ func _set_focus(panel: HudPanel) -> void:
 	_focused_panel = panel
 	inventory_panel.set_focused(panel == inventory_panel)
 	ground_panel.set_focused(panel == ground_panel)
+	action_panel.set_focused(panel == action_panel)
 
 
 func _get_body_parts(entity: Entity) -> Array[AnatomyData]:

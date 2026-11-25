@@ -11,7 +11,7 @@ const MOVE_ACTIONS: Array[StringName] = [
 ## Actions that end a held move when pressed, either because they consume the
 ## turn (switch, wait, take, drop, equip) or because the HUD uses them.
 const INTERRUPT_ACTIONS: Array[StringName] = [
-	&"switch_player_entity", &"wait", &"take", &"drop", &"equip",
+	&"switch_player_entity", &"wait", &"take", &"drop", &"interact",
 	&"toggle_inventory", &"toggle_ground", &"toggle_journal",
 	&"toggle_entity", &"toggle_grimoire",
 ]
@@ -44,6 +44,8 @@ var held_move: HeldMove = null
 ## Entity whose [signal Entity.stats_changed] currently drives the inventory
 ## footer. Tracked so switching the active player reconnects exactly once.
 var _stats_entity: Entity = null
+var _attack_prompt_attacker: Entity = null
+var _attack_prompt_target: Entity = null
 
 @onready var canvas_modulate: CanvasModulate = $CanvasModulate
 @onready var fog_of_war: FogOfWar = $FogOfWar
@@ -112,6 +114,8 @@ func _ready() -> void:
 	follow_camera.target = current_player_entity
 	MusicPlayer.play_music(Helper.FOREBODING_THEME, true)
 	turn_manager.setup(self)
+	turn_manager.actions.attack_confirmation_requested.connect(
+			_on_attack_confirmation_requested)
 	# Let the scene finish becoming ready first: brains initialize their
 	# behavior trees against the scene root when it is ready.
 	turn_manager.start.call_deferred()
@@ -155,6 +159,9 @@ func _input(event: InputEvent) -> void:
 ## [method _unhandled_input]; this only drives the repeats.
 func _process(delta: float) -> void:
 	if not held_move or not held_move.active:
+		return
+	if hud and hud.has_attack_confirmation():
+		_cancel_held_move()
 		return
 	var actor: Entity = held_move.actor
 	if (_input_disabled
@@ -202,6 +209,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	# the current hold before it is handled.
 	if _hold_interrupted_by(event):
 		_cancel_held_move()
+	if hud.has_attack_confirmation():
+		if event.is_action_pressed(&"interact"):
+			_resolve_attack_confirmation()
+			get_viewport().set_input_as_handled()
+			return
+		var prompt_move_action: StringName = _action_for_event(event)
+		if prompt_move_action != &"" and not Input.is_action_pressed(&"inventory_modifier"):
+			hud.dismiss_attack_confirmation()
+		elif (event.is_action_pressed(&"switch_player_entity")
+				or event.is_action_pressed(&"wait")
+				or event.is_action_pressed(&"take")
+				or event.is_action_pressed(&"drop")):
+			hud.dismiss_attack_confirmation()
 	if hud.handle_input(event):
 		get_viewport().set_input_as_handled()
 		return
@@ -229,8 +249,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			turn_manager.on_player_action()
 		get_viewport().set_input_as_handled()
 		return
-	# The action "equip" also unequips.
-	if event.is_action_pressed("equip"):
+	# The contextual interact action equips or unequips inventory items.
+	if event.is_action_pressed("interact"):
 		var item: Item = current_player_entity.current_inventory_item
 		if not item:
 			return
@@ -246,6 +266,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	# player, but the hold belongs to whoever performed this first step.
 	var actor: Entity = current_player_entity
 	turn_manager.actions.bump(actor, _direction_from_action(move_action))
+	if hud.has_attack_confirmation():
+		get_viewport().set_input_as_handled()
+		return
 	# Read the flag before resolving the turn, which resets it.
 	if not turn_manager.actions.has_acted():
 		return
@@ -298,6 +321,34 @@ func _hold_interrupted_by(event: InputEvent) -> bool:
 func _cancel_held_move() -> void:
 	if held_move:
 		held_move.cancel()
+
+
+func _on_attack_confirmation_requested(attacker: Entity, target: Entity) -> void:
+	if attacker != current_player_entity or not is_instance_valid(target):
+		return
+	_attack_prompt_attacker = attacker
+	_attack_prompt_target = target
+	_cancel_held_move()
+	hud.show_attack_confirmation()
+
+
+func _resolve_attack_confirmation() -> void:
+	var accepted: bool = hud.get_attack_confirmation()
+	hud.dismiss_attack_confirmation()
+	var attacker: Entity = _attack_prompt_attacker
+	var target: Entity = _attack_prompt_target
+	_attack_prompt_attacker = null
+	_attack_prompt_target = null
+	if not accepted:
+		return
+	if (attacker != current_player_entity or not is_instance_valid(attacker)
+			or not is_instance_valid(target) or target.is_dead):
+		return
+	if not turn_manager or not turn_manager.is_player_turn():
+		return
+	target.team = Helper.EntityTeam.FOE
+	if turn_manager.actions.attack(attacker, target):
+		turn_manager.on_player_action()
 
 
 func _update_inventory() -> void:
@@ -529,6 +580,10 @@ func _load_elements() -> void:
 				if Helper.has_property(child, "data") and child is Item:
 					if not child.data:
 						push_warning(child.name, " has no data!")
+					if child.data is ArmorData or child.data is WeaponData:
+						if not child.data.category:
+							push_warning(child.name, " has no category!")
+					
 	# Walls live in a TileMapLayer, so they are not scene-tree elements.
 	if walls_node:
 		for cell: Vector2i in walls_node.get_used_cells():

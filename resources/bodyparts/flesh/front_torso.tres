@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_axq4f")
 position = 1
+draw_order = 10
 material = ExtResource("1_qjk4y")
 id = &"front_torso"
 name = "Front Torso"

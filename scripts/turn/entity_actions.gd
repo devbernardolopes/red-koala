@@ -24,6 +24,10 @@ var last_attack_killed: bool = false
 var _actor: Entity = null
 var _acted: bool = false
 
+## UI requests stay out of this world-mutation layer. The universe decides how
+## to present the confirmation and calls [method attack] after acceptance.
+signal attack_confirmation_requested(attacker: Entity, target: Entity)
+
 
 func begin_turn(actor: Entity) -> void:
 	_actor = actor
@@ -53,6 +57,7 @@ func move(entity: Entity, direction: Vector2i) -> bool:
 			int(direction.y > 0) - int(direction.y < 0))
 	if dir == Vector2i.ZERO:
 		return false
+	entity.face(dir)
 	if Encumbrance.blocks_movement(entity.encumbrance_level):
 		if entity.is_playable:
 			Journal.too_heavy(entity)
@@ -209,6 +214,7 @@ func attack(entity: Entity, target: Entity,
 		return false
 	if not board.can_reach_adjacent_attack(entity, target):
 		return false
+	entity.face(board.get_origin(target) - board.get_origin(entity))
 	# Visual only and non-blocking: the lunge must never delay the turn.
 	var animator: VisualAnimator = entity.get_visual()
 	if animator:
@@ -254,6 +260,7 @@ func bump(entity: Entity, direction: Vector2i) -> bool:
 			int(direction.y > 0) - int(direction.y < 0))
 	if dir == Vector2i.ZERO:
 		return false
+	entity.face(dir)
 	var target_tile: Vector2i = board.get_origin(entity) + dir
 	for element: Base in board.get_elements_at(target_tile):
 		if not element is Entity:
@@ -261,12 +268,15 @@ func bump(entity: Entity, direction: Vector2i) -> bool:
 		var target: Entity = element as Entity
 		if not is_instance_valid(target) or target == entity or target.is_dead:
 			continue
-		if not Helper.are_hostile(entity, target):
-			continue
 		if not perception or not perception.can_see(entity, target):
 			continue
 		if board.can_reach_adjacent_attack(entity, target):
-			return attack(entity, target)
+			if Helper.are_hostile(entity, target):
+				return attack(entity, target)
+			if (entity.is_playable and not target.is_playable and target.brain
+					and target.team != Helper.EntityTeam.FOE):
+				attack_confirmation_requested.emit(entity, target)
+				return false
 		break
 	return move(entity, dir)
 

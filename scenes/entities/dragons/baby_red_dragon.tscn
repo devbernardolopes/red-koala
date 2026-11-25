@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold_piece.tres" id="3_e1ce3"]
 [ext_resource type="Resource" uid="uid://c0g8mgg8ptmpu" path="res://resources/entities/dragons/baby_red_dragon.tres" id="4_6eor5"]
 [ext_resource type="Script" uid="uid://cy4bk2kt8auke" path="res://scripts/ai/brain_component.gd" id="5_e1ce3"]
-[ext_resource type="BehaviorTree" uid="uid://c082n2y65n2an" path="res://ai/brains/neutral_wanderer.tres" id="6_e1ce3"]
+[ext_resource type="BehaviorTree" path="res://ai/brains/neutral_or_foe.tres" id="6_e1ce3"]
 
 [node name="BabyRedDragon" type="Area2D" unique_id=175289423]
 collision_layer = 4

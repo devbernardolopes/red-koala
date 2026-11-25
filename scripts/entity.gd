@@ -71,11 +71,9 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 		_toggle_flying(v)
 @export var can_see_invisible: bool = false
 @export_category("Mechanics")
-## TODO: Must implement a facing mechanic flipping the entity's visuals left and
-## right when needed and also having effects in the field of view if the field
-## of view is not a square or a circle (this field of view specifics is not 
-## implemented yet).
-#@export var facing: 
+## Logical eight-way facing. Vertical facing preserves the latest visual side.
+@export var facing: Helper.Facing = Helper.Facing.SOUTH
+var _visual_facing_right: bool = true
 ## This should be relative to the turn-based mechanic. Albeit I am not sure if
 ## it should be called `energy` instead.
 @export var speed: float = 10.0
@@ -419,6 +417,20 @@ func get_equipped_items() -> Array[Item]:
 	return result
 
 
+## Every body part occupied by [param item], in this race's authored body order.
+func get_item_slots(item: Item) -> Array[AnatomyData]:
+	var result: Array[AnatomyData] = []
+	if not item or not (data is EntityData):
+		return result
+	var race: RaceData = (data as EntityData).race
+	if not race:
+		return result
+	for part: AnatomyData in race.body:
+		if equipment.get(part) == item:
+			result.append(part)
+	return result
+
+
 ## Every property granted to this entity, deduplicated by [member BaseData.id].
 ## The order of precedence is [member EntityData.properties], the properties of
 ## every equipped item and finally [member added_properties]. Always returns a
@@ -501,23 +513,20 @@ func equip(item: Item) -> EquipResult:
 	else:
 		if not (item.data as ItemData).equipped_on:
 			return EquipResult.INVALID
-		for bodypart: AnatomyData in (item.data as ItemData).equipped_on:
-			var bp: AnatomyData = _find_body_part(bodypart)
-			if not bp:
-				continue
-			if equipment.has(bp):
-				continue
-			equipment[bp] = item
+		var item_data: ItemData = item.data as ItemData
+		var slots: Array[AnatomyData] = _resolve_equipment_slots(item_data)
+		if slots.is_empty():
+			result = EquipResult.NO_BODY_PART
+		else:
+			for slot: AnatomyData in slots:
+				equipment[slot] = item
 			item.is_equipped = true
-			item.position = Vector2.ZERO + bp.equipped_offset
+			item.position = Vector2.ZERO if item_data.requires_all_slots else slots[0].equipped_offset
 			# TODO: Equipped item visuals only inherit the hit material when
 			# their Polygon2D uses the parent material; the extra Item node
 			# between it and the entity polygon needs more than one line.
 			polygon.add_child(item)
 			result = EquipResult.EQUIPPED
-			break
-		if result == EquipResult.INVALID:
-			result = EquipResult.NO_BODY_PART
 	_update_properties()
 	inventory_changed.emit()
 	_sort_equipped_items()
@@ -552,12 +561,29 @@ func _update_encumbrance() -> void:
 	encumbrance_changed.emit(_level)
 
 
-## TODO: Must implement this function that will sort the equipped items
-## visually so that items equipped on some bodyparts such as hands will be
-## rendered on top of other items.
 func _sort_equipped_items() -> void:
-	if not equipment or equipment.is_empty():
+	if not polygon or equipment.is_empty():
 		return
+	var entries: Array[Dictionary] = []
+	for item: Item in get_equipped_items():
+		var slots: Array[AnatomyData] = get_item_slots(item)
+		var order: int = slots[0].draw_order if not slots.is_empty() else 0
+		for slot: AnatomyData in slots:
+			order = maxi(order, slot.draw_order)
+		item.show_behind_parent = order < 0
+		var slot_rank: int = 0
+		if data is EntityData and (data as EntityData).race and not slots.is_empty():
+			slot_rank = ((data as EntityData).race.body as Array[AnatomyData]).find(slots[0])
+		entries.append({"item": item, "order": order, "slot_rank": slot_rank})
+	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if int(a["order"]) != int(b["order"]):
+			return int(a["order"]) < int(b["order"])
+		return int(a["slot_rank"]) < int(b["slot_rank"])
+	)
+	for entry: Dictionary in entries:
+		var item: Item = entry["item"] as Item
+		if item and item.get_parent() == polygon:
+			polygon.move_child(item, polygon.get_child_count() - 1)
 
 
 ## Clears the slot holding [param item] regardless of its mystic modifier.
@@ -566,14 +592,11 @@ func _sort_equipped_items() -> void:
 func force_unequip(item: Item) -> bool:
 	if not item:
 		return false
-	var slot: AnatomyData = null
-	for part: AnatomyData in equipment:
-		if equipment[part] == item:
-			slot = part
-			break
-	if not slot:
+	var slots: Array[AnatomyData] = get_item_slots(item)
+	if slots.is_empty():
 		return false
-	equipment.erase(slot)
+	for slot: AnatomyData in slots:
+		equipment.erase(slot)
 	item.is_equipped = false
 	if polygon and item.get_parent() == polygon:
 		polygon.remove_child(item)
@@ -590,6 +613,32 @@ func _find_body_part(bodypart: AnatomyData) -> AnatomyData:
 		if candidate == bodypart:
 			return candidate
 	return null
+
+
+## Compatible free slots for an item. All-or-nothing equipment must resolve
+## every requested part before changing any equipment state.
+func _resolve_equipment_slots(item_data: ItemData) -> Array[AnatomyData]:
+	var slots: Array[AnatomyData] = []
+	for bodypart: AnatomyData in item_data.equipped_on:
+		var slot: AnatomyData = _find_body_part(bodypart)
+		if item_data.requires_all_slots:
+			if not slot or equipment.has(slot):
+				return []
+			slots.append(slot)
+		elif slot and not equipment.has(slot):
+			return [slot]
+	return slots
+
+
+func face(direction: Vector2i) -> void:
+	if direction == Vector2i.ZERO:
+		return
+	facing = Helper.facing_from_direction(direction)
+	if direction.x == 0:
+		return
+	_visual_facing_right = direction.x > 0
+	if polygon:
+		polygon.scale.x = 1.0 if _visual_facing_right else -1.0
 
 
 func take(item: Item) -> bool:

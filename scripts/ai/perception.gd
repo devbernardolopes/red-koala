@@ -55,15 +55,13 @@ func can_see(observer: Entity, target: Entity) -> bool:
 		return false
 	if target.is_invisible and not observer.can_see_invisible:
 		return false
-	if _distance(observer, target) > observer.fov:
-		return false
 	# Sight starts at the observer's centre tile and succeeds when any cell of
 	# the target's footprint is visible. Single-tile entities behave as before.
 	var observer_center: Vector2i = Board.footprint_center(
 			board.get_origin(observer), observer.tile_size)
 	var target_origin: Vector2i = board.get_origin(target)
 	for cell: Vector2i in Board.footprint_cells(target_origin, target.tile_size):
-		if board.has_line_of_sight(observer_center, cell):
+		if is_tile_in_fov(observer, cell) and board.has_line_of_sight(observer_center, cell):
 			return true
 	return false
 
@@ -78,7 +76,8 @@ func visible_tiles(observer: Entity) -> Array[Vector2i]:
 	for x: int in range(center.x - size, center.x + size + 1):
 		for y: int in range(center.y - size, center.y + size + 1):
 			var tile: Vector2i = Vector2i(x, y)
-			if board.has_line_of_sight(center, tile) and not board.blocks_sight(tile):
+			if (is_tile_in_fov(observer, tile) and board.has_line_of_sight(center, tile)
+					and not board.blocks_sight(tile)):
 				result.append(tile)
 	return result
 
@@ -94,9 +93,21 @@ func lit_tiles(observer: Entity) -> Array[Vector2i]:
 	for x: int in range(center.x - size, center.x + size + 1):
 		for y: int in range(center.y - size, center.y + size + 1):
 			var tile: Vector2i = Vector2i(x, y)
-			if board.has_line_of_sight(center, tile):
+			if is_tile_in_fov(observer, tile) and board.has_line_of_sight(center, tile):
 				result.append(tile)
 	return result
+
+
+## Current FOV remains square. Directional shapes will replace only this
+## predicate, keeping entity sight, lighting and fog in agreement.
+func is_tile_in_fov(observer: Entity, tile: Vector2i) -> bool:
+	if not board or not is_instance_valid(observer):
+		return false
+	var center: Vector2i = Board.footprint_center(
+			board.get_origin(observer), observer.tile_size)
+	var delta: Vector2i = tile - center
+	var size: int = maxi(observer.fov, 1)
+	return absi(delta.x) <= size and absi(delta.y) <= size
 
 
 func _distance(observer: Entity, target: Entity) -> int:
