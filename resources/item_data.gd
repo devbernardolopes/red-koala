@@ -4,6 +4,7 @@ extends BaseData
 ## Weight always in kilograms (Kg).
 @export var weight: float = 1.0
 @export var material: MaterialData = null
+## Exactly where (bodypart) this item can be equipped.
 @export var equipped_on: Array[AnatomyData] = []
 ## If true then this item can only be equipped if all [param equipped_on] of an
 ## entity exists for the entity and are currently free. Then it will use all
