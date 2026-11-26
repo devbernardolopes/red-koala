@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EntityData" format=3 uid="uid://bbpbfi26jcqyd"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_u1hwb"]
+[ext_resource type="Resource" uid="uid://bweqnk286bshg" path="res://resources/properties/dark_vision.tres" id="2_mgnk2"]
+[ext_resource type="Script" uid="uid://bkurooso73yqq" path="res://resources/resistance_data.gd" id="2_ugsue"]
+[ext_resource type="Resource" uid="uid://cuathr6x53pxr" path="res://resources/races/demon.tres" id="3_l0wnd"]
+[ext_resource type="Script" uid="uid://b3qjjrx38oqgu" path="res://resources/entity_data.gd" id="3_mgnk2"]
+[ext_resource type="Resource" uid="uid://bqxtprr7rmjxk" path="res://resources/properties/conflict.tres" id="3_yhqvl"]
+[ext_resource type="Resource" uid="uid://yw6f5dbngtct" path="res://resources/resistances/fire.tres" id="6_tup78"]
+
+[resource]
+script = ExtResource("3_mgnk2")
+race = ExtResource("3_l0wnd")
+resistances = Array[ExtResource("2_ugsue")]([ExtResource("6_tup78")])
+properties = Array[ExtResource("1_u1hwb")]([ExtResource("2_mgnk2"), ExtResource("3_yhqvl")])
+xp_reward = 50
+id = &"basic_demon"
+name = "Basic Demon"
+metadata/_custom_type_script = "uid://b3qjjrx38oqgu"

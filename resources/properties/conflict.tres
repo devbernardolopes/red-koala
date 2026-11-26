@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PropertyData" format=3 uid="uid://bqxtprr7rmjxk"]
+
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="1_1b1ko"]
+
+[resource]
+script = ExtResource("1_1b1ko")
+id = &"conflict"
+name = "Conflict"
+description = "Incites aggression and violence in those around you, driving even normally peaceful entities to attack one another. Useful but dangerous, it demands caution and comes at the cost of increased nutritional needs."
+metadata/_custom_type_script = "uid://cwd2d08k5cedt"

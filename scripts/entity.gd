@@ -162,6 +162,7 @@ func _init_values() -> void:
 	max_mana_points = (entity_class as ClassData).base_mana_points
 	mana_points = max_mana_points
 	base_speed = speed
+	xp = Helper.LEVEL_CHART.get(level)
 
 
 ## Adds [param amount] experience and applies every level-up it unlocks.

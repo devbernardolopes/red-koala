@@ -302,6 +302,7 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAQACAAAAAAAAAAA
 tile_set = SubResource("TileSet_7tiev")
 
 [node name="FogOfWar" type="Node2D" parent="." unique_id=1634353261]
+visible = false
 script = ExtResource("fog_of_war")
 
 [node name="FogFull" type="TileMapLayer" parent="FogOfWar" unique_id=1972793825]

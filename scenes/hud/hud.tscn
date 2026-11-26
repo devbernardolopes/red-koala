@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b7ag8l0jgfq01"]
 
-[ext_resource type="PackedScene" path="res://scenes/hud/hud_panel.tscn" id="1_panel"]
+[ext_resource type="PackedScene" uid="uid://5bt5e646fgr3" path="res://scenes/hud/hud_panel.tscn" id="1_panel"]
 [ext_resource type="Script" uid="uid://1w3g8qc2074i" path="res://scripts/hud/hud.gd" id="2_hud"]
 [ext_resource type="Theme" uid="uid://bx5vnqrok4xjc" path="res://resources/themes/hud_theme.tres" id="3_theme"]
 [ext_resource type="PackedScene" uid="uid://4v704a00bu6d" path="res://scenes/hud/character_panel.tscn" id="4_character"]
@@ -33,10 +33,10 @@ theme_override_constants/separation = 0
 
 [node name="JournalPanel" parent="Root/JournalSlot" unique_id=2020366550 instance=ExtResource("1_panel")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(232, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 title = "Journal"
-body_height = 180.0
 selectable = false
 
 [node name="RightColumn" type="VBoxContainer" parent="Root" unique_id=174940479]
@@ -60,12 +60,14 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 title = "Inventory"
+start_collapsed = true
 show_footer = true
 
 [node name="GroundPanel" parent="Root/RightColumn" unique_id=1254471009 instance=ExtResource("1_panel")]
 unique_name_in_owner = true
 layout_mode = 2
 title = "Ground"
+start_collapsed = true
 
 [node name="LeftColumn" type="VBoxContainer" parent="Root" unique_id=145291175]
 layout_mode = 1
@@ -84,11 +86,13 @@ alignment = 2
 [node name="CharacterPanel" parent="Root/LeftColumn" unique_id=2105710970 instance=ExtResource("4_character")]
 unique_name_in_owner = true
 layout_mode = 2
+start_collapsed = true
 
 [node name="GrimoirePanel" parent="Root/LeftColumn" unique_id=1137758476 instance=ExtResource("1_panel")]
 unique_name_in_owner = true
 layout_mode = 2
 title = "Grimoire"
+start_collapsed = true
 selectable = false
 
 [node name="ActionSlot" type="VBoxContainer" parent="Root" unique_id=490649338]

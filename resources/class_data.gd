@@ -18,3 +18,4 @@ extends BaseData
 @export var feats: Array[FeatData] = []
 ## Skills an entity of this class starts with.
 @export var skills: Array[SkillData] = []
+#@export var base_abilities: Array[]

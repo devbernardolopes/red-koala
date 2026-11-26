@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://xnjsq70ga7m6"]
+
+[ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_xcvk7"]
+[ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_rbf7h"]
+[ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold_piece.tres" id="3_7fqnx"]
+[ext_resource type="Resource" uid="uid://bbpbfi26jcqyd" path="res://resources/entities/demons/basic_demon.tres" id="4_fti5w"]
+
+[node name="BasicDemon" type="Area2D" unique_id=585939802]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_xcvk7")
+strength = 16
+dexterity = 14
+constitution = 16
+charisma = 9
+wisdom = 9
+intelligence = 16
+level = 5
+max_hit_points = 50
+auto_take = Array[ExtResource("2_rbf7h")]([ExtResource("3_7fqnx")])
+speed = 25.0
+data = ExtResource("4_fti5w")
+walkable = false
+metadata/_custom_type_script = "uid://tdfdon0mic37"
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1927884611]
+color = Color(0.5574536, 0, 0.06879844, 1)
+polygon = PackedVector2Array(-16, 32, -16, 24, -16, 16, -8, 8, -8, 0, -8, -8, -16, 0, -16, 8, -24, 8, -24, 0, -16, -8, -8, -16, 0, -16, -8, -24, -8, -32, 0, -24, 8, -32, 8, -24, 0, -16, 8, -16, 16, -8, 24, 0, 24, 8, 16, 8, 16, 0, 8, -8, 8, 0, 8, 8, 16, 16, 16, 24, 16, 32, 8, 32, 8, 24, 8, 16, 0, 16, -8, 16, -8, 24, -8, 32)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D" unique_id=393952842]
+color = Color(0.39607844, 0.3254902, 0, 1)
+polygon = PackedVector2Array(-8, 8, 8, 8, 0, 16)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Polygon2D" unique_id=1523317266]
+color = Color(0.23921569, 0.105882354, 0.03529412, 1)
+polygon = PackedVector2Array(-16, 32, -16, 24, -8, 32)
+
+[node name="Polygon2D3" type="Polygon2D" parent="Polygon2D" unique_id=852126073]
+color = Color(0.23921569, 0.105882354, 0.03529412, 1)
+polygon = PackedVector2Array(8, 32, 16, 24, 16, 32)

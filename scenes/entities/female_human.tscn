@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://tdfdon0mic37" path="res://scripts/entity.gd" id="1_ua74j"]
 [ext_resource type="Script" uid="uid://dtsnprxxyisjd" path="res://resources/item_data.gd" id="2_6f4ba"]
 [ext_resource type="Resource" uid="uid://bf0c7wgtf8xjp" path="res://resources/items/currencies/gold_piece.tres" id="3_jnkt0"]
-[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/human.tres" id="4_prg8b"]
+[ext_resource type="Resource" uid="uid://d37mgwksvm4dd" path="res://resources/entities/humans/human.tres" id="4_prg8b"]
 
 [node name="FemaleHuman" type="Area2D" unique_id=47279794]
 collision_layer = 4

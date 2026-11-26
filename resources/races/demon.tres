@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="RaceData" format=3 uid="uid://cuathr6x53pxr"]
+
+[ext_resource type="Script" uid="uid://dovglatpiuiwq" path="res://resources/anatomy_data.gd" id="1_chcfc"]
+[ext_resource type="Script" uid="uid://dtlu1bpk88pat" path="res://resources/ability_score_data.gd" id="1_fysgh"]
+[ext_resource type="Resource" uid="uid://d3rk5e0f0iu46" path="res://resources/abilities/strength.tres" id="2_eyrhy"]
+[ext_resource type="PackedScene" uid="uid://bslwnv8q4raki" path="res://scenes/corpses/humanoid_corpse.tscn" id="2_lmnkk"]
+[ext_resource type="Script" uid="uid://c86idpjgqck1t" path="res://resources/race_data.gd" id="2_t6lb1"]
+[ext_resource type="Resource" uid="uid://7kft2oymoe4x" path="res://resources/diets/carnivore.tres" id="3_ckevh"]
+[ext_resource type="Resource" uid="uid://1q2bf3f7jmwx" path="res://resources/abilities/dexterity.tres" id="3_ws6c4"]
+[ext_resource type="Resource" uid="uid://clxwq0fc1bmfd" path="res://resources/abilities/constitution.tres" id="4_d3441"]
+[ext_resource type="Resource" uid="uid://ux22355ctfb2" path="res://resources/abilities/intelligence.tres" id="5_bwuh8"]
+[ext_resource type="Resource" uid="uid://dcu5s4ga3vifh" path="res://resources/abilities/wisdom.tres" id="6_bs8f6"]
+[ext_resource type="Resource" uid="uid://n8jk12gqyvcs" path="res://resources/abilities/charisma.tres" id="7_aq7nu"]
+[ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="9_3fens"]
+[ext_resource type="Resource" uid="uid://1qppwvmo7jvj" path="res://resources/bodyparts/offhand.tres" id="10_6hsf0"]
+[ext_resource type="Resource" uid="uid://bbkb0pcptmc60" path="res://resources/bodyparts/flesh/head.tres" id="11_2on38"]
+[ext_resource type="Resource" uid="uid://hq5538mtrkmo" path="res://resources/bodyparts/flesh/neck.tres" id="12_s8dhy"]
+[ext_resource type="Resource" uid="uid://bqi4yfucp3uln" path="res://resources/bodyparts/flesh/front_torso.tres" id="13_6qqlf"]
+[ext_resource type="Resource" uid="uid://bj8sffjobhaoe" path="res://resources/bodyparts/flesh/back_torso.tres" id="14_mxvya"]
+[ext_resource type="Resource" uid="uid://h6s3b72dukmt" path="res://resources/bodyparts/flesh/left_hand.tres" id="15_vn7qw"]
+[ext_resource type="Resource" uid="uid://d0ahyovs484h4" path="res://resources/bodyparts/flesh/left_finger.tres" id="16_0xhwb"]
+[ext_resource type="Resource" uid="uid://do7mb8vthvo56" path="res://resources/bodyparts/flesh/right_hand.tres" id="17_rggc5"]
+[ext_resource type="Resource" uid="uid://bpt5swh7par4j" path="res://resources/bodyparts/flesh/right_finger.tres" id="18_auvph"]
+[ext_resource type="Resource" uid="uid://2a6ijiu5l7pn" path="res://resources/bodyparts/flesh/left_leg.tres" id="19_ldoyg"]
+[ext_resource type="Resource" uid="uid://bfmx0eoljwlo4" path="res://resources/bodyparts/flesh/left_foot.tres" id="20_yikni"]
+[ext_resource type="Resource" uid="uid://dusnsot4djsg6" path="res://resources/bodyparts/flesh/right_leg.tres" id="21_aanrm"]
+[ext_resource type="Resource" uid="uid://dxywivmkh8nx3" path="res://resources/bodyparts/flesh/right_foot.tres" id="22_ep37t"]
+
+[sub_resource type="Resource" id="Resource_m2qgp"]
+script = ExtResource("1_fysgh")
+ability = ExtResource("2_eyrhy")
+score = 16
+metadata/_custom_type_script = "uid://dtlu1bpk88pat"
+
+[sub_resource type="Resource" id="Resource_f8pna"]
+script = ExtResource("1_fysgh")
+ability = ExtResource("3_ws6c4")
+score = 11
+metadata/_custom_type_script = "uid://dtlu1bpk88pat"
+
+[sub_resource type="Resource" id="Resource_hoe0h"]
+script = ExtResource("1_fysgh")
+ability = ExtResource("4_d3441")
+score = 14
+metadata/_custom_type_script = "uid://dtlu1bpk88pat"
+
+[sub_resource type="Resource" id="Resource_evimd"]
+script = ExtResource("1_fysgh")
+ability = ExtResource("5_bwuh8")
+score = 12
+metadata/_custom_type_script = "uid://dtlu1bpk88pat"
+
+[sub_resource type="Resource" id="Resource_62dvd"]
+script = ExtResource("1_fysgh")
+ability = ExtResource("6_bs8f6")
+score = 9
+metadata/_custom_type_script = "uid://dtlu1bpk88pat"
+
+[sub_resource type="Resource" id="Resource_g5pax"]
+script = ExtResource("1_fysgh")
+ability = ExtResource("7_aq7nu")
+score = 6
+metadata/_custom_type_script = "uid://dtlu1bpk88pat"
+
+[resource]
+script = ExtResource("2_t6lb1")
+body = Array[ExtResource("1_chcfc")]([ExtResource("9_3fens"), ExtResource("10_6hsf0"), ExtResource("11_2on38"), ExtResource("12_s8dhy"), ExtResource("13_6qqlf"), ExtResource("14_mxvya"), ExtResource("15_vn7qw"), ExtResource("16_0xhwb"), ExtResource("17_rggc5"), ExtResource("18_auvph"), ExtResource("19_ldoyg"), ExtResource("20_yikni"), ExtResource("21_aanrm"), ExtResource("22_ep37t")])
+diet = ExtResource("3_ckevh")
+corpse_visual = ExtResource("2_lmnkk")
+base_abilities = Array[ExtResource("1_fysgh")]([SubResource("Resource_m2qgp"), SubResource("Resource_f8pna"), SubResource("Resource_hoe0h"), SubResource("Resource_evimd"), SubResource("Resource_62dvd"), SubResource("Resource_g5pax")])
+id = &"demon"
+name = "Demon"
+description = "Perverse creatures of many aberrations but always with crimson skin and horns. Their mere presence compels others to act out their darkest, most violent desires."
+metadata/_custom_type_script = "uid://c86idpjgqck1t"
