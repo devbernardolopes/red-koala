@@ -6,10 +6,10 @@
 [ext_resource type="Resource" uid="uid://chy4a6y5hfqn3" path="res://resources/bodyparts/main_hand.tres" id="3_ipa8w"]
 [ext_resource type="Resource" uid="uid://dl4qtakdlhj52" path="res://resources/materials/iron.tres" id="4_ipa8w"]
 [ext_resource type="Script" uid="uid://b2lt5yl2f5k6" path="res://resources/weapon_data.gd" id="5_bxp4a"]
+[ext_resource type="Script" uid="uid://cwd2d08k5cedt" path="res://resources/property_data.gd" id="6_juk7o"]
 
 [resource]
 script = ExtResource("5_bxp4a")
-ranged = true
 category = ExtResource("1_juk7o")
 damage_type = ExtResource("1_nx348")
 weight = 4.0

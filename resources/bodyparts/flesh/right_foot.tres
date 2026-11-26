@@ -8,6 +8,7 @@ script = ExtResource("2_5kgkr")
 side = 1
 material = ExtResource("1_38pol")
 equipped_offset = Vector2(16, 32)
+draw_order = 22
 id = &"right_foot"
 name = "Right Foot"
 metadata/_custom_type_script = "uid://dovglatpiuiwq"

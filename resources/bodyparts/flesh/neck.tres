@@ -7,6 +7,7 @@
 script = ExtResource("2_fgv6p")
 material = ExtResource("1_x4pog")
 equipped_offset = Vector2(0, -16)
+draw_order = 12
 id = &"neck"
 name = "Neck"
 metadata/_custom_type_script = "uid://dovglatpiuiwq"
