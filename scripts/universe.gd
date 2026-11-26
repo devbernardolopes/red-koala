@@ -379,7 +379,10 @@ func _update_ground() -> void:
 	var items: Array[Item] = []
 	for t: Base in board.get_elements_at(board.get_origin(current_player_entity)):
 		if t is Item and (t as Item).data is ItemData:
-			items.append(t as Item)
+			var item: Item = t as Item
+			items.append(item)
+			if not item.mystic_changed.is_connected(after_item_change):
+				item.mystic_changed.connect(after_item_change)
 	hud.set_ground(items)
 
 

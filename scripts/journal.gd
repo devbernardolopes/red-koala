@@ -52,7 +52,23 @@ func unequipped(item: Item, actor: Entity = null) -> void:
 
 
 func refused_removal(item: Item, actor: Entity = null) -> void:
-	add("%s could not remove the cursed %s" % [_actor_name(actor), _item_name(item, false)])
+	add("%s could not remove %s" % [_actor_name(actor), _item_name(item)])
+
+
+## Reveals a newly learned mystic modifier. The entity is named when it is not
+## the speaker. The item is named without the modifier, which is announced by
+## the sentence itself.
+func sensed_mystic_modifier(item: Item, actor: Entity = null) -> void:
+	if not is_instance_valid(item):
+		return
+	var modifier: String = _mystic_modifier_word(item.mystic_modifier)
+	if modifier.is_empty():
+		return
+	var item_name: String = _item_name(item, true, false)
+	if not actor or actor == speaker:
+		add("You sense %s is %s" % [item_name, modifier])
+	else:
+		add("%s senses %s is %s" % [_actor_name(actor), item_name, modifier])
 
 
 ## One line for the attack roll and, on a hit, its damage.
@@ -136,13 +152,27 @@ func _actor_name(actor: Entity) -> String:
 	return who_name if not who_name.is_empty() else "Someone"
 
 
-func _item_name(item: Item, with_article: bool = true) -> String:
+func _item_name(item: Item, with_article: bool = true,
+		with_modifier: bool = true) -> String:
 	if not is_instance_valid(item):
 		return "something"
 	var item_name: String = item.get_display_name()
 	if item_name.is_empty():
 		return "something"
+	if with_modifier and item.mystic_known:
+		var modifier: String = _mystic_modifier_word(item.mystic_modifier)
+		if not modifier.is_empty():
+			item_name = modifier + " " + item_name
 	return "the " + item_name if with_article else item_name
+
+
+func _mystic_modifier_word(modifier: Helper.MysticModifier) -> String:
+	match modifier:
+		Helper.MysticModifier.CURSED:
+			return "cursed"
+		Helper.MysticModifier.BLESSED:
+			return "blessed"
+	return ""
 
 
 ## The roll is shown as the natural die, the total modifier, the final total and
@@ -159,7 +189,7 @@ func _roll_text(result: AttackResult) -> String:
 func _weapon_phrase(profile: AttackProfile) -> String:
 	if not profile or not is_instance_valid(profile.weapon):
 		return ""
-	return " with the " + profile.weapon.get_display_name()
+	return " with the " + _item_name(profile.weapon, false)
 
 
 func _sentence(text: String) -> String:

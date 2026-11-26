@@ -57,8 +57,12 @@ var equipment: Dictionary[AnatomyData, Item] = {}
 ## Items that this entity will auto-take when entering the same tile.
 @export var auto_take: Array[ItemData] = []
 ## These are properties that can be added via equipped items or spells or other
-## ways.
-@export var added_properties: Array[PropertyData] = []
+## ways. Assigning a new array re-checks which carried items reveal their mystic
+## modifier.
+@export var added_properties: Array[PropertyData] = []:
+	set(v):
+		added_properties = v
+		_update_mystic_knowledge()
 @export var is_invisible: bool = false:
 	set(v):
 		is_invisible = v
@@ -109,6 +113,7 @@ var is_playable: bool = false:
 			if not visible_notifier:
 				visible_notifier = VisibleOnScreenNotifier2D.new()
 				add_child(visible_notifier)
+			_update_mystic_knowledge()
 		else:
 			if visible_notifier:
 				visible_notifier.queue_free()
@@ -487,8 +492,47 @@ func remove_property(property: PropertyData) -> void:
 	stats_changed.emit()
 
 
+## Reveals the mystic modifier of every item this entity can currently perceive:
+## with Beatitude every carried item, otherwise only the equipped ones. Only
+## playable entities learn, and a known item is never forgotten.
+func _update_mystic_knowledge() -> void:
+	if Engine.is_editor_hint() or not is_playable:
+		return
+	var has_beatitude: bool = has_property_id(&"beatitude")
+	for item: Item in inventory:
+		if not item:
+			continue
+		_connect_item(item)
+		_learn_mystic_modifier(item, has_beatitude or item.is_equipped)
+	for item: Item in get_equipped_items():
+		_connect_item(item)
+		_learn_mystic_modifier(item, true)
+
+
+## Marks [param item] as known when [param can_learn] is true and logs the
+## reveal once. Knowledge is sticky, so this is safe to call repeatedly.
+func _learn_mystic_modifier(item: Item, can_learn: bool) -> void:
+	if not can_learn or not item or item.mystic_known:
+		return
+	item.mystic_known = true
+	if item.mystic_modifier != Helper.MysticModifier.NONE:
+		Journal.sensed_mystic_modifier(item, self)
+
+
+## Watches [param item] so a later modifier change rebuilds the HUD rows.
+func _connect_item(item: Item) -> void:
+	if not item or item.mystic_changed.is_connected(_on_item_mystic_changed):
+		return
+	item.mystic_changed.connect(_on_item_mystic_changed)
+
+
+func _on_item_mystic_changed() -> void:
+	inventory_changed.emit()
+
+
 ## Also acts as the unequip action.
 ## If an item is [Helper.MysticModifier.CURSED] then it can't be unequiped.
+## Equipping an item reveals its true mystic modifier to a playable entity.
 func equip(item: Item) -> EquipResult:
 	if not data:
 		return EquipResult.INVALID
@@ -553,6 +597,7 @@ func _update_properties() -> void:
 		elif property.id == &"quickness":
 			speed_bonus = 25.0
 			speed = base_speed + speed_bonus
+	_update_mystic_knowledge()
 
 
 ## Recomputes the encumbrance band and reports a change only when it moves.
@@ -655,6 +700,7 @@ func take(item: Item) -> bool:
 		return false
 	item.get_parent().remove_child(item)
 	inventory.append(item)
+	_update_mystic_knowledge()
 	inventory_changed.emit()
 	return true
 

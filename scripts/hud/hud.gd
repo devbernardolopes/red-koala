@@ -295,6 +295,8 @@ func _is_same_stack(group: Dictionary, item: Item) -> bool:
 	var representative: Item = group.get("item")
 	if representative.mystic_modifier != item.mystic_modifier:
 		return false
+	if representative.mystic_known != item.mystic_known:
+		return false
 	if representative.data != null and item.data != null:
 		return representative.data == item.data
 	return representative.get_display_name() == item.get_display_name()
@@ -306,10 +308,16 @@ func _get_weight(item: Item) -> float:
 	return 0.0
 
 
-## Mystic modifiers are shown after the count, if the row has one.
+## Mystic modifiers are shown after the count, but only once the party has
+## learned them. Unknown items reveal nothing.
 func _modifier_suffix(item: Item) -> String:
-	if item.mystic_modifier == Helper.MysticModifier.CURSED:
-		return "[C]"
+	if not item.mystic_known:
+		return ""
+	match item.mystic_modifier:
+		Helper.MysticModifier.CURSED:
+			return "Cursed"
+		Helper.MysticModifier.BLESSED:
+			return "Blessed"
 	return ""
 
 
